@@ -1,4 +1,6 @@
 export const LOGIN = "LOGIN";
+
+export const USER = "USER";
 export const POSTS = "POSTS";
 
 export const ENUM_STATUS = {
@@ -10,7 +12,6 @@ export const ENUM_STATUS = {
 };
 
 export const genericType = (type, status) => {
-  console.log("ss", status);
   return `@@${type}_${status}`;
 };
 

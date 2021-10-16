@@ -31,7 +31,11 @@ export function LoginPage() {
       [name]: val,
     });
   };
-  const onSubmit = async () => {
+
+  //
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
     if (!formLogin.email || !formLogin.password) {
       toast({
         title: "Validate Form",
@@ -42,12 +46,14 @@ export function LoginPage() {
         variant: "left-accent",
         position: "top",
       });
+      return;
     }
     dispatch(genericAction(LOGIN, ENUM_STATUS.FETCHING, formLogin));
     // auth.signIn(formLogin, () => {
     //   history.replace(from);
     // });
   };
+
   return (
     <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>

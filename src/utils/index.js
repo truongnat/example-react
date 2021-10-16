@@ -19,3 +19,10 @@ export const FakeCookie = {
     sessionStorage.removeItem(key);
   },
 };
+
+export const transformResponse = (response) => {
+  if (!response.data && response.status !== 200) {
+    return null;
+  }
+  return response.data;
+};
