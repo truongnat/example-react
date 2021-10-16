@@ -30,13 +30,13 @@
 
 - Authentication :
 
-+ UI authenticate ( login, register ).
+	+ UI authenticate ( login, register ).
 
-+ UI homepage - mock data from [Json Placeholder](https://jsonplaceholder.typicode.com/) .
+	+ UI homepage - mock data from [Json Placeholder](https://jsonplaceholder.typicode.com/) .
 
-+ UI profile and more...etc.
+	+ UI profile and more...etc.
 
-+ CRUD example.
+	+ CRUD example.
 
 
 ## Setup
@@ -48,13 +48,8 @@ We are using template Create React App.
 
 
 > Note :
-
 > - Node version have Node >= 10 on your local development machine. You have download [Node JS](https://nodejs.org/en/) or update with command : *npm update*.
-
 > - Using IDE [Visual Studio Code](https://code.visualstudio.com/) or [WebStorm](https://www.jetbrains.com/webstorm/)
-
->
-
 > *All you need left is to know a little bit of [Javascript](https://www.w3schools.com/js/) .*
 
 
@@ -85,14 +80,14 @@ yarn create react-app [project name]
 ## Start project
 
 - Docs for concept React JS.
-		- What is [JSX](https://reactjs.org/docs/introducing-jsx.html) ?
-		- How [rendering](https://reactjs.org/docs/rendering-elements.html)  with React ?
-		- How to create [Component React and Props](https://reactjs.org/docs/components-and-props.html) ?
-		- [React State ? LifeCycle ?](https://reactjs.org/docs/state-and-lifecycle.html)
-		- How to [handle event](https://reactjs.org/docs/handling-events.html) React JS ?
-		- [Condition Rendering ?](https://reactjs.org/docs/conditional-rendering.html)
-		- [Lists and Keys?](https://reactjs.org/docs/lists-and-keys.html)
-		- Difference between Class Component and Functional Components. ( [Link docs](https://reactjs.org/docs/react-component.html#render) | [Link dev](https://dev.to/mehmehmehlol/class-components-vs-functional-components-in-react-4hd3) )
+- What is [JSX](https://reactjs.org/docs/introducing-jsx.html) ?
+- How [rendering](https://reactjs.org/docs/rendering-elements.html)  with React ?
+- How to create [Component React and Props](https://reactjs.org/docs/components-and-props.html) ?
+- [React State ? LifeCycle ?](https://reactjs.org/docs/state-and-lifecycle.html)
+- How to [handle event](https://reactjs.org/docs/handling-events.html) React JS ?
+- [Condition Rendering ?](https://reactjs.org/docs/conditional-rendering.html)
+- [Lists and Keys?](https://reactjs.org/docs/lists-and-keys.html)
+- Difference between Class Component and Functional Components. ( [Link docs](https://reactjs.org/docs/react-component.html#render) | [Link dev](https://dev.to/mehmehmehlol/class-components-vs-functional-components-in-react-4hd3) )
 - Config and structure project - see more [github](#github).
 
 ## Running the app
