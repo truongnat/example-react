@@ -1,70 +1,141 @@
-# Getting Started with Create React App
+<p  align="center">
+<a>
+<img  src="https://cdn.freebiesupply.com/logos/large/2x/react-1-logo-svg-vector.svg"  width="320"  alt="Server API Logo"  />
+</a>
+</p>
+<p  align="center">Document learning React Js.</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
 
-In the project directory, you can run:
+## Description
 
-### `yarn start`
+  - Learning concept [ReactJS](https://reactjs.org/docs/getting-started.html) framework  development by Facebook.
+  - Learning ecosystem for ReactJS, example : [react router dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/) or [Chakra UI](https://chakra-ui.com/).
+  - Implement project example with [CRA](https://create-react-app.dev/).
+  - Build project and implement with SPA or SSR.
+  - Deploy source to hosting.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Feature
+- Authentication :
+	+ UI authenticate ( login, register ).
+	+ UI homepage - mock data from [Json Placeholder](https://jsonplaceholder.typicode.com/) .
+	+ UI profile and more...etc.
+	+ CRUD example.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
+## Setup
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+We are using template Create React App.
 
-### `yarn build`
+> Note :
+> - Node version have Node >= 10 on your local development machine. You have download [Node JS](https://nodejs.org/en/) or update with command : *npm update*.
+> - Using IDE [Visual Studio Code](https://code.visualstudio.com/) or [WebStorm](https://www.jetbrains.com/webstorm/)
+>
+>  *All you need left is to know a little bit of  [Javascript](https://www.w3schools.com/js/) .*
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**NPX :**
+```bash
+npx create-react-app [project name]
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**NPM :**
+```bash
+npm init react-app [project name]
+```
+**YARN :**
+```bash
+yarn create react-app [project name]
+```
 
-### `yarn eject`
+**Structure project :**
+>my-app
+├── README.md
+├── node_modules
+├── package.json
+├── .gitignore
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+└── src
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── index.css
+    ├── index.js
+    ├── logo.svg
+    ├── serviceWorker.js
+    └── setupTests.js
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Running the app
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+# development
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+$ npm run start
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# watch mode
 
-### Code Splitting
+$ npm run start:dev
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+# production mode
 
-### Making a Progressive Web App
+$ npm run start:prod
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+## Test
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `yarn build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+
+# unit tests
+
+$ npm run test
+
+
+
+# e2e tests
+
+$ npm run test:e2e
+
+
+
+# test coverage
+
+$ npm run test:cov
+
+```
+
+
+
+## Stay in touch
+
+
+
+- Author - [Peanut201](https://www.facebook.com/truongdq2001/)
+
+- Website - [Portfolio](https://portfolio-peanut.netlify.app/)
+
+- Twitter - [@Peanut201](https://twitter.com/truong20013)
+
+- Telegram - [@Peanut201](https://t.me/peanut201)
+
+
+
+## License
+
+
+Copyrighted by Peanut201.
