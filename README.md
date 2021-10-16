@@ -32,11 +32,11 @@
 
 	+ UI authenticate ( login, register ).
 
-	+ UI homepage - mock data from [Json Placeholder](https://jsonplaceholder.typicode.com/) .
+- UI homepage - mock data from [Json Placeholder](https://jsonplaceholder.typicode.com/) .
 
-	+ UI profile and more...etc.
+- UI profile and more...etc.
 
-	+ CRUD example.
+- CRUD example.
 
 
 ## Setup
