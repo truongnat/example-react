@@ -14,6 +14,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks";
 import { useDispatch } from "react-redux";
 import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
+import { Services } from "../services/users";
 
 export function LoginPage() {
   const [formLogin, setFormLogin] = useState({ email: "", password: "" });
@@ -49,6 +50,7 @@ export function LoginPage() {
       return;
     }
     dispatch(genericAction(LOGIN, ENUM_STATUS.FETCHING, formLogin));
+    await new Services().login(formLogin);
     // auth.signIn(formLogin, () => {
     //   history.replace(from);
     // });
