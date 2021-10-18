@@ -12,7 +12,7 @@ export class Services {
   }
   async login(data) {
     try {
-      const response = await new Api().post("login", data);
+      const response = await new Api().post("auth/login", data);
       return response;
     } catch (error) {
       console.log("error - login : ", error);

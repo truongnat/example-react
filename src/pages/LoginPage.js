@@ -17,7 +17,7 @@ import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
 import { Services } from "../services/users";
 
 export function LoginPage() {
-  const [formLogin, setFormLogin] = useState({ email: "", password: "" });
+  const [formLogin, setFormLogin] = useState({ username: "", password: "" });
   const toast = useToast();
 
   const history = useHistory();
@@ -37,10 +37,10 @@ export function LoginPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!formLogin.email || !formLogin.password) {
+    if (!formLogin.username || !formLogin.password) {
       toast({
         title: "Validate Form",
-        description: "Email field or Password field is empty!",
+        description: "Username field or Password field is empty!",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -64,9 +64,9 @@ export function LoginPage() {
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>
             <Input
-              type="email"
-              value={formLogin.email}
-              onChange={(e) => onChangeForm("email", e.target.value)}
+              type="username"
+              value={formLogin.username}
+              onChange={(e) => onChangeForm("username", e.target.value)}
             />
           </FormControl>
           <FormControl id="password">
