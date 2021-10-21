@@ -1,18 +1,22 @@
-import { useAuth } from "../hooks";
 import { Route, Redirect } from "react-router-dom";
-export function ProtectedRoute({ children, ...rest }) {
-  const auth = useAuth();
-  console.log("çhecking auth", auth);
+import { useSelector } from "react-redux";
+import { selectorAuth } from "../redux/selector";
+
+export function PrivateRoute({ component: Component, ...rest }) {
+  const isAuthenticated = useSelector(selectorAuth);
   return (
     <Route
       {...rest}
-      render={({ location }) =>
-        auth.user ? (
-          children
-        ) : (
-          <Redirect to={{ pathname: "login", state: { from: location } }} />
-        )
-      }
+      render={(props) => {
+        if (!isAuthenticated) {
+          return (
+            <Redirect
+              to={{ pathname: "/login", state: { from: props.location } }}
+            />
+          );
+        }
+        return <Component {...props} />;
+      }}
     />
   );
 }

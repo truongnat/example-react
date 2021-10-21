@@ -1,7 +1,8 @@
 export const LOGIN = "LOGIN";
-
 export const USER = "USER";
 export const POSTS = "POSTS";
+
+export const CHECKING_AUTH = "CHECKING_AUTH";
 
 export const ENUM_STATUS = {
   FETCHING: "FETCHING",
@@ -9,10 +10,11 @@ export const ENUM_STATUS = {
   FAILURE: "FAILURE",
   KEEPING: "KEEPING",
   CANCELLED: "CANCELLED",
+  PUSH_NORMAL: "PUSH_NORMAL",
 };
 
 export const genericType = (type, status) => {
-  return `@@${type}_${status}`;
+  return `@@_EXAMPLE_APP_${type}_${status}`;
 };
 
 export const genericAction = (type, status, payload) => ({

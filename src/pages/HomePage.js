@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { Flex, Stack, Image } from "@chakra-ui/react";
 import { Services } from "../services";
 
-export function HomePage() {
+export default function HomePage() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
-import { ENUM_STATUS, genericType, LOGIN } from "./actions";
+import { CHECKING_AUTH, ENUM_STATUS, genericType, LOGIN } from "./actions";
 
 const initReducer = {
+  isAuthenticated: false,
   user: null,
   loading: false,
   posts: [],
@@ -10,11 +11,18 @@ const initReducer = {
 
 export const RootReducer = (state = initReducer, { type, payload }) => {
   switch (type) {
+    case genericType(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL):
+      return {
+        ...state,
+        currentType: type,
+        isAuthenticated: payload,
+      };
     case genericType(LOGIN, ENUM_STATUS.FETCHING):
       return {
         ...state,
         loading: true,
         currentType: type,
+        errors: null,
       };
     case genericType(LOGIN, ENUM_STATUS.SUCCESS):
       return {
@@ -22,6 +30,7 @@ export const RootReducer = (state = initReducer, { type, payload }) => {
         loading: false,
         user: payload,
         currentType: type,
+        errors: null,
       };
     case genericType(LOGIN, ENUM_STATUS.FAILURE):
       return {
@@ -32,6 +41,6 @@ export const RootReducer = (state = initReducer, { type, payload }) => {
         currentType: type,
       };
     default:
-      break;
+      return Object.assign({}, state);
   }
 };

@@ -1,30 +1,35 @@
-import React, { useEffect } from "react";
-import { Switch, Route } from "react-router-dom";
-import { useAuth } from "../hooks";
-import { HomePage } from "../pages/HomePage";
-import { LoginPage } from "../pages/LoginPage";
-import { FakeCookie } from "../utils";
-import { ProtectedRoute } from "./Protected";
-import { useHistory } from "react-router-dom";
+import React, { lazy, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import { PrivateRoute } from "./Protected";
+import { Authenticate } from "../services";
+import { useDispatch } from "react-redux";
+import { CHECKING_AUTH, ENUM_STATUS, genericAction } from "../redux/actions";
+const LazyHomePage = lazy(() => import("../pages/HomePage"));
+const LazyLoginPage = lazy(() => import("../pages/LoginPage"));
 export function RootRouter() {
-  const { signIn } = useAuth();
-  const history = useHistory();
+  const dispatch = useDispatch();
   useEffect(() => {
-    const info = FakeCookie.get("lp");
-    if (info) {
-      signIn(JSON.parse(info), () => {
-        history.push("/");
-      });
-    }
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    const isAuthenticated = await new Authenticate().isAuthenticated();
+    dispatch(
+      genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, isAuthenticated)
+    );
+  };
   return (
-    <Switch>
-      <Route path="/login">
-        <LoginPage />
-      </Route>
-      <ProtectedRoute path="/">
-        <HomePage />
-      </ProtectedRoute>
-    </Switch>
+    <Router>
+      <Switch>
+        <PrivateRoute exact path="/" component={LazyHomePage} />
+        <Route path="/login" component={LazyLoginPage} />
+        <Redirect from="*" to="/" />
+      </Switch>
+    </Router>
   );
 }

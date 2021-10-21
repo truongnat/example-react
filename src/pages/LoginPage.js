@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Button,
@@ -8,32 +8,29 @@ import {
   Heading,
   Input,
   Stack,
+  Text,
   useToast,
 } from "@chakra-ui/react";
-import { useHistory, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
-import { Services } from "../services/users";
-
-export function LoginPage() {
-  const [formLogin, setFormLogin] = useState({ username: "", password: "" });
+import { selectorAuth } from "../redux/selector";
+import { useHistory, useLocation } from "react-router-dom";
+export default function LoginPage() {
+  const [formLogin, setFormLogin] = useState({
+    username: "truongx2",
+    password: "truong222",
+  });
   const toast = useToast();
-
-  const history = useHistory();
-  const location = useLocation();
   const dispatch = useDispatch();
-  const auth = useAuth();
-  let { from } = location.state || { from: { pathname: "/" } };
-
+  const location = useLocation();
+  const history = useHistory();
+  const isAuthenticated = useSelector(selectorAuth);
   const onChangeForm = (name, val) => {
     setFormLogin({
       ...formLogin,
       [name]: val,
     });
   };
-
-  //
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -50,16 +47,19 @@ export function LoginPage() {
       return;
     }
     dispatch(genericAction(LOGIN, ENUM_STATUS.FETCHING, formLogin));
-    await new Services().login(formLogin);
-    // auth.signIn(formLogin, () => {
-    //   history.replace(from);
-    // });
   };
+  useEffect(() => {
+    if (isAuthenticated) {
+      const { from } = location.state || { from: { pathname: "/" } };
+      history.push(from);
+    }
+  }, [isAuthenticated]);
 
   return (
     <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
         <Stack spacing={4} w={"full"} maxW={"md"}>
+          <Text>{isAuthenticated ? "logined" : "out"}</Text>
           <Heading fontSize={"2xl"}>Sign in to your account</Heading>
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>

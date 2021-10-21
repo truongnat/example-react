@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { authContext } from "../context/authContext";
-import { fakeAuth, FakeCookie } from "../utils";
+import { fakeAuth, SessionClient } from "../utils";
 
 export function useAuthProvider() {
   const [user, setUser] = useState(null);
@@ -8,14 +8,14 @@ export function useAuthProvider() {
   const signIn = (value, cb) => {
     return fakeAuth.signIn(() => {
       setUser(value);
-      FakeCookie.set("lp", JSON.stringify(value));
+      SessionClient.set("lp", JSON.stringify(value));
       cb();
     });
   };
 
   const signOut = (cb) => {
     return fakeAuth.signOut(() => {
-      FakeCookie.remove("lp");
+      SessionClient.remove("lp");
       setUser(null);
       cb();
     });

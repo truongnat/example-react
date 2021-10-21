@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FakeCookie } from "../utils";
+import { SessionClient } from "../utils";
 
 const baseURLMock = "https://jsonplaceholder.typicode.com/";
 const baseURL = "http://localhost:5000/";
@@ -66,7 +66,8 @@ export class Api {
    * @return Header axios object.
    * */
   getHeader() {
-    const token = FakeCookie.get("lp");
+    const token = SessionClient.get("lp");
+    console.log("getHeader - look token : ", token);
     return {
       Authorization: "Bearer " + token,
       "Content-Type": "application/json",

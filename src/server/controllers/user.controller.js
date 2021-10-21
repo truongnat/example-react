@@ -79,17 +79,23 @@ class UserController {
         {
           id: user._id,
           username: user.username,
-          password: user.password,
         },
         process.env.SECRET_KEY,
         {
-          expiresIn: "2d",
+          expiresIn: "7d",
+          algorithm: "HS256",
         }
       );
-      res.setHeader("Set-Cookie", token);
       return res.json({
         status: 200,
         message: "success",
+        data: {
+          access_token: token,
+          user: {
+            username: user.username,
+            id: user._id,
+          },
+        },
       });
     } catch (error) {
       console.log("Controller - login : ", error);
@@ -106,6 +112,33 @@ class UserController {
       status: 200,
       message: "success",
     });
+  }
+
+  async checkingMe(req, res) {
+    try {
+      const user = UserRepo.findOne({ _id: req.userId });
+      if (user) {
+        return res.json({
+          status: 200,
+          message: "success",
+          data: {
+            user: {
+              username: user.username,
+            },
+          },
+        });
+      }
+      return res.json({
+        status: 400,
+        message: "Password not matching!",
+      });
+    } catch (e) {
+      console.log("Controller - login : ", e);
+      res.json({
+        status: 500,
+        message: "server error",
+      });
+    }
   }
 }
 

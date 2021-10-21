@@ -4,8 +4,15 @@ const { UserRepo } = require("../schema/user.schema");
 
 async function authMiddleware(req, res, next) {
   try {
-    const cookieClient = req.headers.cookie;
-    const validToken = jwt.verify(cookieClient, process.env.SECRET_KEY);
+    console.log("show header", req.headers);
+    const cookieClient = req.headers.authorization;
+    if (!cookieClient) {
+      res.json({ status: 404, message: "Unauthorized" });
+    }
+    const token = cookieClient.split(" ")[1];
+    const validToken = jwt.verify(token, process.env.SECRET_KEY, {
+      algorithms: ["HS256"],
+    });
     if (!validToken) {
       return res.json({
         status: 401,

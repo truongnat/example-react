@@ -8,7 +8,7 @@ export const fakeAuth = {
   },
 };
 
-export const FakeCookie = {
+export const SessionClient = {
   set(key, val) {
     sessionStorage.setItem(key, val);
   },
@@ -17,6 +17,30 @@ export const FakeCookie = {
   },
   remove(key) {
     sessionStorage.removeItem(key);
+  },
+};
+
+export const CookieClient = {
+  get(key) {
+    const cookieStorage = document.cookie;
+    if (!cookieStorage || !key) {
+      return null;
+    }
+
+    const listCookie = cookieStorage.split(";").map((c) => {
+      const data = c.split("=");
+      return {
+        key: data[0].trim().toLocaleLowerCase(),
+        value: data[1].trim().toLocaleLowerCase(),
+      };
+    });
+    const cookieExists = listCookie.find(
+      (c) => c.key === key.toLocaleLowerCase()
+    );
+    if (!cookieExists) {
+      return null;
+    }
+    return cookieExists.value;
   },
 };
 

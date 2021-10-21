@@ -1,22 +1,21 @@
-import "./App.css";
+import React, { Suspense } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { RootRouter } from "./router";
 import { AuthProvider } from "./context/authContext";
-import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 
 function App() {
   return (
-    <ChakraProvider>
-      <Provider store={store}>
-        <AuthProvider>
-          <Router>
+    <Suspense fallback={<div>loading...</div>}>
+      <ChakraProvider>
+        <Provider store={store}>
+          <AuthProvider>
             <RootRouter />
-          </Router>
-        </AuthProvider>
-      </Provider>
-    </ChakraProvider>
+          </AuthProvider>
+        </Provider>
+      </ChakraProvider>
+    </Suspense>
   );
 }
 
