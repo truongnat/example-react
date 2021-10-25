@@ -46,8 +46,13 @@ export function FormTodo(dataInit, callback, loading) {
             placeholder="Status"
             color="black"
             {...field}
-            options={STATUS_TODO.map((item) => ({ value: item, label: item }))}
-          />
+          >
+            {STATUS_TODO.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </Select>
         )}
       />
       {renderError(errors.status, "Status is required")}
