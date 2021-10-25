@@ -7,19 +7,19 @@ import {
   LOGIN,
 } from "./actions";
 import { Authenticate } from "../services";
-import { SessionClient } from "../utils";
+import { MemoryClient } from "../utils";
 
 function* login({ payload }) {
   try {
     const response = yield new Authenticate().login(payload);
     if (response.data && response.data.status === 200) {
-      SessionClient.set("lp", response.data.data.access_token);
+      MemoryClient.set("lp", response.data.data.access_token);
       yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
       return yield put(
         genericAction(LOGIN, ENUM_STATUS.SUCCESS, response.data.data.user)
       );
     }
-    SessionClient.remove("lp");
+    MemoryClient.remove("lp");
     yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, response.data.message));
   } catch (e) {
     console.log("saga error : ", e);

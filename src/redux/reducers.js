@@ -1,9 +1,15 @@
-import { CHECKING_AUTH, ENUM_STATUS, genericType, LOGIN } from "./actions";
+import {
+  CHECKING_AUTH,
+  ENUM_STATUS,
+  genericType,
+  LOGIN,
+  LOADING_APP,
+} from "./actions";
 
 const initReducer = {
   isAuthenticated: false,
   user: null,
-  loading: false,
+  loading: true, // loading all app
   posts: [],
   currentType: "",
   errors: null,
@@ -16,6 +22,12 @@ export const RootReducer = (state = initReducer, { type, payload }) => {
         ...state,
         currentType: type,
         isAuthenticated: payload,
+      };
+    case genericType(LOADING_APP, ENUM_STATUS.PUSH_NORMAL):
+      return {
+        ...state,
+        currentType: type,
+        loading: payload,
       };
     case genericType(LOGIN, ENUM_STATUS.FETCHING):
       return {

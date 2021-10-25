@@ -1,22 +1,37 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect } from "react";
 
-import { Flex, Stack, Image } from "@chakra-ui/react";
-import { Services } from "../services";
-
+import { Stack, Center, Flex, Square, Text, Box } from "@chakra-ui/react";
+import { SideFilter } from "../components/SideFilter";
+import { FormTodo } from "../components/FormTodo";
+import ListTodo from "../components/ListTodo";
 export default function HomePage() {
-  const [count, setCount] = useState(0);
+  useEffect(() => {}, []);
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-  const fetchUser = async () => {
-    const response = await new Services().getUsers();
-  };
   return (
-    <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
-      <Flex flex={1}>
-        <button onClick={() => setCount(count + 1)}> click thuy</button>
-      </Flex>
+    <Stack minH={"100vh"} alignItems="center" justifyContent="start">
+      <Box mt={30}>
+        <Text
+          as={"h2"}
+          fontSize="4xl"
+          bgClip="text"
+          bgGradient="linear(to-r, teal.500, green.500)"
+          fontWeight="bold"
+          textAlign="center"
+        >
+          Todo App
+        </Text>
+      </Box>
+      <Box minW={768}>
+        <Flex color="white" className="space-x-10">
+          <Box className="border rounded-md p-5" w="200px">
+            <SideFilter />
+          </Box>
+          <Box flex="1">
+            <FormTodo />
+          </Box>
+        </Flex>
+        <ListTodo />
+      </Box>
     </Stack>
   );
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SessionClient } from "../utils";
+import { MemoryClient } from "../utils";
 
 const baseURLMock = "https://jsonplaceholder.typicode.com/";
 const baseURL = "http://localhost:5000/";
@@ -8,11 +8,9 @@ const baseURL = "http://localhost:5000/";
  * @support fetch - post - put - patch - delete.
  * */
 export class Api {
-  constructor(verApi) {
-    this.verApi = verApi;
-  }
+  constructor() {}
   axiosInstance = axios.create({
-    baseURL: this.verApi === "mock" ? baseURLMock : baseURL,
+    baseURL: baseURL,
     headers: { ...this.getHeader() },
   });
 
@@ -66,7 +64,7 @@ export class Api {
    * @return Header axios object.
    * */
   getHeader() {
-    const token = SessionClient.get("lp");
+    const token = MemoryClient.get("lp");
     console.log("getHeader - look token : ", token);
     return {
       Authorization: "Bearer " + token,

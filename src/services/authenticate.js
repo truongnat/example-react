@@ -1,4 +1,4 @@
-import { SessionClient } from "../utils";
+import { MemoryClient } from "../utils";
 
 const { Api } = require("../config/api");
 
@@ -26,7 +26,7 @@ export class Authenticate {
   }
 
   async isAuthenticated() {
-    const token = SessionClient.get("lp");
+    const token = MemoryClient.get("lp");
     if (!token) return false;
     const checkingToken = await this.checkingMe();
     if (!checkingToken) return false;

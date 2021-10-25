@@ -1,9 +1,8 @@
 export const LOGIN = "LOGIN";
 export const USER = "USER";
 export const POSTS = "POSTS";
-
 export const CHECKING_AUTH = "CHECKING_AUTH";
-
+export const LOADING_APP = "LOADING_APP";
 export const ENUM_STATUS = {
   FETCHING: "FETCHING",
   SUCCESS: "SUCCESS",

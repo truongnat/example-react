@@ -8,15 +8,15 @@ export const fakeAuth = {
   },
 };
 
-export const SessionClient = {
+export const MemoryClient = {
   set(key, val) {
-    sessionStorage.setItem(key, val);
+    localStorage.setItem(key, val);
   },
   get(key) {
-    return sessionStorage.getItem(key);
+    return localStorage.getItem(key);
   },
   remove(key) {
-    sessionStorage.removeItem(key);
+    localStorage.removeItem(key);
   },
 };
 
