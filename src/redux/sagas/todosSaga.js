@@ -7,15 +7,14 @@ import {
   genericType,
   UPDATE_TODO,
   GET_ALL_TODO,
+  DELETE_TODO,
 } from "../actions";
 
 function* createTodo({ payload }) {
   try {
     const response = yield new TodoService().create(payload);
     if (response && response.status === 200) {
-      return yield put(
-        genericAction(CREATE_TODO, ENUM_STATUS.SUCCESS, response.data)
-      );
+      yield put(genericAction(CREATE_TODO, ENUM_STATUS.SUCCESS));
     }
   } catch (e) {
     console.log("saga error : ", e);
@@ -41,14 +40,24 @@ function* updateTodo({ payload }) {
   try {
     const response = yield new TodoService().updateTodo(payload);
     console.log("checking response : ", response);
-    // if (response && response.status === 200) {
-    //   yield put(
-    //     genericAction(GET_ALL_TODO, ENUM_STATUS.SUCCESS, response.data)
-    //   );
-    // }
+    if (response && response.status === 200) {
+      yield put(genericAction(UPDATE_TODO, ENUM_STATUS.SUCCESS));
+    }
   } catch (e) {
     console.log("saga error : ", e);
     yield put(genericAction(UPDATE_TODO, ENUM_STATUS.FAILURE, e.message));
+  }
+}
+
+function* deleteTodo({ payload }) {
+  try {
+    const response = yield new TodoService().deleteTodo(payload);
+    if (response && response.status === 200) {
+      yield put(genericAction(DELETE_TODO, ENUM_STATUS.SUCCESS));
+    }
+  } catch (e) {
+    console.log("saga error : ", e);
+    yield put(genericAction(DELETE_TODO, ENUM_STATUS.FAILURE, e.message));
   }
 }
 
@@ -56,4 +65,5 @@ export function* todosSaga() {
   yield takeLatest(genericType(CREATE_TODO, ENUM_STATUS.FETCHING), createTodo);
   yield takeLatest(genericType(GET_ALL_TODO, ENUM_STATUS.FETCHING), getAllTodo);
   yield takeLatest(genericType(UPDATE_TODO, ENUM_STATUS.FETCHING), updateTodo);
+  yield takeLatest(genericType(DELETE_TODO, ENUM_STATUS.FETCHING), deleteTodo);
 }

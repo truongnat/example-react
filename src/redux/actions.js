@@ -4,7 +4,7 @@ export const LOADING_APP = "LOADING_APP";
 export const INIT_TODO = "INIT_TODO";
 export const CREATE_TODO = "CREATE_TODO";
 export const UPDATE_TODO = "UPDATE_TODO";
-export const REMOVE_TODO = "REMOVE_TODO";
+export const DELETE_TODO = "DELETE_TODO";
 export const GET_ALL_TODO = "GET_ALL_TODO";
 export const FILTER_TODO_ALL = "FILTER_TODO_ALL";
 export const FILTER_TODO_COMPLETED = "FILTER_TODO_COMPLETED";
@@ -17,6 +17,7 @@ export const ENUM_STATUS = {
   KEEPING: "KEEPING",
   CANCELLED: "CANCELLED",
   PUSH_NORMAL: "PUSH_NORMAL",
+  RESET: "RESET",
 };
 
 export const genericType = (type, status) => {

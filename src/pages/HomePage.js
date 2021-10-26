@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { Stack, Flex, Text, Box } from "@chakra-ui/react";
 import { SideFilter } from "../components/SideFilter";
-import { FormTodo } from "../components/FormTodo";
+import { FormCreateTodo } from "../components/FormCreateTodo";
 import ListTodo from "../components/ListTodo";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,10 +11,8 @@ import {
   genericAction,
   GET_ALL_TODO,
 } from "../redux/actions";
-import { todosSelector } from "../redux/selector";
 export default function HomePage() {
   const dispatch = useDispatch();
-  const { loadingCreate } = useSelector(todosSelector);
   useEffect(() => {
     dispatch(genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING));
   }, []);
@@ -22,6 +20,7 @@ export default function HomePage() {
   const createTodo = (data) => {
     dispatch(genericAction(CREATE_TODO, ENUM_STATUS.FETCHING, data));
   };
+
   return (
     <Stack minH={"100vh"} alignItems="center" justifyContent="start">
       <Box mt={30}>
@@ -32,6 +31,7 @@ export default function HomePage() {
           bgGradient="linear(to-r, teal.500, green.500)"
           fontWeight="bold"
           textAlign="center"
+          className="my-5"
         >
           Todo App
         </Text>
@@ -42,11 +42,7 @@ export default function HomePage() {
             <SideFilter />
           </Box>
           <Box flex="1">
-            <FormTodo
-              callback={(data) => createTodo(data)}
-              loading={loadingCreate}
-              resetValue={loadingCreate ? null : { title: "", content: "" }}
-            />
+            <FormCreateTodo />
           </Box>
         </Flex>
         <ListTodo />

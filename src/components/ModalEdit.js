@@ -1,9 +1,9 @@
 import React from "react";
-import { FormTodo } from "./FormTodo";
 import { Modal, ModalOverlay, ModalContent, Heading } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { ENUM_STATUS, genericAction, UPDATE_TODO } from "../redux/actions";
 import { todosSelector } from "../redux/selector";
+import { FormEditTodo } from "../components/FormEditTodo";
 
 export function ModalEdit({ onClose, isOpen, dataInit }) {
   const dispatch = useDispatch();
@@ -29,12 +29,7 @@ export function ModalEdit({ onClose, isOpen, dataInit }) {
         >
           Edit Todo
         </Heading>
-        <FormTodo
-          isFieldStatus={true}
-          dataInit={dataInit}
-          callback={handleEditTodo}
-          loading={loadingUpdate}
-        />
+        <FormEditTodo dataInit={dataInit} onClose={onClose} />
       </ModalContent>
     </Modal>
   );

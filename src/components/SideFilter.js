@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Button, Text, Heading } from "@chakra-ui/react";
+import { Flex, Button, Heading } from "@chakra-ui/react";
 import { TiThSmall } from "react-icons/ti";
 import { VscCheckAll } from "react-icons/vsc";
 import { MdOutlineWorkOutline } from "react-icons/md";

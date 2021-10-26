@@ -33,7 +33,6 @@ export class TodoService {
   async updateTodo(data) {
     try {
       const response = await new Api().put("todos/update", data);
-      console.log("check response : ", response);
       return response.data;
     } catch (e) {
       console.log("error - updateTodo : ", e);
@@ -42,8 +41,7 @@ export class TodoService {
   }
   async deleteTodo(todoId) {
     try {
-      const response = await new Api().delete("todos/delete", todoId);
-      console.log("check response : ", response);
+      const response = await new Api().delete("todos/delete", { id: todoId });
       return response.data;
     } catch (e) {
       console.log("error - deleteTodo : ", e);
