@@ -1,3 +1,4 @@
-export const selectorUser = (state) => state.user;
-export const selectorAuth = (state) => state.isAuthenticated;
-export const selectorLoadingApp = (state) => state.loading;
+export const selectorAuth = (state) => state.app.isAuthenticated;
+export const selectorLoadingApp = (state) => state.app.loading;
+
+export const todosSelector = (state) => state.todos;

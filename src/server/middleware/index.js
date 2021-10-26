@@ -4,8 +4,7 @@ const { UserRepo } = require("../schema/user.schema");
 
 async function authMiddleware(req, res, next) {
   try {
-    console.log("show header", req.headers);
-    const cookieClient = req.headers.authorization;
+      const cookieClient = req.headers.authorization;
     if (!cookieClient) {
       res.json({ status: 404, message: "Unauthorized" });
     }

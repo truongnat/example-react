@@ -75,7 +75,7 @@ class UserController {
           message: "Password not matching!",
         });
       }
-      const token = jwt.sign(
+      const token = await jwt.sign(
         {
           id: user._id,
           username: user.username,
@@ -116,24 +116,26 @@ class UserController {
 
   async checkingMe(req, res) {
     try {
-      const user = UserRepo.findOne({ _id: req.userId });
+      const user = await UserRepo.findOne({ _id: req.userId });
+      const response = {
+        _id: user._id,
+        username: user.username,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
       if (user) {
         return res.json({
           status: 200,
           message: "success",
-          data: {
-            user: {
-              username: user.username,
-            },
-          },
+          data: response,
         });
       }
       return res.json({
         status: 400,
-        message: "Password not matching!",
+        message: "username or password not matching!",
       });
     } catch (e) {
-      console.log("Controller - login : ", e);
+      console.log("Controller - checkingMe : ", e);
       res.json({
         status: 500,
         message: "server error",

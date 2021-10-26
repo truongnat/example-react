@@ -1,13 +1,14 @@
-import { put, takeLatest, all } from "redux-saga/effects";
+import { put, takeLatest } from "@redux-saga/core/effects";
+import { Authenticate } from "../../services";
+import { MemoryClient } from "../../utils";
 import {
   CHECKING_AUTH,
   ENUM_STATUS,
   genericAction,
   genericType,
+  GET_ALL_TODO,
   LOGIN,
-} from "./actions";
-import { Authenticate } from "../services";
-import { MemoryClient } from "../utils";
+} from "../actions";
 
 function* login({ payload }) {
   try {
@@ -15,6 +16,7 @@ function* login({ payload }) {
     if (response.data && response.data.status === 200) {
       MemoryClient.set("lp", response.data.data.access_token);
       yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
+      yield put(genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING));
       return yield put(
         genericAction(LOGIN, ENUM_STATUS.SUCCESS, response.data.data.user)
       );
@@ -27,10 +29,6 @@ function* login({ payload }) {
   }
 }
 
-function* authSaga() {
+export function* authSaga() {
   yield takeLatest(genericType(LOGIN, ENUM_STATUS.FETCHING), login);
-}
-
-export default function* rootSaga() {
-  yield all([authSaga()]);
 }

@@ -1,14 +1,21 @@
+import React, { useEffect } from "react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { Input, Textarea, Select, Button, Text } from "@chakra-ui/react";
-import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { STATUS_TODO } from "../constants";
 
-export function FormTodo(dataInit, callback, loading) {
+export function FormTodo({
+  dataInit,
+  callback,
+  loading,
+  isFieldStatus = false,
+  resetValue,
+}) {
   const {
     control,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
   const onSubmit = (data) => callback(data);
 
@@ -23,44 +30,53 @@ export function FormTodo(dataInit, callback, loading) {
     }
     return null;
   }
+  useEffect(() => {
+    if (resetValue) {
+      reset(resetValue);
+    }
+  }, [resetValue]);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-10 border rounded-md">
       <Controller
         name="title"
         control={control}
         rules={{ required: true }}
-        defaultValue={dataInit.title || ""}
+        defaultValue={dataInit?.title || ""}
         render={({ field }) => (
           <Input placeholder="Title" color="black" {...field} />
         )}
       />
       {renderError(errors.title, "Title is required")}
-      <Controller
-        name="status"
-        control={control}
-        rules={{ required: true }}
-        defaultValue={dataInit.status || ""}
-        render={({ field }) => (
-          <Select
-            className="mt-5"
-            placeholder="Status"
-            color="black"
-            {...field}
-          >
-            {STATUS_TODO.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </Select>
-        )}
-      />
-      {renderError(errors.status, "Status is required")}
+      {isFieldStatus && (
+        <>
+          <Controller
+            name="status"
+            control={control}
+            rules={{ required: true }}
+            defaultValue={dataInit?.status || ""}
+            render={({ field }) => (
+              <Select
+                className="mt-5"
+                placeholder="Status"
+                color="black"
+                {...field}
+              >
+                {STATUS_TODO.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </Select>
+            )}
+          />
+          {renderError(errors.status, "Status is required")}
+        </>
+      )}
       <Controller
         name="content"
         control={control}
         rules={{ required: true }}
-        defaultValue={dataInit.content || ""}
+        defaultValue={dataInit?.content || ""}
         render={({ field }) => (
           <Textarea
             className="mt-5"

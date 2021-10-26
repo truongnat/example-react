@@ -1,12 +1,27 @@
 import React, { useEffect } from "react";
 
-import { Stack, Center, Flex, Square, Text, Box } from "@chakra-ui/react";
+import { Stack, Flex, Text, Box } from "@chakra-ui/react";
 import { SideFilter } from "../components/SideFilter";
 import { FormTodo } from "../components/FormTodo";
 import ListTodo from "../components/ListTodo";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  CREATE_TODO,
+  ENUM_STATUS,
+  genericAction,
+  GET_ALL_TODO,
+} from "../redux/actions";
+import { todosSelector } from "../redux/selector";
 export default function HomePage() {
-  useEffect(() => {}, []);
+  const dispatch = useDispatch();
+  const { loadingCreate } = useSelector(todosSelector);
+  useEffect(() => {
+    dispatch(genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING));
+  }, []);
 
+  const createTodo = (data) => {
+    dispatch(genericAction(CREATE_TODO, ENUM_STATUS.FETCHING, data));
+  };
   return (
     <Stack minH={"100vh"} alignItems="center" justifyContent="start">
       <Box mt={30}>
@@ -27,7 +42,11 @@ export default function HomePage() {
             <SideFilter />
           </Box>
           <Box flex="1">
-            <FormTodo />
+            <FormTodo
+              callback={(data) => createTodo(data)}
+              loading={loadingCreate}
+              resetValue={loadingCreate ? null : { title: "", content: "" }}
+            />
           </Box>
         </Flex>
         <ListTodo />

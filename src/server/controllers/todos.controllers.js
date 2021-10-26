@@ -34,8 +34,7 @@ class TodosController {
       });
     }
     try {
-      console.log("checking userid", req.userId);
-      await TodoRepo.create({
+      const todoCreated = await TodoRepo.create({
         title: todo.title,
         content: todo.content,
         status: "initial",
@@ -44,6 +43,7 @@ class TodosController {
       res.json({
         status: 200,
         message: "success",
+        data: todoCreated,
       });
     } catch (error) {
       console.log("Controller - create : ", error);
@@ -56,7 +56,7 @@ class TodosController {
 
   async getAll(req, res, next) {
     try {
-      const perPage = 2;
+      const perPage = 5;
       const page = req.query.page || 1;
       const status = req.query.status;
       const errors = [];

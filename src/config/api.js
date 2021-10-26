@@ -65,7 +65,6 @@ export class Api {
    * */
   getHeader() {
     const token = MemoryClient.get("lp");
-    console.log("getHeader - look token : ", token);
     return {
       Authorization: "Bearer " + token,
       "Content-Type": "application/json",

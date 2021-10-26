@@ -15,9 +15,12 @@ export class Authenticate {
   async checkingMe() {
     try {
       const response = await new Api().fetch("auth/checking-me");
+
       if (response.data.status === 200) {
+        MemoryClient.set("anonymous_user", response.data.data._id);
         return true;
       }
+      MemoryClient.remove("anonymous_user");
       return false;
     } catch (e) {
       console.log("error - checkingMe : ", e);
