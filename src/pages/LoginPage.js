@@ -8,13 +8,13 @@ import {
   Heading,
   Input,
   Stack,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
-import { selectorAuth } from "../redux/selector";
+import { selectorAuth, userSelector } from "../redux/selector";
 import { useHistory, useLocation } from "react-router-dom";
+
 export default function LoginPage() {
   const [formLogin, setFormLogin] = useState({
     username: "truongx2",
@@ -25,6 +25,7 @@ export default function LoginPage() {
   const location = useLocation();
   const history = useHistory();
   const isAuthenticated = useSelector(selectorAuth);
+  const { loading } = useSelector(userSelector);
   const onChangeForm = (name, val) => {
     setFormLogin({
       ...formLogin,
@@ -59,7 +60,6 @@ export default function LoginPage() {
     <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
         <Stack spacing={4} w={"full"} maxW={"md"}>
-          <Text>{isAuthenticated ? "logined" : "out"}</Text>
           <Heading fontSize={"2xl"}>Sign in to your account</Heading>
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>
@@ -78,7 +78,12 @@ export default function LoginPage() {
             />
           </FormControl>
           <Stack spacing={6}>
-            <Button onClick={onSubmit} colorScheme={"blue"} variant={"solid"}>
+            <Button
+              isLoading={loading}
+              onClick={onSubmit}
+              colorScheme={"blue"}
+              variant={"solid"}
+            >
               Sign in
             </Button>
           </Stack>

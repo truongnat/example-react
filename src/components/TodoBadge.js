@@ -29,7 +29,7 @@ export function TodoBadge({ status }) {
       );
     case "keeping":
       return (
-        <Badge ml="1" colorScheme="green">
+        <Badge ml="1" colorScheme="telegram">
           Keeping
         </Badge>
       );

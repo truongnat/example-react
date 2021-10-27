@@ -21,9 +21,9 @@ export class TodoService {
     }
   }
 
-  async getAllTodo() {
+  async getAllTodo(status) {
     try {
-      const response = await new Api().fetch("todos/getAll");
+      const response = await new Api().fetch(`todos/getAll?status=${status ? status : ''}`);
       return response.data;
     } catch (e) {
       console.log("error - getAllTodo : ", e);

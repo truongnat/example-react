@@ -6,6 +6,8 @@ import { FormCreateTodo } from "../components/FormCreateTodo";
 import ListTodo from "../components/ListTodo";
 import { useDispatch } from "react-redux";
 import { ENUM_STATUS, genericAction, GET_ALL_TODO } from "../redux/actions";
+import { Header } from "../components/Header";
+
 export default function HomePage() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -14,6 +16,7 @@ export default function HomePage() {
 
   return (
     <Stack minH={"100vh"} alignItems="center" justifyContent="start">
+      <Header />
       <Box mt={30}>
         <Text
           as={"h2"}

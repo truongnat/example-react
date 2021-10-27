@@ -16,7 +16,7 @@ export const useAsync = (asyncFunction, immediate = true) => {
       setError(null);
       return asyncFunction(data)
         .then((response) => {
-          setValue(response);
+          setValue(response.data);
           setStatus("success");
         })
         .catch((error) => {

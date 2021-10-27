@@ -18,6 +18,9 @@ export const MemoryClient = {
   remove(key) {
     localStorage.removeItem(key);
   },
+  removeMultiple(keys) {
+    for (const key of keys) localStorage.removeItem(key)
+  }
 };
 
 export const CookieClient = {

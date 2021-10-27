@@ -12,6 +12,8 @@ import {
   useDisclosure,
   useToast,
   Spinner,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { ModalEdit } from "./ModalEdit";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +21,7 @@ import { todoDeleteSelector, todosSelector } from "../redux/selector";
 import { TodoBadge } from "./TodoBadge";
 import AlertDeleteTodo from "./AlertDeleteTodo";
 import { DELETE_TODO, ENUM_STATUS, genericAction } from "../redux/actions";
+
 export default function ListTodo() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { todos, loading: loadingTodos } = useSelector(todosSelector);
@@ -96,6 +99,12 @@ export default function ListTodo() {
               </AccordionItem>
             ))
           : null}
+        {!todos.length && !loading && (
+          <Alert status="info">
+            <AlertIcon />
+            There are no records left for this status!
+          </Alert>
+        )}
       </Accordion>
       <ModalEdit isOpen={isOpen} onClose={onClose} dataInit={currentTodo} />
     </div>
