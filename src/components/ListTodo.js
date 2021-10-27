@@ -48,7 +48,7 @@ export default function ListTodo() {
         position: "top",
       });
     }
-  }, [error, loading, status]);
+  }, [error, loading, status, toast, dispatch]);
 
   return (
     <div className="mt-10" style={{ maxWidth: 768 }}>

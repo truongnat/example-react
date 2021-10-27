@@ -4,22 +4,13 @@ import { Stack, Flex, Text, Box } from "@chakra-ui/react";
 import { SideFilter } from "../components/SideFilter";
 import { FormCreateTodo } from "../components/FormCreateTodo";
 import ListTodo from "../components/ListTodo";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  CREATE_TODO,
-  ENUM_STATUS,
-  genericAction,
-  GET_ALL_TODO,
-} from "../redux/actions";
+import { useDispatch } from "react-redux";
+import { ENUM_STATUS, genericAction, GET_ALL_TODO } from "../redux/actions";
 export default function HomePage() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING));
-  }, []);
-
-  const createTodo = (data) => {
-    dispatch(genericAction(CREATE_TODO, ENUM_STATUS.FETCHING, data));
-  };
+  }, [dispatch]);
 
   return (
     <Stack minH={"100vh"} alignItems="center" justifyContent="start">

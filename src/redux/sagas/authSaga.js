@@ -17,6 +17,7 @@ function* login({ payload }) {
       MemoryClient.set("lp", response.data.data.access_token);
       yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
       yield put(genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING));
+      yield new Authenticate().checkingMe();
       return yield put(
         genericAction(LOGIN, ENUM_STATUS.SUCCESS, response.data.data.user)
       );

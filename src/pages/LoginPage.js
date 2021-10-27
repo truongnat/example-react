@@ -53,7 +53,7 @@ export default function LoginPage() {
       const { from } = location.state || { from: { pathname: "/" } };
       history.push(from);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, location.state, history]);
 
   return (
     <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>

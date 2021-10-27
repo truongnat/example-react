@@ -1,4 +1,4 @@
-import React, { lazy, useEffect } from "react";
+import React, { lazy, useCallback, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,11 +18,8 @@ const LazyHomePage = lazy(() => import("../pages/HomePage"));
 const LazyLoginPage = lazy(() => import("../pages/LoginPage"));
 export function RootRouter() {
   const dispatch = useDispatch();
-  useEffect(() => {
-    checkAuth();
-  }, []);
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const isAuthenticated = await new Authenticate().isAuthenticated();
       dispatch(
@@ -33,7 +30,11 @@ export function RootRouter() {
       dispatch(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
       dispatch(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, false));
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
   return (
     <Router>
       <Switch>

@@ -1,14 +1,13 @@
 import axios from "axios";
 import { MemoryClient } from "../utils";
 
-const baseURLMock = "https://jsonplaceholder.typicode.com/";
+// const baseURLMock = "https://jsonplaceholder.typicode.com/";
 const baseURL = "http://localhost:5000/";
 /**
  * @Api Custom class base axios auto inject token header on session storage.
  * @support fetch - post - put - patch - delete.
  * */
 export class Api {
-  constructor() {}
   axiosInstance = axios.create({
     baseURL: baseURL,
     headers: { ...this.getHeader() },

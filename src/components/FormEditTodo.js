@@ -45,7 +45,7 @@ export function FormEditTodo({ dataInit, onClose }) {
         position: "top",
       });
     }
-  }, [error, loading, status]);
+  }, [error, loading, status, dispatch, reset, toast, onClose]);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-10 border rounded-md">
       <Controller

@@ -3,7 +3,6 @@ import {
   ENUM_STATUS,
   genericType,
   GET_ALL_TODO,
-  INIT_TODO,
   DELETE_TODO,
   UPDATE_TODO,
 } from "../actions";

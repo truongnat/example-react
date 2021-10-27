@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { AddIcon, CloseIcon } from "@chakra-ui/icons";
-import { Input, Textarea, Button, Text, useToast } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { Input, Textarea, Button, useToast } from "@chakra-ui/react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { CREATE_TODO, ENUM_STATUS, genericAction } from "../redux/actions";
@@ -44,7 +44,7 @@ export function FormCreateTodo() {
         position: "top",
       });
     }
-  }, [error, loading, status]);
+  }, [error, loading, status, toast, dispatch, reset]);
 
   return (
     <form

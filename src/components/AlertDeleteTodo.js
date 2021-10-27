@@ -28,7 +28,7 @@ export default function AlertDeleteTodo({ todo }) {
     if (!loading && (status === "success" || error) && isOpen) {
       onClose();
     }
-  }, [error, loading, status]);
+  }, [error, loading, status, onClose, isOpen]);
   return (
     <>
       <Button
