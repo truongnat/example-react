@@ -41,7 +41,8 @@ export class TodoService {
   }
   async deleteTodo(todoId) {
     try {
-      const response = await new Api().delete("todos/delete", { id: todoId });
+      console.log("checiing : todoId", todoId);
+      const response = await new Api().delete(`todos/delete/${todoId}`);
       return response.data;
     } catch (e) {
       console.log("error - deleteTodo : ", e);

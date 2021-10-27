@@ -51,6 +51,7 @@ function* updateTodo({ payload }) {
 
 function* deleteTodo({ payload }) {
   try {
+    console.log("show Payload Saga : ", payload);
     const response = yield new TodoService().deleteTodo(payload);
     if (response && response.status === 200) {
       yield put(genericAction(DELETE_TODO, ENUM_STATUS.SUCCESS));

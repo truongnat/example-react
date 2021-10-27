@@ -6,6 +6,6 @@ const { authMiddleware } = require("../middleware");
 router.post("/create", authMiddleware, todosController.create);
 router.get("/getAll", authMiddleware, todosController.getAll);
 router.put("/update", authMiddleware, todosController.update);
-router.delete("/delete", authMiddleware, todosController.delete);
+router.delete("/delete/:todoId", authMiddleware, todosController.delete);
 
 module.exports = router;

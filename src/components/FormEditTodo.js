@@ -19,7 +19,12 @@ export function FormEditTodo({ dataInit, onClose }) {
   const dispatch = useDispatch();
   const { error, loading, status } = useSelector(todoUpdateSelector);
   const onSubmit = (data) => {
-    dispatch(genericAction(UPDATE_TODO, ENUM_STATUS.FETCHING, data));
+    dispatch(
+      genericAction(UPDATE_TODO, ENUM_STATUS.FETCHING, {
+        ...data,
+        id: dataInit._id,
+      })
+    );
   };
   useEffect(() => {
     if (!loading && status === "success") {

@@ -123,7 +123,7 @@ class TodosController {
         });
       }
 
-      const todoExists = TodoRepo.findOne({ _id: todoUpdated.id });
+      const todoExists = await TodoRepo.findOne({ _id: todoUpdated.id });
       if (!todoExists) {
         return res.json({
           status: 404,
@@ -154,8 +154,8 @@ class TodosController {
 
   async delete(req, res) {
     try {
-      const todoId = req.body.id;
-      const todoExists = TodoRepo.findOne({ _id: todoId });
+      const todoId = req.params.todoId;
+      const todoExists = await TodoRepo.findOne({ _id: todoId });
       if (!todoExists) {
         return res.json({
           status: 404,
