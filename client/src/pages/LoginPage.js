@@ -9,12 +9,16 @@ import {
   Input,
   Stack,
   useToast,
+  Text,
+  Center,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
 import { selectorAuth, userSelector } from "../redux/selector";
 import { useHistory, useLocation } from "react-router-dom";
-
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook } from "react-icons/fa";
+import { signInGoogle } from "../config/firebase-cloud";
 export default function LoginPage() {
   const [formLogin, setFormLogin] = useState({
     username: "truongx2",
@@ -56,6 +60,11 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, location.state, history]);
 
+  const handleDone = (data) => {
+    console.log("login google done :", data);
+    alert("Coming soon!");
+  };
+
   return (
     <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
@@ -85,6 +94,29 @@ export default function LoginPage() {
               variant={"solid"}
             >
               Sign in
+            </Button>
+            {/* Facebook */}
+            <Button
+              w={"full"}
+              colorScheme={"facebook"}
+              leftIcon={<FaFacebook />}
+              onClick={() => alert("Coming soon!")}
+            >
+              <Center>
+                <Text>Continue with Facebook</Text>
+              </Center>
+            </Button>
+
+            {/* Google */}
+            <Button
+              onClick={() => signInGoogle(handleDone)}
+              w={"full"}
+              variant={"outline"}
+              leftIcon={<FcGoogle />}
+            >
+              <Center>
+                <Text>Sign in with Google</Text>
+              </Center>
             </Button>
           </Stack>
         </Stack>
