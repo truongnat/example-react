@@ -175,7 +175,7 @@ export const TodosReducer = (state = initReducer, {type, payload}) => {
                 ...state,
                 currentType: type,
                 loading: true,
-                status: payload
+                status: payload || ''
             };
         case genericType(GET_ALL_TODO, ENUM_STATUS.FAILURE):
             return {
