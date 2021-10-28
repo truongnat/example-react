@@ -2,7 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
-const cookieParser = require("cookie-parser");
 const { connectMongoose } = require("./connection");
 const authRouter = require("./router/user.router");
 const todosRouter = require("./router/todos.router");
@@ -13,8 +12,7 @@ app.use(
     origin: "*",
   })
 );
-// cookieParser middleware
-app.use(cookieParser());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../../build")));
