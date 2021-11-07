@@ -17,7 +17,6 @@ import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
 import { selectorAuth, userSelector } from "../redux/selector";
 import { useHistory, useLocation } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
 import { signInGoogle } from "../config/firebase-cloud";
 export default function LoginPage() {
   const [formLogin, setFormLogin] = useState({
@@ -95,18 +94,6 @@ export default function LoginPage() {
             >
               Sign in
             </Button>
-            {/* Facebook */}
-            <Button
-              w={"full"}
-              colorScheme={"facebook"}
-              leftIcon={<FaFacebook />}
-              onClick={() => alert("Coming soon!")}
-            >
-              <Center>
-                <Text>Continue with Facebook</Text>
-              </Center>
-            </Button>
-
             {/* Google */}
             <Button
               onClick={() => signInGoogle(handleDone)}

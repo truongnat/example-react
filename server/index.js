@@ -15,11 +15,11 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../../build")));
+app.use(express.static(path.join(__dirname, "build")));
 app.use("/auth", authRouter);
 app.use("/todos", todosRouter);
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../build/index.html"));
+  res.sendFile(path.join(__dirname, "./build/index.html"));
 });
 
 app.listen(5000, () => {

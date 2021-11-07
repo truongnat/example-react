@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { getStorage, ref } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -12,7 +13,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDoHhbBfLmYm4y_yUmNC6t1QIilmmArOzs",
   authDomain: "exam-react-d1519.firebaseapp.com",
   projectId: "exam-react-d1519",
-  storageBucket: "exam-react-d1519.appspot.com",
+  storageBucket: "gs://exam-react-d1519.appspot.com/garelly",
   messagingSenderId: "266304820411",
   appId: "1:266304820411:web:09923c20a31089ae7a859e",
   measurementId: "G-HCXT93XB6C",
@@ -22,6 +23,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth();
+
+const storage = getStorage(app);
+
+// Create a storage reference from our storage service
+export const storageRef = ref(storage);
 export const providerGoogle = new GoogleAuthProvider();
 providerGoogle.setCustomParameters({ prompt: "select_account" });
 
