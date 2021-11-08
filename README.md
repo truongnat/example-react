@@ -29,14 +29,15 @@
 ## Feature
 
 - Authentication :
-
-	+ UI authenticate ( login, register ).
-
+	+ Sign in.
+	+ Sign up.
+	+ Auto remember login.
+- Loading all in.
 - UI homepage - mock data from [Json Placeholder](https://jsonplaceholder.typicode.com/) .
 
 - UI profile and more...etc.
 
-- CRUD example.
+- CRUD todos example.
 
 
 ## Setup
@@ -88,41 +89,53 @@ yarn create react-app [project name]
 - [Condition Rendering ?](https://reactjs.org/docs/conditional-rendering.html)
 - [Lists and Keys?](https://reactjs.org/docs/lists-and-keys.html)
 - Difference between Class Component and Functional Components. ( [Link docs](https://reactjs.org/docs/react-component.html#render) | [Link dev](https://dev.to/mehmehmehlol/class-components-vs-functional-components-in-react-4hd3) )
+- State management with [redux](https://redux.js.org/)
+- Middleware for client [redux saga](https://redux-saga.js.org/)
 - Config and structure project - see more [github](#github).
 
 ## Running the app
+*We are split two folder: client and server*
+
+`Run only client`
 
 ```bash
 # development
 
-$ npm run start
+$ npm run start | yarn start
 
-# watch mode
+# build mode
 
-$ npm run start:dev
+$ npm run build | yarn build
 
-# production mode
+# test mode
 
-$ npm run start:prod
+$ npm run test | yarn test
 
 ```
 
-## Test
+`Run only server`
 
+```bash
+# development
+
+$ npm run start:dev | yarn start:dev
+
+# production mode
+
+$ npm run start:prod | yarn start:prod
+
+
+```
+
+## Run SSR
+
+*Run script in root folder*
 
 ```bash
 
-# unit tests
+# bash script
 
-$ npm run test
-
-# e2e tests
-
-$ npm run test:e2e
-
-# test coverage
-
-$ npm run test:cov
+$ ./ssr.sh
 
 ```
 

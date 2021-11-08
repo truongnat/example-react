@@ -5,8 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start:dev": "nodemon index.js",
-    "start:prod": "node index.js",
-    "all": "concurrently --kill-others \"npm run start\" \"nodemon ./src/server/index.js\""
+    "start:prod": "node index.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
