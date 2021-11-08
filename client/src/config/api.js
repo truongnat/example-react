@@ -9,7 +9,7 @@ const baseURL = "http://localhost:5000/";
  * */
 export class Api {
   axiosInstance = axios.create({
-    baseURL: baseURL,
+    baseURL: process.env.REACT_APP_BASE_URL,
     headers: { ...this.getHeader() },
   });
 
