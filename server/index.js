@@ -6,6 +6,7 @@ const { connectMongoose } = require("./connection");
 const authRouter = require("./router/user.router");
 const todosRouter = require("./router/todos.router");
 const path = require("path");
+require("dotenv").config();
 connectMongoose();
 app.use(
   cors({
@@ -18,10 +19,13 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "build")));
 app.use("/auth", authRouter);
 app.use("/todos", todosRouter);
-app.get("/", (req, res) => {
+app.get("/ssr", (req, res) => {
   res.sendFile(path.join(__dirname, "./build/index.html"));
 });
 
-app.listen(5000, () => {
+app.get("/", (req, res) => {
+  res.send("it work!");
+});
+app.listen(process.env.PORT, () => {
   console.log("server on started");
 });
