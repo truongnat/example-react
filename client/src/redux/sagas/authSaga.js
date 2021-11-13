@@ -23,7 +23,7 @@ function* login({ payload }) {
       );
     }
     MemoryClient.remove("lp");
-    yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, response.data.message));
+    yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, response.data));
   } catch (e) {
     console.log("saga error : ", e);
     yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, e.message));

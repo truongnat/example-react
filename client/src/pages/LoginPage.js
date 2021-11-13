@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 
 import {
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Stack,
-  useToast,
-  Text,
-  Center,
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,
+    Input,
+    Stack,
+    useToast,
+    Text,
+    Center, Link,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
@@ -20,15 +20,17 @@ import { FcGoogle } from "react-icons/fc";
 import { signInGoogle } from "../config/firebase-cloud";
 export default function LoginPage() {
   const [formLogin, setFormLogin] = useState({
-    username: "truongx2",
-    password: "truong222",
+    // username: "truongx2",
+    // password: "truong222",
+      username: "",
+    password: "",
   });
   const toast = useToast();
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
   const isAuthenticated = useSelector(selectorAuth);
-  const { loading } = useSelector(userSelector);
+  const { loading, errors } = useSelector(userSelector);
   const onChangeForm = (name, val) => {
     setFormLogin({
       ...formLogin,
@@ -43,7 +45,7 @@ export default function LoginPage() {
         title: "Validate Form",
         description: "Username field or Password field is empty!",
         status: "error",
-        duration: 9000,
+        duration: 3000,
         isClosable: true,
         variant: "left-accent",
         position: "top",
@@ -59,6 +61,21 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, location.state, history]);
 
+  useEffect(() => {
+    if(errors){
+      toast({
+        title: "Login failure",
+        description: errors.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        variant: "left-accent",
+        position: "top",
+      });
+      dispatch(genericAction(LOGIN,ENUM_STATUS.RESET,null))
+    }
+  },[errors,toast,dispatch])
+
   const handleDone = (data) => {
     console.log("login google done :", data);
     alert("Coming soon!");
@@ -70,9 +87,10 @@ export default function LoginPage() {
         <Stack spacing={4} w={"full"} maxW={"md"}>
           <Heading fontSize={"2xl"}>Sign in to your account</Heading>
           <FormControl id="email">
-            <FormLabel>Email address</FormLabel>
+            <FormLabel>Username or Email address</FormLabel>
             <Input
               type="username"
+              autoComplete="off"
               value={formLogin.username}
               onChange={(e) => onChangeForm("username", e.target.value)}
             />
@@ -81,6 +99,7 @@ export default function LoginPage() {
             <FormLabel>Password</FormLabel>
             <Input
               type="password"
+              autoComplete="off"
               value={formLogin.password}
               onChange={(e) => onChangeForm("password", e.target.value)}
             />
@@ -94,6 +113,9 @@ export default function LoginPage() {
             >
               Sign in
             </Button>
+              <Flex justifyContent={'flex-end'}>
+                  <Link href={'/register'}>Register account!</Link>
+              </Flex>
             {/* Google */}
             <Button
               onClick={() => signInGoogle(handleDone)}

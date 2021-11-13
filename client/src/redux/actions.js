@@ -1,4 +1,5 @@
 export const LOGIN = "LOGIN";
+export const REGISTER = "REGISTER";
 export const CHECKING_AUTH = "CHECKING_AUTH";
 export const LOADING_APP = "LOADING_APP";
 export const INIT_TODO = "INIT_TODO";

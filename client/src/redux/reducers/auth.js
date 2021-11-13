@@ -1,4 +1,4 @@
-import { ENUM_STATUS, genericType, LOGIN } from "../actions";
+import {ENUM_STATUS, genericType, LOGIN} from "../actions";
 
 const initReducer = {
   user: null,
@@ -7,7 +7,7 @@ const initReducer = {
   errors: null,
 };
 
-export const AuthReducer = (state = initReducer, { type, payload }) => {
+export const AuthReducer = (state = initReducer, {type, payload}) => {
   switch (type) {
     case genericType(LOGIN, ENUM_STATUS.FETCHING):
       return {
@@ -28,10 +28,15 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
       return {
         ...state,
         loading: false,
-        error: payload,
+        errors: payload,
         user: null,
         currentType: type,
       };
+    case genericType(LOGIN, ENUM_STATUS.RESET):
+      return {
+        ...state,
+        ...initReducer
+      }
     default:
       return Object.assign({}, state);
   }
