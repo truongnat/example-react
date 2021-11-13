@@ -54,8 +54,8 @@ export default function ListTodo() {
   }, [error, loading, status, toast, dispatch]);
 
   return (
-    <div className="mt-10" style={{ maxWidth: 768 }}>
-      <Accordion allowToggle>
+    <div className="mt-10 w-full">
+      <Accordion allowToggle className="w-full">
         {loadingTodos && (
           <div className="w-full flex flex-row items-center justify-center">
             <Spinner
@@ -69,7 +69,7 @@ export default function ListTodo() {
         )}
         {todos.length > 0
           ? todos.map((todo) => (
-              <AccordionItem key={todo._id}>
+              <AccordionItem key={todo._id} className="w-full">
                 <h2>
                   <AccordionButton>
                     <Box flex="1" textAlign="left">

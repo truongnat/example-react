@@ -52,7 +52,7 @@ export function FormCreateTodo() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="p-10 min-h-full border rounded-md"
+      className="w-full p-5 min-h-full border rounded-md"
     >
       <Controller
         name="title"

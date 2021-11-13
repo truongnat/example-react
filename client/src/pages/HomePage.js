@@ -7,6 +7,7 @@ import ListTodo from "../components/ListTodo";
 import { useDispatch } from "react-redux";
 import { ENUM_STATUS, genericAction, GET_ALL_TODO } from "../redux/actions";
 import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -30,17 +31,23 @@ export default function HomePage() {
           Todo App
         </Text>
       </Box>
-      <Box minW={768}>
-        <Flex color="white" className="space-x-10">
-          <Box className="border rounded-md p-5" w="200px">
+      <Box className="w-10/12 md:w-4/5 lg:w-3/5">
+        <Flex
+          color="white"
+          className="flex flex-wrap justify-between space-y-5 md:space-y-0"
+        >
+          <Box className="border rounded-md p-5 w-full md:w-1/3">
             <SideFilter />
           </Box>
-          <Box flex="1">
+          <Box className="w-full md:w-3/5">
             <FormCreateTodo />
           </Box>
         </Flex>
         <ListTodo />
       </Box>
+      <div className="mt-28 w-full">
+        <Footer />
+      </div>
     </Stack>
   );
 }

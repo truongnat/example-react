@@ -1,16 +1,16 @@
 import React from "react";
-import { Flex, Button, Heading } from "@chakra-ui/react";
-import { TiThSmall } from "react-icons/ti";
-import { VscCheckAll, VscPreview } from "react-icons/vsc";
-import { MdOutlineWorkOutline } from "react-icons/md";
-import { IoPlaySkipForwardOutline } from "react-icons/io5";
-import { ENUM_STATUS, genericAction, GET_ALL_TODO } from "../redux/actions";
-import { useDispatch, useSelector } from "react-redux";
-import { todosSelector } from "../redux/selector";
+import {Flex, Button, Heading} from "@chakra-ui/react";
+import {TiThSmall} from "react-icons/ti";
+import {VscCheckAll, VscPreview} from "react-icons/vsc";
+import {MdOutlineWorkOutline} from "react-icons/md";
+import {IoPlaySkipForwardOutline} from "react-icons/io5";
+import {ENUM_STATUS, genericAction, GET_ALL_TODO} from "../redux/actions";
+import {useDispatch, useSelector} from "react-redux";
+import {todosSelector} from "../redux/selector";
 
 export function SideFilter() {
   const dispatch = useDispatch();
-  const { loading, status } = useSelector(todosSelector);
+  const {loading, status} = useSelector(todosSelector);
 
   const filterTodos = (status) => {
     dispatch(genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING, status));
@@ -18,6 +18,7 @@ export function SideFilter() {
 
   return (
     <Flex
+      w={'100%'}
       direction="column"
       alignItems="flex-start"
       justifyContent="flex-start"
@@ -36,7 +37,7 @@ export function SideFilter() {
           onClick={() => filterTodos("")}
           isLoading={loading && status === ""}
           variant={status === "" ? "solid" : "outline"}
-          leftIcon={<TiThSmall />}
+          leftIcon={<TiThSmall/>}
           colorScheme="teal"
         >
           All
@@ -44,7 +45,7 @@ export function SideFilter() {
         <Button
           onClick={() => filterTodos("initial")}
           isLoading={loading && status === "initial"}
-          leftIcon={<MdOutlineWorkOutline />}
+          leftIcon={<MdOutlineWorkOutline/>}
           colorScheme="teal"
           variant={status === "initial" ? "solid" : "outline"}
         >
@@ -53,7 +54,7 @@ export function SideFilter() {
         <Button
           onClick={() => filterTodos("review")}
           isLoading={loading && status === "review"}
-          leftIcon={<VscPreview />}
+          leftIcon={<VscPreview/>}
           colorScheme="teal"
           variant={status === "review" ? "solid" : "outline"}
         >
@@ -62,7 +63,7 @@ export function SideFilter() {
         <Button
           onClick={() => filterTodos("done")}
           isLoading={loading && status === "done"}
-          leftIcon={<VscCheckAll />}
+          leftIcon={<VscCheckAll/>}
           colorScheme="teal"
           variant={status === "done" ? "solid" : "outline"}
         >
@@ -72,7 +73,7 @@ export function SideFilter() {
         <Button
           onClick={() => filterTodos("keeping")}
           isLoading={loading && status === "keeping"}
-          leftIcon={<IoPlaySkipForwardOutline />}
+          leftIcon={<IoPlaySkipForwardOutline/>}
           colorScheme="teal"
           variant={status === "keeping" ? "solid" : "outline"}
         >
