@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Example CRA App",
+  "name": "Example CRA App for beginner with tech: React JS, NodeJS, Firebase and ...etc.",
   "icons": [
     {
       "src": "favicon.ico",

@@ -6,7 +6,7 @@ import {
   useColorModeValue,
   VisuallyHidden,
 } from "@chakra-ui/react";
-import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import {FaInstagram, FaTwitter, FaYoutube} from "react-icons/fa";
 
 const Logo = (props) => {
   return (
@@ -28,7 +28,7 @@ const Logo = (props) => {
   );
 };
 
-const SocialButton = ({ children, label, href }) => {
+const SocialButton = ({children, label, href}) => {
   return (
     <chakra.button
       bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
@@ -60,27 +60,27 @@ export function Footer() {
       maxW="100%"
       py={4}
       mt={10}
-      px={{ md: 24 }}
+      px={{md: 24}}
       bg={useColorModeValue("gray.50", "gray.900")}
       color={useColorModeValue("gray.700", "gray.200")}
-      direction={{ base: "column", md: "row" }}
+      direction={{base: "column", md: "row"}}
       spacing={4}
-      justify={{ base: "center", md: "space-between" }}
-      align={{ base: "center", md: "center" }}
+      justify={{base: "center", md: "space-between"}}
+      align={{base: "center", md: "center"}}
     >
-      <Logo />
+      <Logo/>
       <Text>
         © {new Date().getFullYear()} React Example. All rights reserved
       </Text>
       <Stack direction={"row"} spacing={6}>
         <SocialButton label={"Twitter"} href={"#"}>
-          <FaTwitter />
+          <FaTwitter/>
         </SocialButton>
         <SocialButton label={"YouTube"} href={"#"}>
-          <FaYoutube />
+          <FaYoutube/>
         </SocialButton>
         <SocialButton label={"Instagram"} href={"#"}>
-          <FaInstagram />
+          <FaInstagram/>
         </SocialButton>
       </Stack>
     </Container>
