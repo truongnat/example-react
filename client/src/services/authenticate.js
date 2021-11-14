@@ -15,7 +15,15 @@ export class Authenticate {
     try {
       return await new Api().post("auth/register", data);
     } catch (error) {
-      console.log("error - login : ", error);
+      console.log("error - register : ", error);
+    }
+  }
+
+  async update(data) {
+    try {
+      return await new Api().post("auth/update", data);
+    } catch (error) {
+      console.log("error - update : ", error);
     }
   }
 

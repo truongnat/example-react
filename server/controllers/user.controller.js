@@ -1,7 +1,8 @@
-const { UserRepo } = require("../schema/user.schema");
+const {UserRepo} = require("../schema/user.schema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+
 class UserController {
   async create(req, res) {
     const user = req.body;
@@ -33,17 +34,18 @@ class UserController {
       });
     }
     try {
-      const userExisting = await UserRepo.findOne({ username: user.username });
+      const userExisting = await UserRepo.findOne({username: user.username});
       if (userExisting) {
         return res.json({
           status: 404,
           message: "User already exists",
         });
       }
-      const hasPassword = await bcrypt.hash(user.password, 10);
+      const hashPassword = await bcrypt.hash(user.password, 10);
       await UserRepo.create({
         username: user.username,
-        password: hasPassword,
+        password: hashPassword,
+        avatar_url: ""
       });
       res.json({
         status: 200,
@@ -60,8 +62,8 @@ class UserController {
 
   async login(req, res) {
     try {
-      const { username, password } = req.body;
-      const user = await UserRepo.findOne({ username: username });
+      const {username, password} = req.body;
+      const user = await UserRepo.findOne({username: username});
       if (!user) {
         return res.json({
           status: 400,
@@ -116,11 +118,12 @@ class UserController {
 
   async checkingMe(req, res) {
     try {
-      const user = await UserRepo.findOne({ _id: req.userId });
+      const user = await UserRepo.findOne({_id: req.userId});
       const response = {
         _id: user._id,
         username: user.username,
         createdAt: user.createdAt,
+        avatar_url: user.avatar_url,
         updatedAt: user.updatedAt,
       };
       if (user) {
@@ -142,8 +145,36 @@ class UserController {
       });
     }
   }
+
+  async update(req, res) {
+    const userInfo = req.body;
+
+    let objUpdate = {};
+    if (userInfo.username) {
+      objUpdate.username = userInfo.username;
+    }
+    if (userInfo.password) {
+      objUpdate.password = await bcrypt.hash(userInfo.password, 10);
+    }
+    if (userInfo.avatar_url) {
+      objUpdate.avatar_url = userInfo.avatar_url;
+    }
+    try {
+      await UserRepo.updateOne({_id: req.userId}, {...objUpdate});
+      res.json({
+        status: 200,
+        message: "success",
+      });
+    } catch (error) {
+      console.log("Controller - update : ", error);
+      res.json({
+        status: 500,
+        message: "server error",
+      });
+    }
+  }
 }
 
 const userController = new UserController();
 
-module.exports = { userController };
+module.exports = {userController};

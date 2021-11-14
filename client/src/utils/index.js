@@ -1,3 +1,6 @@
+import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
+import {storage} from '../config/firebase-cloud';
+
 export const fakeAuth = {
   isAuthenticated: false,
   signIn(cb) {
@@ -47,9 +50,28 @@ export const CookieClient = {
   },
 };
 
-export const transformResponse = (response) => {
-  if (!response.data && response.status !== 200) {
+export const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error)
+  })
+}
+
+export const uploadFileFirebase = async (userId, file) => {
+  try {
+    let pathFile = `/public/${userId}/${file.name}`;
+    const storageRef = ref(storage, pathFile);
+    const responseUpload = await uploadBytes(storageRef, file);
+    if (responseUpload.metadata) {
+      return await getDownloadURL(storageRef).catch((e) => {
+        console.log('error downloading link : ', e);
+        return '';
+      });
+    }
+  } catch (e) {
+    console.log('useUploadSingleFile error : ', e);
     return null;
   }
-  return response.data;
-};
+}

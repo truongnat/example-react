@@ -6,7 +6,7 @@ import {
   useColorModeValue,
   VisuallyHidden,
 } from "@chakra-ui/react";
-import {FaInstagram, FaTwitter, FaYoutube} from "react-icons/fa";
+import {BsTelegram ,BsFacebook ,BsLinkedin} from "react-icons/bs";
 
 const Logo = (props) => {
   return (
@@ -73,14 +73,14 @@ export function Footer() {
         © {new Date().getFullYear()} React Example. All rights reserved
       </Text>
       <Stack direction={"row"} spacing={6}>
-        <SocialButton label={"Twitter"} href={"#"}>
-          <FaTwitter/>
+        <SocialButton label={"Telegram"} href={"https://t.me/peanut201"}>
+          <BsTelegram/>
         </SocialButton>
-        <SocialButton label={"YouTube"} href={"#"}>
-          <FaYoutube/>
+        <SocialButton label={"Facebook"} href={"https://www.facebook.com/truongdq2001/"}>
+          <BsFacebook/>
         </SocialButton>
-        <SocialButton label={"Instagram"} href={"#"}>
-          <FaInstagram/>
+        <SocialButton label={"Linked In"} href={"www.linkedin.com/in/peanut201"}>
+          <BsLinkedin/>
         </SocialButton>
       </Stack>
     </Container>

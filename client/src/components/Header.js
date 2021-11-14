@@ -14,15 +14,15 @@ import {
   useColorMode,
   Center,
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { userSelector } from "../redux/selector";
-import { MemoryClient } from "../utils";
-import { useHistory } from "react-router-dom";
-import { CHECKING_AUTH, ENUM_STATUS, genericAction } from "../redux/actions";
+import {MoonIcon, SunIcon} from "@chakra-ui/icons";
+import {useDispatch, useSelector} from "react-redux";
+import {userSelector} from "../redux/selector";
+import {MemoryClient} from "../utils";
+import {useHistory} from "react-router-dom";
+import {CHECKING_AUTH, ENUM_STATUS, genericAction} from "../redux/actions";
 
 export function Header() {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const {colorMode, toggleColorMode} = useColorMode();
   const dataUser = useSelector(userSelector);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -45,7 +45,7 @@ export function Header() {
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
               <Button onClick={toggleColorMode}>
-                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+                {colorMode === "light" ? <MoonIcon/> : <SunIcon/>}
               </Button>
 
               <Menu>
@@ -58,23 +58,23 @@ export function Header() {
                 >
                   <Avatar
                     size={"sm"}
-                    src={"https://avatars.dicebear.com/api/male/username.svg"}
+                    src={dataUser.user.avatar_url || "https://avatars.dicebear.com/api/male/username.svg"}
                   />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
-                  <br />
+                  <br/>
                   <Center>
                     <Avatar
                       size={"2xl"}
-                      src={"https://avatars.dicebear.com/api/male/username.svg"}
+                      src={dataUser.user.avatar_url || "https://avatars.dicebear.com/api/male/username.svg"}
                     />
                   </Center>
-                  <br />
+                  <br/>
                   <Center>
-                    <p>{dataUser.user ? dataUser.user.username : ""}</p>
+                    <p>{dataUser.user.username || ""}</p>
                   </Center>
-                  <br />
-                  <MenuDivider />
+                  <br/>
+                  <MenuDivider/>
                   <MenuItem onClick={() => history.push("/my-profile")}>
                     Account Settings
                   </MenuItem>
