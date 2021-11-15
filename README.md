@@ -11,12 +11,7 @@
 
 A full-stack MERN application featuring a React frontend and Express.js backend with clean architecture.
 
-**Tech Stack:**
-- **Frontend**: React 19 + TypeScript + Vite + TanStack Router + TailwindCSS
-- **Backend**: Node.js + Express + TypeScript + SQLite + TypeORM
-- **Package Manager**: Bun for fast dependency management
-- **Testing**: Jest + Vitest
-- **Deployment**: Docker + Docker Compose
+- Learning ecosystem for ReactJS, example : [react router dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/) and [Chakra UI](https://chakra-ui.com/).
 
 ## Features
 
@@ -26,18 +21,9 @@ A full-stack MERN application featuring a React frontend and Express.js backend 
 - ✅ Password recovery and email verification
 - ✅ Profile management (username, avatar updates)
 
-### Todo Management
-- ✅ Full CRUD operations for todos
-- ✅ Status management (Initial, In Progress, Completed, Cancelled)
-- ✅ Inline editing with validation
-- ✅ Real-time updates with optimistic UI
-
-### Technical Features
-- ✅ Server-Side Rendering (SSR)
-- ✅ Real-time chat with WebSocket
-- ✅ API documentation with Swagger
-- ✅ Full TypeScript implementation
-- ✅ Comprehensive test coverage
+- Deploy source to hosting.
+    + Frontend ReactJS deploy with [vercel](https://vercel.com/).
+    + Backend NodeJs deploy with [heroku](https://dashboard.heroku.com/).
 
 ## Prerequisites
 
@@ -45,7 +31,29 @@ A full-stack MERN application featuring a React frontend and Express.js backend 
 - **Bun** package manager ([Install Bun](https://bun.sh/))
 - **Git** for version control
 
-## 🚀 Quick Setup
+- Authentication :
+    + Sign in.
+    + Sign up.
+    + Auto remember login.
+- Loading all in.
+- Todo page : CRUD todos.
+- UI profile and update profile.
+
+## Setup
+
+
+
+We are using template Create React App.
+
+
+
+> Note :
+> - Node version have Node >= 10 on your local development machine. You have download [Node JS](https://nodejs.org/en/) or update with command : *npm update*.
+> - Using IDE [Visual Studio Code](https://code.visualstudio.com/) or [WebStorm](https://www.jetbrains.com/webstorm/)
+> *All you need left is to know a little bit of [Javascript](https://www.w3schools.com/js/) .*
+
+
+**NPX :**
 
 ```bash
 # 1. Clone repository
@@ -194,7 +202,26 @@ docker-compose up --build
 docker-compose -f docker-compose.prod.yml up --build
 ```
 
-### Manual Deployment
+## Requirements docs:
+
+- Docs for concept React JS.
+- What is [JSX](https://reactjs.org/docs/introducing-jsx.html) ?
+- How [rendering](https://reactjs.org/docs/rendering-elements.html)  with React ?
+- How to create [Component React and Props](https://reactjs.org/docs/components-and-props.html) ?
+- [React State ? LifeCycle ?](https://reactjs.org/docs/state-and-lifecycle.html)
+- How to [handle event](https://reactjs.org/docs/handling-events.html) React JS ?
+- [Condition Rendering ?](https://reactjs.org/docs/conditional-rendering.html)
+- [Lists and Keys?](https://reactjs.org/docs/lists-and-keys.html)
+- Difference between Class Component and Functional Components. ( [Link docs](https://reactjs.org/docs/react-component.html#render) | [Link dev](https://dev.to/mehmehmehlol/class-components-vs-functional-components-in-react-4hd3) )
+- State management with [redux](https://redux.js.org/)
+- Middleware for client [redux saga](https://redux-saga.js.org/)
+- Config and structure project - see more [github](#github).
+
+## Running the app
+*We are split two folder: client and server*
+
+`Run only client`
+
 ```bash
 # Build for production
 bun run build
@@ -211,11 +238,42 @@ bun run start
 4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
-### Development Guidelines
-- Follow TypeScript best practices
-- Write tests for new features
-- Update documentation as needed
-- Use conventional commits
+$ npm run start:dev | yarn start:dev
+
+# production mode
+
+$ npm run start | yarn start
+
+
+```
+
+## Run SSR
+
+*Run script in root folder*
+
+```bash
+
+# bash script
+
+$ ./ssr.sh
+
+```
+
+## Github
+
+
+[GitHub - truongdq2001/example-react](https://github.com/truongnat/example-react)
+
+## Stay in touch
+
+
+- Author - [Peanut201](https://www.facebook.com/truongdq2001/)
+
+- Website - [Portfolio](https://portfolio-peanut.netlify.app/)
+
+- Twitter - [@Peanut201](https://twitter.com/truong20013)
+
+- Telegram - [@Peanut201](https://t.me/peanut201)
 
 ## License
 
