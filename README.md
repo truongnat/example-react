@@ -16,29 +16,26 @@
 
 - Learning concept [ReactJS](https://reactjs.org/docs/getting-started.html) framework development by Facebook.
 
-- Learning ecosystem for ReactJS, example : [react router dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/) or [Chakra UI](https://chakra-ui.com/).
+- Learning ecosystem for ReactJS, example : [react router dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/) and [Chakra UI](https://chakra-ui.com/).
 
 - Implement project example with [CRA](https://create-react-app.dev/).
 
 - Build project and implement with SPA or SSR.
 
 - Deploy source to hosting.
-
+    + Frontend ReactJS deploy with [vercel](https://vercel.com/).
+    + Backend NodeJs deploy with [heroku](https://dashboard.heroku.com/).
 
 
 ## Feature
 
 - Authentication :
-	+ Sign in.
-	+ Sign up.
-	+ Auto remember login.
+    + Sign in.
+    + Sign up.
+    + Auto remember login.
 - Loading all in.
-- UI homepage - mock data from [Json Placeholder](https://jsonplaceholder.typicode.com/) .
-
-- UI profile and more...etc.
-
-- CRUD todos example.
-
+- Todo page : CRUD todos.
+- UI profile and update profile.
 
 ## Setup
 
@@ -78,7 +75,7 @@ yarn create react-app [project name]
 
 ```
 
-## Start project
+## Requirements docs:
 
 - Docs for concept React JS.
 - What is [JSX](https://reactjs.org/docs/introducing-jsx.html) ?
@@ -122,7 +119,7 @@ $ npm run start:dev | yarn start:dev
 
 # production mode
 
-$ npm run start:prod | yarn start:prod
+$ npm run start | yarn start
 
 
 ```
@@ -142,7 +139,7 @@ $ ./ssr.sh
 ## Github
 
 
-[GitHub - truongdq2001/example-react](https://github.com/truongdq2001/example-react)
+[GitHub - truongdq2001/example-react](https://github.com/truongnat/example-react)
 
 ## Stay in touch
 
