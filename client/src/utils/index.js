@@ -1,5 +1,5 @@
-import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
-import {storage} from '../config/firebase-cloud';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { storage } from '../config/firebase-cloud';
 
 export const fakeAuth = {
   isAuthenticated: false,
@@ -22,8 +22,8 @@ export const MemoryClient = {
     localStorage.removeItem(key);
   },
   removeMultiple(keys) {
-    for (const key of keys) localStorage.removeItem(key)
-  }
+    for (const key of keys) localStorage.removeItem(key);
+  },
 };
 
 export const CookieClient = {
@@ -33,8 +33,8 @@ export const CookieClient = {
       return null;
     }
 
-    const listCookie = cookieStorage.split(";").map((c) => {
-      const data = c.split("=");
+    const listCookie = cookieStorage.split(';').map((c) => {
+      const data = c.split('=');
       return {
         key: data[0].trim().toLocaleLowerCase(),
         value: data[1].trim().toLocaleLowerCase(),
@@ -55,9 +55,9 @@ export const getBase64 = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error)
-  })
-}
+    reader.onerror = (error) => reject(error);
+  });
+};
 
 export const uploadFileFirebase = async (userId, file) => {
   try {
@@ -74,4 +74,4 @@ export const uploadFileFirebase = async (userId, file) => {
     console.log('useUploadSingleFile error : ', e);
     return null;
   }
-}
+};

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { EditIcon } from "@chakra-ui/icons";
+import React, { useEffect, useState } from 'react';
+import { EditIcon } from '@chakra-ui/icons';
 import {
   Accordion,
   AccordionItem,
@@ -14,13 +14,13 @@ import {
   Spinner,
   Alert,
   AlertIcon,
-} from "@chakra-ui/react";
-import { ModalEdit } from "./ModalEdit";
-import { useDispatch, useSelector } from "react-redux";
-import { todoDeleteSelector, todosSelector } from "../redux/selector";
-import { TodoBadge } from "./TodoBadge";
-import AlertDeleteTodo from "./AlertDeleteTodo";
-import { DELETE_TODO, ENUM_STATUS, genericAction } from "../redux/actions";
+} from '@chakra-ui/react';
+import ModalEdit from './ModalEdit';
+import { useDispatch, useSelector } from 'react-redux';
+import { todoDeleteSelector, todosSelector } from '../redux/selector';
+import TodoBadge from './TodoBadge';
+import AlertDeleteTodo from './AlertDeleteTodo';
+import { DELETE_TODO, ENUM_STATUS, genericAction } from '../redux/actions';
 
 export default function ListTodo() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,13 +31,13 @@ export default function ListTodo() {
   const [currentTodo, setCurrentTodo] = useState({});
 
   useEffect(() => {
-    if (!loading && status === "success") {
+    if (!loading && status === 'success') {
       toast({
         title: `Delete todo successfully!`,
-        variant: "top-accent",
+        variant: 'top-accent',
         isClosable: true,
-        status: "success",
-        position: "top",
+        status: 'success',
+        position: 'top',
       });
       dispatch(genericAction(DELETE_TODO, ENUM_STATUS.RESET));
     }
@@ -45,34 +45,34 @@ export default function ListTodo() {
       toast({
         title: `Something went wrong!!`,
         description: JSON.stringify(error),
-        variant: "top-accent",
+        variant: 'top-accent',
         isClosable: true,
-        status: "error",
-        position: "top",
+        status: 'error',
+        position: 'top',
       });
     }
   }, [error, loading, status, toast, dispatch]);
 
   return (
-    <div className="mt-10 w-full">
-      <Accordion allowToggle className="w-full">
+    <div className='mt-10 w-full'>
+      <Accordion allowToggle className='w-full'>
         {loadingTodos && (
-          <div className="w-full flex flex-row items-center justify-center">
+          <div className='w-full flex flex-row items-center justify-center'>
             <Spinner
-              thickness="4px"
-              speed="0.65s"
-              emptyColor="gray.200"
-              color="blue.500"
-              size="xl"
+              thickness='4px'
+              speed='0.65s'
+              emptyColor='gray.200'
+              color='blue.500'
+              size='xl'
             />
           </div>
         )}
         {todos.length > 0
           ? todos.map((todo) => (
-              <AccordionItem key={todo._id} className="w-full">
+              <AccordionItem key={todo._id} className='w-full'>
                 <h2>
                   <AccordionButton>
-                    <Box flex="1" textAlign="left">
+                    <Box flex='1' textAlign='left'>
                       {todo.title}
                       <TodoBadge status={todo.status} />
                     </Box>
@@ -81,11 +81,11 @@ export default function ListTodo() {
                 </h2>
                 <AccordionPanel pb={4}>
                   <Text>{todo.content}</Text>
-                  <div className="text-right space-x-5">
+                  <div className='text-right space-x-5'>
                     <Button
                       leftIcon={<EditIcon />}
-                      colorScheme="whatsapp"
-                      variant="outline"
+                      colorScheme='whatsapp'
+                      variant='outline'
                       onClick={() => {
                         setCurrentTodo(todo);
                         onOpen();
@@ -100,7 +100,7 @@ export default function ListTodo() {
             ))
           : null}
         {!todos.length && !loading && (
-          <Alert status="info">
+          <Alert status='info'>
             <AlertIcon />
             There are no records left for this status!
           </Alert>

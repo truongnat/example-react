@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   useDisclosure,
   Button,
@@ -9,11 +9,11 @@ import {
   AlertDialogCloseButton,
   AlertDialogBody,
   AlertDialogFooter,
-} from "@chakra-ui/react";
-import { DeleteIcon } from "@chakra-ui/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { DELETE_TODO, ENUM_STATUS, genericAction } from "../redux/actions";
-import { todoDeleteSelector } from "../redux/selector";
+} from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { DELETE_TODO, ENUM_STATUS, genericAction } from '../redux/actions';
+import { todoDeleteSelector } from '../redux/selector';
 
 export default function AlertDeleteTodo({ todo }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -25,7 +25,7 @@ export default function AlertDeleteTodo({ todo }) {
     dispatch(genericAction(DELETE_TODO, ENUM_STATUS.FETCHING, todo._id));
   };
   useEffect(() => {
-    if (!loading && (status === "success" || error) && isOpen) {
+    if (!loading && (status === 'success' || error) && isOpen) {
       onClose();
     }
   }, [error, loading, status, onClose, isOpen]);
@@ -34,13 +34,13 @@ export default function AlertDeleteTodo({ todo }) {
       <Button
         onClick={onOpen}
         leftIcon={<DeleteIcon />}
-        colorScheme="red"
-        variant="outline"
+        colorScheme='red'
+        variant='outline'
       >
         remove
       </Button>
       <AlertDialog
-        motionPreset="slideInBottom"
+        motionPreset='slideInBottom'
         leastDestructiveRef={cancelRef}
         onClose={onClose}
         isOpen={isOpen}
@@ -62,7 +62,7 @@ export default function AlertDeleteTodo({ todo }) {
             <Button
               isLoading={loading}
               onClick={onSubmit}
-              colorScheme="red"
+              colorScheme='red'
               ml={3}
             >
               Yes

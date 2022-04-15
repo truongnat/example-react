@@ -1,41 +1,41 @@
-import { Badge } from "@chakra-ui/react";
-import React from "react";
+import { Badge } from '@chakra-ui/react';
+import React from 'react';
 
-export function TodoBadge({ status }) {
+export default function TodoBadge({ status }) {
   switch (status) {
-    case "initial":
+    case 'initial':
       return (
-        <Badge ml="1" colorScheme="cyan">
+        <Badge ml='1' colorScheme='cyan'>
           New
         </Badge>
       );
-    case "todo":
+    case 'todo':
       return (
-        <Badge ml="1" colorScheme="purple">
+        <Badge ml='1' colorScheme='purple'>
           Working
         </Badge>
       );
-    case "review":
+    case 'review':
       return (
-        <Badge ml="1" colorScheme="orange">
+        <Badge ml='1' colorScheme='orange'>
           Review
         </Badge>
       );
-    case "done":
+    case 'done':
       return (
-        <Badge ml="1" colorScheme="green">
+        <Badge ml='1' colorScheme='green'>
           Done
         </Badge>
       );
-    case "keeping":
+    case 'keeping':
       return (
-        <Badge ml="1" colorScheme="telegram">
+        <Badge ml='1' colorScheme='telegram'>
           Keeping
         </Badge>
       );
     default:
       return (
-        <Badge variant="outline" colorScheme="green">
+        <Badge variant='outline' colorScheme='green'>
           Default
         </Badge>
       );

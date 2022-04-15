@@ -1,23 +1,23 @@
-import React from "react";
-import { Modal, ModalOverlay, ModalContent, Heading } from "@chakra-ui/react";
-import { FormEditTodo } from "../components/FormEditTodo";
+import React from 'react';
+import { Modal, ModalOverlay, ModalContent, Heading } from '@chakra-ui/react';
+import { FormEditTodo } from '../components';
 
-export function ModalEdit({ onClose, isOpen, dataInit }) {
+export default function ModalEdit({ onClose, isOpen, dataInit }) {
   return (
     <Modal
       isCentered
       onClose={onClose}
       isOpen={isOpen}
-      motionPreset="slideInBottom"
+      motionPreset='slideInBottom'
     >
       <ModalOverlay />
       <ModalContent>
         <Heading
-          className="py-5 text-center"
-          as="h2"
-          bgClip="text"
-          bgGradient="linear(to-r, teal.500, green.500)"
-          size="md"
+          className='py-5 text-center'
+          as='h2'
+          bgClip='text'
+          bgGradient='linear(to-r, teal.500, green.500)'
+          size='md'
         >
           Edit Todo
         </Heading>

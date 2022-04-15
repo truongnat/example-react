@@ -1,9 +1,9 @@
-import React, { Suspense } from "react";
-import { ChakraProvider } from "@chakra-ui/react";
-import { RootRouter } from "./router";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
-import { FallbackLoading } from "./components/FallbackLoading";
+import React, { Suspense } from 'react';
+import { ChakraProvider } from '@chakra-ui/react';
+import { RootRouter } from './router';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import { FallbackLoading } from './components';
 
 function App() {
   return (
