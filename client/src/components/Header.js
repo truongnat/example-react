@@ -59,7 +59,7 @@ export default function Header() {
                   <Avatar
                     size={'sm'}
                     src={
-                      dataUser.user.avatar_url ||
+                      dataUser.user?.avatar_url ||
                       'https://avatars.dicebear.com/api/male/username.svg'
                     }
                   />
@@ -70,7 +70,7 @@ export default function Header() {
                     <Avatar
                       size={'2xl'}
                       src={
-                        dataUser.user.avatar_url ||
+                        dataUser.user?.avatar_url ||
                         'https://avatars.dicebear.com/api/male/username.svg'
                       }
                     />

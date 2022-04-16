@@ -146,8 +146,8 @@ export default function MyProfile() {
                 <Avatar
                   size='xl'
                   src={
-                    formEdit.avatar_url ||
-                    dataUser.user.avatar_url ||
+                    formEdit?.avatar_url ||
+                    dataUser.user?.avatar_url ||
                     'https://avatars.dicebear.com/api/male/username.svg'
                   }
                 >

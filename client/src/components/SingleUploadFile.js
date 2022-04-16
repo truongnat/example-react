@@ -20,9 +20,8 @@ export default function SingleUploadFile({ onComplete }) {
       });
     }
     let imgFile = e.target.files[0];
-    console.log('loging img file : ', imgFile);
-    let validFile = imgFile.type !== ['image/png', 'image/jpeg'];
-    if (validFile) {
+    let validFile = ['image/png', 'image/jpeg'].includes(imgFile.type);
+    if (!validFile) {
       toast({
         title: 'Valid file',
         description: 'File includes .png | .jpg !',
