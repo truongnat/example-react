@@ -12,8 +12,8 @@ import {
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { DELETE_TODO, ENUM_STATUS, genericAction } from '../redux/actions';
-import { todoDeleteSelector } from '../redux/selector';
+import { DELETE_TODO, ENUM_STATUS, genericAction } from '../../redux/actions';
+import { todoDeleteSelector } from '../../redux/selector';
 
 export default function AlertDeleteTodo({ todo }) {
   const { isOpen, onOpen, onClose } = useDisclosure();

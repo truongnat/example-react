@@ -4,9 +4,9 @@ import { TiThSmall } from 'react-icons/ti';
 import { VscCheckAll, VscPreview } from 'react-icons/vsc';
 import { MdOutlineWorkOutline } from 'react-icons/md';
 import { IoPlaySkipForwardOutline } from 'react-icons/io5';
-import { ENUM_STATUS, genericAction, GET_ALL_TODO } from '../redux/actions';
+import { ENUM_STATUS, genericAction, GET_ALL_TODO } from '../../redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { todosSelector } from '../redux/selector';
+import { todosSelector } from '../../redux/selector';
 
 export default function SideFilter() {
   const dispatch = useDispatch();

@@ -3,13 +3,7 @@ import React, { useEffect } from 'react';
 import { Stack, Flex, Text, Box } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { ENUM_STATUS, genericAction, GET_ALL_TODO } from '../redux/actions';
-import {
-  Footer,
-  Header,
-  ListTodo,
-  FormCreateTodo,
-  SideFilter,
-} from '../components';
+import { Footer, Header, TodoApp } from '../components';
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -39,13 +33,13 @@ export default function HomePage() {
           className='flex flex-wrap justify-between space-y-5 md:space-y-0'
         >
           <Box className='border rounded-md p-5 w-full md:w-1/3'>
-            <SideFilter />
+            <TodoApp.SideFilter />
           </Box>
           <Box className='w-full md:w-3/5'>
-            <FormCreateTodo />
+            <TodoApp.FormCreateTodo />
           </Box>
         </Flex>
-        <ListTodo />
+        <TodoApp.ListTodo />
       </Box>
       <div className='mt-28 w-full'>
         <Footer />

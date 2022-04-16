@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, ModalOverlay, ModalContent, Heading } from '@chakra-ui/react';
-import { FormEditTodo } from '../components';
+import FormEditTodo from './FormEditTodo';
 
 export default function ModalEdit({ onClose, isOpen, dataInit }) {
   return (

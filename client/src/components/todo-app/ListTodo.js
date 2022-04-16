@@ -17,10 +17,10 @@ import {
 } from '@chakra-ui/react';
 import ModalEdit from './ModalEdit';
 import { useDispatch, useSelector } from 'react-redux';
-import { todoDeleteSelector, todosSelector } from '../redux/selector';
+import { todoDeleteSelector, todosSelector } from '../../redux/selector';
 import TodoBadge from './TodoBadge';
 import AlertDeleteTodo from './AlertDeleteTodo';
-import { DELETE_TODO, ENUM_STATUS, genericAction } from '../redux/actions';
+import { DELETE_TODO, ENUM_STATUS, genericAction } from '../../redux/actions';
 
 export default function ListTodo() {
   const { isOpen, onOpen, onClose } = useDisclosure();

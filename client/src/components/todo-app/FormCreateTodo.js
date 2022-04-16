@@ -3,19 +3,19 @@ import { AddIcon } from '@chakra-ui/icons';
 import {
   Input,
   Textarea,
-  Select,
   Button,
   useToast,
+  Code,
   useColorMode,
 } from '@chakra-ui/react';
 import { Controller, useForm } from 'react-hook-form';
-import { STATUS_TODO } from '../constants';
-import TextError from './TextError';
-import { useSelector, useDispatch } from 'react-redux';
-import { todosSelector, todoUpdateSelector } from '../redux/selector';
-import { UPDATE_TODO, genericAction, ENUM_STATUS } from '../redux/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { CREATE_TODO, ENUM_STATUS, genericAction } from '../../redux/actions';
+import { todoCreateSelector, todosSelector } from '../../redux/selector';
+import TextError from '../TextError';
+import TodoBadge from './TodoBadge';
 
-export default function FormEditTodo({ dataInit, onClose }) {
+export default function FormCreateTodo() {
   const {
     control,
     formState: { errors },
@@ -24,31 +24,26 @@ export default function FormEditTodo({ dataInit, onClose }) {
   } = useForm();
   const toast = useToast();
   const dispatch = useDispatch();
-  const { colorMode } = useColorMode();
-  const { error, loading, status } = useSelector(todoUpdateSelector);
+  const { error, loading, status } = useSelector(todoCreateSelector);
   const { status: statusType } = useSelector(todosSelector);
-  const onSubmit = (todos) => {
-    const payload = {
-      data: {
-        ...todos,
-        id: dataInit._id,
-      },
-      statusType,
-    };
-    dispatch(genericAction(UPDATE_TODO, ENUM_STATUS.FETCHING, payload));
+  const { colorMode } = useColorMode();
+  const onSubmit = (data) => {
+    dispatch(
+      genericAction(CREATE_TODO, ENUM_STATUS.FETCHING, { data, statusType })
+    );
   };
+
   useEffect(() => {
     if (!loading && status === 'success') {
-      reset({ title: '', content: '', status: '' });
+      reset({ title: '', content: '' });
       toast({
-        title: `Update todo successfully!`,
+        title: `Create todo successfully!`,
         variant: 'top-accent',
         isClosable: true,
         status: 'success',
         position: 'top',
       });
-      onClose();
-      dispatch(genericAction(UPDATE_TODO, ENUM_STATUS.RESET));
+      dispatch(genericAction(CREATE_TODO, ENUM_STATUS.RESET));
     }
     if (!loading && error) {
       reset({ title: '', content: '' });
@@ -61,53 +56,32 @@ export default function FormEditTodo({ dataInit, onClose }) {
         position: 'top',
       });
     }
-  }, [error, loading, status, dispatch, reset, toast, onClose]);
+  }, [error, loading, status, toast, dispatch, reset]);
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className='w-full p-5 border rounded-md'
+      className='w-full p-5 min-h-full border rounded-md'
     >
       <Controller
         name='title'
         control={control}
+        defaultValue={''}
         rules={{ required: true }}
-        defaultValue={dataInit?.title || ''}
         render={({ field }) => (
           <Input
             placeholder='Title'
             color={colorMode === 'light' ? 'black' : 'white'}
-            f
             {...field}
           />
         )}
       />
-      <TextError e={errors.title} ftxtError={'Title is required'} />
-      <Controller
-        name='status'
-        control={control}
-        rules={{ required: true }}
-        defaultValue={dataInit?.status || ''}
-        render={({ field }) => (
-          <Select
-            className='mt-5'
-            placeholder='Status'
-            color={colorMode === 'light' ? 'black' : 'white'}
-            {...field}
-          >
-            {STATUS_TODO.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </Select>
-        )}
-      />
-      <TextError e={errors.status} txtError={'Status is required'} />
+      <TextError e={errors.title} txtError={'Title is required'} />
       <Controller
         name='content'
         control={control}
+        defaultValue={''}
         rules={{ required: true }}
-        defaultValue={dataInit?.content || ''}
         render={({ field }) => (
           <Textarea
             className='mt-5'
@@ -129,6 +103,14 @@ export default function FormEditTodo({ dataInit, onClose }) {
         >
           Submit
         </Button>
+      </div>
+      <div className=''>
+        <Code>Status App : </Code>
+      </div>
+      <div className='mt-5'>
+        {['initial', 'todo', 'review', 'done', 'keeping'].map((status) => (
+          <TodoBadge key={status} status={status} />
+        ))}
       </div>
     </form>
   );
