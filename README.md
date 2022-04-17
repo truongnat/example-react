@@ -16,7 +16,7 @@
 
 - Learning concept [ReactJS](https://reactjs.org/docs/getting-started.html) framework development by Facebook.
 
-- Learning ecosystem for ReactJS, example : [react router dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/) or [Chakra UI](https://chakra-ui.com/).
+- Learning ecosystem for ReactJS, example : [react-router-dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/), [Chakra UI](https://chakra-ui.com/).
 
 - Implement project example with [CRA](https://create-react-app.dev/).
 
@@ -32,12 +32,15 @@
 	+ Sign in.
 	+ Sign up.
 	+ Auto remember login.
+  
 - Loading all in.
-- UI homepage - mock data from [Json Placeholder](https://jsonplaceholder.typicode.com/) .
+
+- CRUD todos example.
 
 - UI profile and more...etc.
 
-- CRUD todos example.
+- Build static SSR.
+
 
 
 ## Setup
@@ -54,31 +57,8 @@ We are using template Create React App.
 > *All you need left is to know a little bit of [Javascript](https://www.w3schools.com/js/) .*
 
 
-**NPX :**
 
-```bash
-
-npx create-react-app [project name]
-
-```
-
-**NPM :**
-
-```bash
-
-npm init react-app [project name]
-
-```
-
-**YARN :**
-
-```bash
-
-yarn create react-app [project name]
-
-```
-
-## Start project
+## Docs & Started
 
 - Docs for concept React JS.
 - What is [JSX](https://reactjs.org/docs/introducing-jsx.html) ?
@@ -91,7 +71,6 @@ yarn create react-app [project name]
 - Difference between Class Component and Functional Components. ( [Link docs](https://reactjs.org/docs/react-component.html#render) | [Link dev](https://dev.to/mehmehmehlol/class-components-vs-functional-components-in-react-4hd3) )
 - State management with [redux](https://redux.js.org/)
 - Middleware for client [redux saga](https://redux-saga.js.org/)
-- Config and structure project - see more [github](#github).
 
 ## Running the app
 *We are split two folder: client and server*
@@ -107,9 +86,6 @@ $ npm run start | yarn start
 
 $ npm run build | yarn build
 
-# test mode
-
-$ npm run test | yarn test
 
 ```
 
@@ -133,25 +109,17 @@ $ npm run start:prod | yarn start:prod
 
 ```bash
 
+cd {root project}.
+
 # bash script
 
 $ ./ssr.sh
 
 ```
 
-## Github
-
-
-[GitHub - truongdq2001/example-react](https://github.com/truongdq2001/example-react)
-
 ## Stay in touch
 
-
 - Author - [Peanut201](https://www.facebook.com/truongdq2001/)
-
-- Website - [Portfolio](https://portfolio-peanut.netlify.app/)
-
-- Twitter - [@Peanut201](https://twitter.com/truong20013)
 
 - Telegram - [@Peanut201](https://t.me/peanut201)
 
