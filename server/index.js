@@ -1,28 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const app = express();
-const { connectMongoose } = require('./connection');
-const authRouter = require('./router/user.router');
-const todosRouter = require('./router/todos.router');
-const path = require('path');
-require('dotenv').config();
-connectMongoose();
-app.use(
-  cors({
-    origin: '*',
-  })
-);
+const TodosController = require('./controllers/todos.controllers');
+const UserController = require('./controllers/user.controller');
+const AppServer = require('./appServer');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'build')));
-app.use('/auth', authRouter);
-app.use('/todos', todosRouter);
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, './build/index.html'));
-});
+const app = new AppServer([new TodosController(), new UserController()]);
 
-app.listen(process.env.PORT, () => {
-  console.log('server on started');
-});
+app.startListening();

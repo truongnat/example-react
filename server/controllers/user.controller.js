@@ -1,16 +1,28 @@
-const { UserRepo } = require('../schema/user.schema');
+const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { UserRepo } = require('../schema/user.schema');
 require('dotenv').config();
+const {
+  BadRequestException,
+  ServerException,
+  NotFoundException,
+} = require('../exceptions');
+const authMiddleware = require('../middleware/auth.middleware');
+const router = express.Router();
 
 class UserController {
-  async create(req, res) {
+  _path = '/auth';
+  _router = router;
+
+  constructor() {
+    this.initializeRoutes();
+  }
+
+  async create(req, res, next) {
     const user = req.body;
     if (!user) {
-      return res.json({
-        status: 400,
-        message: 'user is not provider',
-      });
+      return next(new BadRequestException('user is not provider'));
     }
     if (!user['username'] || !user['password']) {
       const errors = [];
@@ -27,19 +39,12 @@ class UserController {
           message: 'password is not empty!',
         });
       }
-      return res.json({
-        status: 404,
-        errors,
-        message: 'failure',
-      });
+      return next(new NotFoundException('failure', errors));
     }
     try {
       const userExisting = await UserRepo.findOne({ username: user.username });
       if (userExisting) {
-        return res.json({
-          status: 404,
-          message: 'User already exists',
-        });
+        return next(new BadRequestException('User already exists'));
       }
       const hashPassword = await bcrypt.hash(user.password, 10);
       await UserRepo.create({
@@ -52,30 +57,20 @@ class UserController {
         message: 'success',
       });
     } catch (error) {
-      console.log('Controller - create : ', error);
-      res.json({
-        status: 500,
-        message: 'server error',
-      });
+      next(new ServerException(error.message));
     }
   }
 
-  async login(req, res) {
+  async login(req, res, next) {
     try {
       const { username, password } = req.body;
       const user = await UserRepo.findOne({ username: username });
       if (!user) {
-        return res.json({
-          status: 400,
-          message: 'User not found',
-        });
+        return next(new BadRequestException('User not found'));
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.json({
-          status: 400,
-          message: 'Password not matching!',
-        });
+        return next(new BadRequestException('Password not matching!'));
       }
       const token = await jwt.sign(
         {
@@ -100,15 +95,11 @@ class UserController {
         },
       });
     } catch (error) {
-      console.log('Controller - login : ', error);
-      res.json({
-        status: 500,
-        message: 'server error',
-      });
+      next(new ServerException(error.message));
     }
   }
 
-  async logout(req, res) {
+  async logout(req, res, next) {
     res.setHeader('Set-Cookie', `Authentication=; HttpOnly; Path=/; Max-Age=0`);
     res.json({
       status: 200,
@@ -116,7 +107,7 @@ class UserController {
     });
   }
 
-  async checkingMe(req, res) {
+  async checkingMe(req, res, next) {
     try {
       const user = await UserRepo.findOne({ _id: req.userId });
       const response = {
@@ -126,27 +117,22 @@ class UserController {
         avatar_url: user?.avatar_url,
         updatedAt: user.updatedAt,
       };
-      if (user) {
-        return res.json({
-          status: 200,
-          message: 'success',
-          data: response,
-        });
+      if (!user) {
+        return next(
+          new BadRequestException('username or password not matching!')
+        );
       }
       return res.json({
-        status: 400,
-        message: 'username or password not matching!',
+        status: 200,
+        message: 'success',
+        data: response,
       });
     } catch (e) {
-      console.log('Controller - checkingMe : ', e);
-      res.json({
-        status: 500,
-        message: 'server error',
-      });
+      next(new ServerException(error.message));
     }
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     const userInfo = req.body;
 
     let objUpdate = {};
@@ -166,15 +152,21 @@ class UserController {
         message: 'success',
       });
     } catch (error) {
-      console.log('Controller - update : ', error);
-      res.json({
-        status: 500,
-        message: 'server error',
-      });
+      next(new ServerException(error.message));
     }
+  }
+
+  initializeRoutes() {
+    this._router.post(`${this._path}/register`, this.create);
+    this._router.post(`${this._path}/login`, this.login);
+    this._router.post(`${this._path}/logout`, this.logout);
+    this._router.get(
+      `${this._path}/checking-me`,
+      authMiddleware,
+      this.checkingMe
+    );
+    this._router.post(`${this._path}/update`, authMiddleware, this.update);
   }
 }
 
-const userController = new UserController();
-
-module.exports = { userController };
+module.exports = UserController;
