@@ -9,6 +9,7 @@ const {
   NotFoundException,
 } = require('../exceptions');
 const authMiddleware = require('../middleware/auth.middleware');
+const { DEFAULT_AVATAR } = require('../constants');
 const router = express.Router();
 
 class UserController {
@@ -50,7 +51,7 @@ class UserController {
       await UserRepo.create({
         username: user.username,
         password: hashPassword,
-        avatar_url: '',
+        avatar_url: DEFAULT_AVATAR,
       });
       res.json({
         status: 200,
