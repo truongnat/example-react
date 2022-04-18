@@ -41,6 +41,13 @@
 
 - Build static SSR.
 
+- Search friend `<coming soon>`
+
+- Chat realtime (chat one to one, group chat, ...) `<coming soon>`
+  
+- Invite group chat `<coming soon>`
+
+
 
 
 ## Setup
