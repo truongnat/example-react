@@ -16,6 +16,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.12",
     "node-uuid": "^1.4.8",
-    "nodemon": "^2.0.14"
+    "nodemon": "^2.0.14",
+    "socket.io": "^4.4.1"
   }
 }

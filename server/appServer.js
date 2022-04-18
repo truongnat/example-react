@@ -6,9 +6,11 @@ const { join } = require('path');
 const mongoose = require('mongoose');
 const { ErrorsMiddleware } = require('./middleware/errors.middleware');
 const { LoggerMiddleware } = require('./middleware/logger.middleware');
+const SocketServer = require('./socketServer');
 class AppServer {
   _app = express();
   _port = 5000;
+  _server;
 
   constructor(controllers = []) {
     dotenv.config();
@@ -63,9 +65,10 @@ class AppServer {
 
   startListening() {
     const PORT = process.env.PORT || this._port;
-    this._app.listen(PORT, () => {
+    this._server = this._app.listen(PORT, () => {
       console.log(`server started on ${PORT}!`);
     });
+    new SocketServer(this._server);
   }
 }
 
