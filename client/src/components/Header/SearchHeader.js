@@ -12,6 +12,7 @@ import SuggestList from './SuggestList';
 import { useClickAway } from 'react-use';
 import { SearchService } from '../../services';
 import { debounce } from 'lodash';
+import { AiOutlineClose } from 'react-icons/ai';
 
 export default function SearchHeader() {
   const [isFocus, setIsFocus] = useState(false);
@@ -63,7 +64,13 @@ export default function SearchHeader() {
         />
         <InputRightElement
           className='cursor-pointer'
-          children={loading ? <Spinner /> : <SearchIcon />}
+          children={
+            loading ? (
+              <Spinner />
+            ) : (
+              <AiOutlineClose onClick={() => onChangeSearch('')} />
+            )
+          }
         />
       </InputGroup>
 
