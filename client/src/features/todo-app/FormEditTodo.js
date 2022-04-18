@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { Controller, useForm } from 'react-hook-form';
 import { STATUS_TODO } from '../../constants';
-import TextError from '../TextError';
+import { TextError } from '../../components';
 import { useSelector, useDispatch } from 'react-redux';
 import { todosSelector, todoUpdateSelector } from '../../redux/selector';
 import { UPDATE_TODO, genericAction, ENUM_STATUS } from '../../redux/actions';

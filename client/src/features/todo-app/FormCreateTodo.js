@@ -12,7 +12,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { CREATE_TODO, ENUM_STATUS, genericAction } from '../../redux/actions';
 import { todoCreateSelector, todosSelector } from '../../redux/selector';
-import TextError from '../TextError';
+import { TextError } from '../../components';
 import TodoBadge from './TodoBadge';
 
 export default function FormCreateTodo() {

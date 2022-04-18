@@ -2,15 +2,16 @@ const socket = require('socket.io');
 
 class SocketServer {
   _io;
-  constructor(server) {
-    this._io = socket(server);
+  constructor(server, cors = {}) {
+    this._io = socket(server, {
+      cors,
+    });
     this.initial();
   }
 
   initial() {
     this._io.on('connection', (sk) => {
       console.log('make socket connection');
-
       sk.on('validate_room', (data) => {
         console.log(data);
       });

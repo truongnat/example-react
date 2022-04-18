@@ -14,7 +14,7 @@ const router = express.Router();
 class UserController {
   _path = '/auth';
   _router = router;
-
+  _user = '/user';
   constructor() {
     this.initializeRoutes();
   }
@@ -156,6 +156,18 @@ class UserController {
     }
   }
 
+  async search(req, res, next) {
+    const { username } = req.query;
+    const results = await UserRepo.find({
+      username: new RegExp(username, 'i'),
+    });
+    res.json({
+      status: 200,
+      message: 'success',
+      data: results,
+    });
+  }
+
   initializeRoutes() {
     this._router.post(`${this._path}/register`, this.create);
     this._router.post(`${this._path}/login`, this.login);
@@ -165,6 +177,7 @@ class UserController {
       authMiddleware,
       this.checkingMe
     );
+    this._router.get(`${this._user}/search`, this.search);
     this._router.post(`${this._path}/update`, authMiddleware, this.update);
   }
 }

@@ -3,7 +3,8 @@ import React, { useEffect } from 'react';
 import { Stack, Flex, Text, Box } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { ENUM_STATUS, genericAction, GET_ALL_TODO } from '../redux/actions';
-import { Footer, Header, TodoApp } from '../components';
+import { TodoApp } from '../features';
+import { Footer, Header } from '../components';
 
 export default function HomePage() {
   const dispatch = useDispatch();

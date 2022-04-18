@@ -75,3 +75,7 @@ export const uploadFileFirebase = async (userId, file) => {
     return null;
   }
 };
+
+export function classes(...parts) {
+  return parts.filter(Boolean).join(' ');
+}

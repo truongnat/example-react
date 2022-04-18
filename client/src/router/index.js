@@ -16,6 +16,7 @@ const LazyLoginPage = lazy(() => import('../pages/LoginPage'));
 const LazyRegisterPage = lazy(() => import('../pages/RegisterPage'));
 const Lazy404Page = lazy(() => import('../pages/404Page'));
 const LazyMyProfile = lazy(() => import('../pages/MyProfile'));
+const LazyChatPage = lazy(() => import('../pages/ChatPage'));
 
 export function RootRouter() {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ export function RootRouter() {
     <Router>
       <Switch>
         <PrivateRoute exact path='/' component={LazyHomePage} />
+        <PrivateRoute exact path='/chat' component={LazyChatPage} />
         <PrivateRoute exact path='/my-profile' component={LazyMyProfile} />
         <Route path='/login' component={LazyLoginPage} />
         <Route path='/register' component={LazyRegisterPage} />
