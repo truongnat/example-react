@@ -49,6 +49,8 @@
   
 - Invite group chat `<coming soon>`
 
+- Tutorial detail deployment fullstack app `<coming soon>`.
+
 
 
 
@@ -125,7 +127,17 @@ cd {root project}.
 $ ./ssr.sh
 
 ```
+## Deployment
 
+
+> Deployment FE:
+
+	1.
+
+
+> Deployment BE
+
+	1.
 ## Stay in touch
 
 - Author - [Peanut201](https://www.facebook.com/truongdq2001/)
