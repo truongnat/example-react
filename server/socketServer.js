@@ -2,16 +2,26 @@ const socket = require('socket.io');
 
 class SocketServer {
   _io;
-  constructor(server, cors = {}) {
+  constructor(server) {
     this._io = socket(server, {
-      cors,
+      cors: this.buildCorsOptWs(),
     });
     this.initial();
   }
 
+  buildCorsOptWs() {
+    const configCors = process.env.CORS_ALLOW_ORIGINS_WS;
+    if (!configCors) {
+      throw new Error('ENV CORS not provider!');
+    }
+    return {
+      origin: configCors.toString().split(','),
+      credentials: true,
+    };
+  }
+
   initial() {
     this._io.on('connection', (sk) => {
-      console.log('make socket connection');
       sk.on('validate_room', (data) => {
         console.log(data);
       });
