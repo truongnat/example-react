@@ -36,12 +36,9 @@ jobs:
         run: | 
           cd ./server && heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#latest -a peanut-node
 
-      - name: Show package json on heroku
+      - name: Show package json on heroku and deployment
         run: | 
           cd ./server
           git add . 
           git commit -m 'track package.json'
-
-      - name: Deploy to Heroku
-        run: |
-          cd ./server && git push heroku HEAD:master -f
+          git push heroku HEAD:master -f
