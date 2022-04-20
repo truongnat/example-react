@@ -13,4 +13,4 @@ jobs:
           node-version: '16.14.2'
       - name: Deploy to production
           run: |
-            git push https://heroku:${{secrets.HEROKU_API_KEY}}@git.heroku.com/peanut-node.git master
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/peanut-node.git master
