@@ -11,6 +11,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.14.2'
-      - name: Deploy to production
-          run: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/peanut-node.git master
+      - name: Add remote to heroku platform.
+        if: github.ref == 'ref/heads/master' && jobs.status == 'success'
+        run: |
+          git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/peanut-node.git
+      - name: Deployment backend to heroku platform.
+        run: |
+          git push heroku HEAD:master -f
