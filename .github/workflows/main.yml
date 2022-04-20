@@ -11,10 +11,7 @@ jobs:
       - uses: actions/setup-node@v3
       - uses: akhileshns/heroku-deploy@v3.12.12
       - name: remove node_modules
-        run: cd ./server
-        run:  rm -rf node-node_modules yarn.lock
-        run: yarn
-        run: cd ..
+        run: cd ./server && rm -rf node-node_modules yarn.lock && yarn && cd ..
       - name: deployment BE heroku
         run: yarn
         with:
