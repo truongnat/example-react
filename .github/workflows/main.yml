@@ -3,7 +3,7 @@ name: build-backend-heroku
 on: [push]
 
 jobs:
-  Deployment BE:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
         if: github.ref == 'refs/heads/master' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
         run: |
           git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/peanut-node.git
-
+          
       - name: Deploy to Heroku
         run: |
           git push heroku HEAD:master -f
