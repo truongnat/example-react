@@ -17,7 +17,7 @@ jobs:
       
       - name: Install heroku cli
         run: |
-          sudo snap install --classic heroku
+          npm install -g heroku
 
       - name: Check version heroku cli
         run: | 
