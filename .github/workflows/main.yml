@@ -14,8 +14,9 @@ jobs:
         run: cd ./server && rm -rf node-node_modules yarn.lock && yarn && cd ..
       - name: deployment BE heroku
         run: yarn
+        uses: ./
         with:
           node-version: '16.14.2'
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "peanut-node"
-          heroku_email: "truongdq.dev@gmail.com"
+          heroku_app_name: 'peanut-node'
+          heroku_email: 'truongdq.dev@gmail.com'
