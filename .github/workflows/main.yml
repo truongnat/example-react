@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: window-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -13,11 +13,11 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.14.2'
+          node-version: '14.17.1'
       
       - name: Install heroku cli
         run: |
-          npm install -g heroku @heroku/buildpack-registry
+          npm install -g heroku
 
       - name: Check version heroku cli
         run: | 
