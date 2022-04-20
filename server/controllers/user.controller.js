@@ -115,7 +115,7 @@ class UserController {
         _id: user._id,
         username: user.username,
         createdAt: user.createdAt,
-        avatar_url: user?.avatar_url,
+        avatar_url: user.avatar_url,
         updatedAt: user.updatedAt,
       };
       if (!user) {

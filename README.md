@@ -143,7 +143,43 @@ $ ./ssr.sh
 
 > Deployment BE
 
-	1.
+  - [Login Heroku](https://id.heroku.com/login)
+  - On dashboard, create new app {name_repo}.
+  - Have two ways:
+    - Heroku CLI:
+    
+      + install heroku cli
+        ```
+        npm install -g heroku
+        ```
+      + check version heroku
+        ```
+        heroku --version
+        ```
+      + login heroku
+        ```
+        heroku login
+        ```
+      + create a new Git repository
+        ```
+        cd my-project/
+        git init
+        heroku git:remote -a {name_repo}
+        ```
+      + deploy your application
+        ```
+        git add .
+        git commit -am "make it better"
+        git push heroku master
+        ```
+      + if existing Git repository
+        ```
+        heroku git:remote -a testing-be-server
+        ```
+
+    - Github connection:
+      - Click connect to github.
+      - ...
 ## Stay in touch
 
 - Author - [Peanut201](https://www.facebook.com/truongdq2001/)
