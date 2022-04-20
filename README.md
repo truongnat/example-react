@@ -131,8 +131,14 @@ $ ./ssr.sh
 
 
 > Deployment FE:
+	
+	Vercel allows for automatic deployment on every branch push and merges onto the production branch.
 
-	1.
+  - [Login Vercel](https://vercel.com/login)
+  - Click button new project => import repository from github.
+  - When choose repository, you will see form config, then change root-directory ( ./client )
+  - Set ENV in step Environment Variables ( copy and paste all env inside env file ), attention with REACT_APP_BASE_URL, it should be set server link build production.
+  - Wait vercel build and done.
 
 
 > Deployment BE
