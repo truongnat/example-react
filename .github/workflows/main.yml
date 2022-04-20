@@ -16,6 +16,7 @@ jobs:
         run: yarn
         run: cd ..
       - name: deployment BE heroku
+        run: yarn
         with:
           node-version: '16.14.2'
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
