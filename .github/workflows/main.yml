@@ -11,10 +11,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.14.2'
-      - name: Add remote to heroku platform.
-        if: github.ref == 'ref/heads/master' && jobs.status == 'success'
+      - name: Add remote origin
+        if: github.ref == 'refs/heads/master' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
         run: |
           git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/peanut-node.git
-      - name: Deployment backend to heroku platform.
+      - name: Deploy to Heroku
         run: |
           git push heroku HEAD:master -f
