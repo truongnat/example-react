@@ -9,7 +9,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+      - uses: akhileshns/heroku-deploy@v3.12.12
+      - name: remove node_modules
+        run: cd ./server
+        run:  rm -rf node-node_modules yarn.lock
+        run: yarn
+        run: cd ..
+      - name: deployment BE heroku
         with:
           node-version: '16.14.2'
-      - run: npm install -g bats
-      - run: bats -v
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "peanut-node"
+          heroku_email: "truongdq.dev@gmail.com"
