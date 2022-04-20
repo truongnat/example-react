@@ -3,23 +3,14 @@ name: build-backend-heroku
 on: [push]
 
 jobs:
-  auto-build-be:
+  check-bats-version:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - uses: akhileshns/heroku-deploy@v3.0.0
-      - name: remove node_modules
-        run: cd ./server && rm -rf node-node_modules yarn.lock && yarn && heroku git:remote -a peanut-node && cd ..
-      - uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: 'peanut-node'
-          heroku_email: 'truongdq.dev@gmail.com'
-          justlogin: true
-          healthcheck: "https://peanut-node.herokuapp.com/health"
-          checkstring: "ok"
-          delay: 5
-          rollbackonhealthcheckfailed: true
-          procfile: "web: node index.js"
+          node-version: '16.14.2'
+      - name: Deploy to production
+          run: |
+            git push https://heroku:${{secrets.HEROKU_API_KEY}}@git.heroku.com/peanut-node.git master
