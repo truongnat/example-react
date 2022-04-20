@@ -5,13 +5,37 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      - uses: actions/checkout@v3
       - run: |
-          cd ./server
-          
+          git fetch --prune --unshallow
+
+      - uses: actions/setup-node@v3
         with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: 'peanut-node' #Must be unique in Heroku
-          heroku_email: 'truongdq.dev@gmail.com'
+          node-version: '14.17.1'
+      
+      - name: Install heroku cli
+        run: |
+          npm install -g heroku
+
+      - name: Check version heroku cli
+        run: | 
+          heroku --version
+
+      - name: Add remote origin
+        if: github.ref == 'refs/heads/master' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
+        run: |
+          cd ./server && git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/peanut-node.git
+
+      - name: Add build pack
+        run: | 
+          cd ./server && heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#latest -a peanut-node
+
+      - name: Show package json on heroku
+        run: | 
+          cd ./server && git add package.json && git commit -m 'track package.json'
+
+      - name: Deploy to Heroku
+        run: |
+          cd ./server && git push heroku HEAD:master -f
