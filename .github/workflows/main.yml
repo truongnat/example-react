@@ -3,7 +3,7 @@ name: build-backend-heroku
 on: [push]
 
 jobs:
-  check-bats-version:
+  auto-build-be:
     runs-on: ubuntu-latest
 
     steps:
