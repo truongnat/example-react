@@ -30,7 +30,7 @@ jobs:
 
       - name: Add build pack
         run: | 
-          cd ./server && heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#latest -a peanut-node
+          cd ./server && heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#v176 -a peanut-node
 
       - name: Deploy to Heroku
         run: |
