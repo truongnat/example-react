@@ -12,10 +12,9 @@ jobs:
       - uses: akhileshns/heroku-deploy@v3.0.0
       - name: remove node_modules
         run: cd ./server && rm -rf node-node_modules yarn.lock && yarn && heroku git:remote -a peanut-node && cd ..
-      - name: deployment BE heroku
-        uses: ./
+    steps:
+      - uses: akhileshns/heroku-deploy@v3.0.0
         with:
-          node-version: '16.14.2'
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: 'peanut-node'
           heroku_email: 'truongdq.dev@gmail.com'
