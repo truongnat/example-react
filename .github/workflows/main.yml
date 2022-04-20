@@ -38,7 +38,7 @@ jobs:
 
       - name: Show package json on heroku
         run: | 
-          cd ./server && git add package.json && git commit -m 'track package.json'
+          cd ./server && git add . && git commit -m 'track package.json'
 
       - name: Deploy to Heroku
         run: |
