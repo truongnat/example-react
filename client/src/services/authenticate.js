@@ -8,6 +8,7 @@ export class Authenticate {
       return await new Api().post('auth/login', data);
     } catch (error) {
       console.log('error - login : ', error);
+      return null;
     }
   }
 
@@ -16,6 +17,7 @@ export class Authenticate {
       return await new Api().post('auth/register', data);
     } catch (error) {
       console.log('error - register : ', error);
+      return null;
     }
   }
 
@@ -24,6 +26,7 @@ export class Authenticate {
       return await new Api().post('auth/update', data);
     } catch (error) {
       console.log('error - update : ', error);
+      return null;
     }
   }
 
@@ -37,7 +40,6 @@ export class Authenticate {
       MemoryClient.remove('anonymous_user');
       return null;
     } catch (e) {
-      console.log('error - checkingMe : ', e);
       return null;
     }
   }
