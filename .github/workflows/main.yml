@@ -40,5 +40,5 @@ jobs:
         run: | 
           cd ./server
           git add . 
-          git commit -m 'track package.json'
+          git commit -am 'track package.json'
           git push heroku HEAD:master -f
