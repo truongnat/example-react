@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v3
       - uses: akhileshns/heroku-deploy@v3.0.0
       - name: remove node_modules
-        run: cd ./server && rm -rf node-node_modules yarn.lock && yarn && cd ..
+        run: cd ./server && rm -rf node-node_modules yarn.lock && yarn && heroku git:remote -a peanut-node && cd ..
       - name: deployment BE heroku
         uses: ./
         with:
