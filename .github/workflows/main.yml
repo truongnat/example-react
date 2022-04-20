@@ -30,8 +30,8 @@ jobs:
 
       - name: Add build pack
         run: | 
-          heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#latest -a peanut-node
+          cd ./server && heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#latest -a peanut-node
 
       - name: Deploy to Heroku
         run: |
-          git push heroku HEAD:master -f
+          cd ./server && git push heroku HEAD:master -f
