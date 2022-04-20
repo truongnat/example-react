@@ -17,7 +17,7 @@ jobs:
       
       - name: Install heroku cli
         run: |
-          npm install -g heroku
+          npm install -g heroku @heroku/buildpack-registry
 
       - name: Check version heroku cli
         run: | 
