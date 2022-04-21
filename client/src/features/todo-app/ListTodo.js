@@ -51,7 +51,7 @@ export default function ListTodo() {
         position: 'top',
       });
     }
-  }, [error, loading, status, toast, dispatch]);
+  }, [error, loading, status]);
 
   return (
     <div className='mt-10 w-full'>

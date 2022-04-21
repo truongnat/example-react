@@ -28,9 +28,9 @@ export default function AlertDeleteTodo({ todo }) {
     if (!loading && (status === 'success' || error) && isOpen) {
       onClose();
     }
-  }, [error, loading, status, onClose, isOpen]);
+  }, [error, loading, status, isOpen]);
   return (
-    <>
+    <React.Fragment>
       <Button
         onClick={onOpen}
         leftIcon={<DeleteIcon />}
@@ -70,6 +70,6 @@ export default function AlertDeleteTodo({ todo }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </React.Fragment>
   );
 }

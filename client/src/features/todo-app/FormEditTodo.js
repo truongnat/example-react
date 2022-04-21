@@ -61,7 +61,7 @@ export default function FormEditTodo({ dataInit, onClose }) {
         position: 'top',
       });
     }
-  }, [error, loading, status, dispatch, reset, toast, onClose]);
+  }, [error, loading, status]);
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

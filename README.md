@@ -178,8 +178,7 @@ $ ./ssr.sh
         ```
 
     - Github connection:
-      - Click connect to github.
-      - ...
+      - Coming soon!
 ## Stay in touch
 
 - Author - [Peanut201](https://www.facebook.com/truongdq2001/)

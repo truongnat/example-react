@@ -10,7 +10,7 @@ export default function HomePage() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING));
-  }, [dispatch]);
+  }, []);
 
   return (
     <Stack minH={'100vh'} alignItems='center' justifyContent='start'>

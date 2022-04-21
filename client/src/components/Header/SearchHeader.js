@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
   Input,

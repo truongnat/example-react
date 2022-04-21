@@ -56,7 +56,7 @@ export default function FormCreateTodo() {
         position: 'top',
       });
     }
-  }, [error, loading, status, toast, dispatch, reset]);
+  }, [error, loading, status, toast]);
 
   return (
     <form
