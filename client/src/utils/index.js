@@ -1,15 +1,5 @@
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '../config/firebase-cloud';
-
-export const fakeAuth = {
-  isAuthenticated: false,
-  signIn(cb) {
-    setTimeout(cb, 1000);
-  },
-  signOut(cb) {
-    setTimeout(cb, 1000);
-  },
-};
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../config/firebase-cloud";
 
 export const MemoryClient = {
   set(key, val) {
@@ -24,6 +14,9 @@ export const MemoryClient = {
   removeMultiple(keys) {
     for (const key of keys) localStorage.removeItem(key);
   },
+  clearAll() {
+    localStorage.clear();
+  },
 };
 
 export const CookieClient = {
@@ -33,8 +26,8 @@ export const CookieClient = {
       return null;
     }
 
-    const listCookie = cookieStorage.split(';').map((c) => {
-      const data = c.split('=');
+    const listCookie = cookieStorage.split(";").map((c) => {
+      const data = c.split("=");
       return {
         key: data[0].trim().toLocaleLowerCase(),
         value: data[1].trim().toLocaleLowerCase(),
@@ -50,15 +43,6 @@ export const CookieClient = {
   },
 };
 
-export const getBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
-
 export const uploadFileFirebase = async (userId, file) => {
   try {
     let pathFile = `/public/${userId}/${file.name}`;
@@ -66,16 +50,16 @@ export const uploadFileFirebase = async (userId, file) => {
     const responseUpload = await uploadBytes(storageRef, file);
     if (responseUpload.metadata) {
       return await getDownloadURL(storageRef).catch((e) => {
-        console.log('error downloading link : ', e);
-        return '';
+        console.log("error downloading link : ", e);
+        return "";
       });
     }
   } catch (e) {
-    console.log('useUploadSingleFile error : ', e);
+    console.log("useUploadSingleFile error : ", e);
     return null;
   }
 };
 
 export function classes(...parts) {
-  return parts.filter(Boolean).join(' ');
+  return parts.filter(Boolean).join(" ");
 }

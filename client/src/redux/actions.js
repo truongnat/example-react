@@ -1,7 +1,10 @@
+// authentication
 export const LOGIN = "LOGIN";
 export const REGISTER = "REGISTER";
 export const CHECKING_AUTH = "CHECKING_AUTH";
 export const LOADING_APP = "LOADING_APP";
+
+// todo list
 export const INIT_TODO = "INIT_TODO";
 export const CREATE_TODO = "CREATE_TODO";
 export const UPDATE_TODO = "UPDATE_TODO";
@@ -11,6 +14,23 @@ export const FILTER_TODO_ALL = "FILTER_TODO_ALL";
 export const FILTER_TODO_COMPLETED = "FILTER_TODO_COMPLETED";
 export const FILTER_TODO_WORK = "FILTER_TODO_WORK";
 export const FILTER_TODO_SKIPPED = "FILTER_TODO_SKIPPED";
+
+// chat socket
+export const GET_ALL_ROOM = "GET_ALL_ROOM";
+export const GET_ROOM_DETAIL = "GET_ROOM_DETAIL";
+export const DELETE_ROOM = "DELETE_ROOM";
+export const UPDATE_ROOM_INFO = "UPDATE_ROOM_INFO";
+
+export const GET_ALL_MESSAGE_BY_ROOM_ID = "GET_ALL_MESSAGE_BY_ROOM_ID";
+export const SEND_MESSAGE = "SEND_MESSAGE";
+export const DELETE_MESSAGE = "DELETE_MESSAGE";
+export const UPDATE_MESSAGE = "UPDATE_MESSAGE";
+
+export const KICK_PARTICIPANT = "KICK_PARTICIPANT";
+export const CHANGE_ROLE_HOST_ROOM = "CHANGE_ROLE_HOST_ROOM";
+
+// common
+
 export const ENUM_STATUS = {
   FETCHING: "FETCHING",
   SUCCESS: "SUCCESS",

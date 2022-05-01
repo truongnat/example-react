@@ -1,12 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const bodyParser = require('body-parser');
-const { join } = require('path');
-const mongoose = require('mongoose');
-const { ErrorsMiddleware } = require('./middleware/errors.middleware');
-const { LoggerMiddleware } = require('./middleware/logger.middleware');
-const SocketServer = require('./socketServer');
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
+const { join } = require("path");
+const mongoose = require("mongoose");
+const { ErrorsMiddleware } = require("./middleware/errors.middleware");
+const { LoggerMiddleware } = require("./middleware/logger.middleware");
+const SocketServer = require("./socketServer");
+const { ConsoleLogger } = require("./core");
 class AppServer {
   _app = express();
   _port = 5000;
@@ -24,11 +25,11 @@ class AppServer {
   buildCorsOpt() {
     const configCors = process.env.CORS_ALLOW_ORIGINS;
     if (!configCors) {
-      throw new Error('ENV CORS not provider!');
+      throw new Error("ENV CORS not provider!");
     }
     return {
-      origin: configCors.toString().split(','),
-      methods: 'OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE',
+      origin: configCors.toString().split(","),
+      methods: "OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE",
       preflightContinue: false,
       optionsSuccessStatus: 204,
       credentials: true,
@@ -38,7 +39,7 @@ class AppServer {
   initMiddleWares() {
     this._app.use(cors(this.buildCorsOpt()));
     this._app.use(bodyParser.json());
-    this._app.use(express.static(join(__dirname, 'build')));
+    this._app.use(express.static(join(__dirname, "build")));
   }
 
   initErrorHandling() {
@@ -59,14 +60,14 @@ class AppServer {
 
   initializeControllers(controllers = []) {
     controllers.forEach((c) => {
-      this._app.use('/', c._router);
+      this._app.use("/", c._router);
     });
   }
 
   startListening() {
     const PORT = process.env.PORT || this._port;
     this._server = this._app.listen(PORT, () => {
-      console.log(`server started on ${PORT}!`);
+      ConsoleLogger.info(`Server started on ${PORT}!`);
     });
     new SocketServer(this._server);
   }

@@ -1,4 +1,5 @@
-const { rejectObjEmpty } = require('../utils');
+const { ConsoleLogger } = require("../core");
+const { rejectObjEmpty } = require("../utils");
 
 function LoggerMiddleware(request, response, next) {
   const payload =
@@ -6,7 +7,7 @@ function LoggerMiddleware(request, response, next) {
     rejectObjEmpty(request.params) ||
     rejectObjEmpty(request.query);
 
-  console.log(
+  ConsoleLogger.verbose(
     `{${request.method}} ${request.path} : ${JSON.stringify(payload)} `
   );
   next();

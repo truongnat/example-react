@@ -1,22 +1,22 @@
-import React, { lazy, useCallback, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { PrivateRoute } from './Protected';
-import { Authenticate } from '../services';
-import { useDispatch } from 'react-redux';
+import React, { lazy, useCallback, useEffect } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { PrivateRoute } from "./Protected";
+import { Authenticate } from "../services";
+import { useDispatch } from "react-redux";
 import {
   CHECKING_AUTH,
   ENUM_STATUS,
   genericAction,
   LOADING_APP,
   LOGIN,
-} from '../redux/actions';
+} from "../redux/actions";
 
-const LazyHomePage = lazy(() => import('../pages/HomePage'));
-const LazyLoginPage = lazy(() => import('../pages/LoginPage'));
-const LazyRegisterPage = lazy(() => import('../pages/RegisterPage'));
-const Lazy404Page = lazy(() => import('../pages/404Page'));
-const LazyMyProfile = lazy(() => import('../pages/MyProfile'));
-const LazyChatPage = lazy(() => import('../pages/ChatPage'));
+const LazyHomePage = lazy(() => import("../pages/HomePage"));
+const LazyLoginPage = lazy(() => import("../pages/LoginPage"));
+const LazyRegisterPage = lazy(() => import("../pages/RegisterPage"));
+const Lazy404Page = lazy(() => import("../pages/404Page"));
+const LazyMyProfile = lazy(() => import("../pages/MyProfile"));
+const LazyChatPage = lazy(() => import("../pages/ChatPage"));
 
 export function RootRouter() {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export function RootRouter() {
       dispatch(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
       dispatch(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, false));
     }
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     checkAuth();
@@ -41,12 +41,12 @@ export function RootRouter() {
   return (
     <Router>
       <Switch>
-        <PrivateRoute exact path='/' component={LazyHomePage} />
-        <PrivateRoute exact path='/chat' component={LazyChatPage} />
-        <PrivateRoute exact path='/my-profile' component={LazyMyProfile} />
-        <Route path='/login' component={LazyLoginPage} />
-        <Route path='/register' component={LazyRegisterPage} />
-        <Route path='*' component={Lazy404Page} />
+        <PrivateRoute exact path="/" component={LazyHomePage} />
+        <PrivateRoute exact path="/chat" component={LazyChatPage} />
+        <PrivateRoute exact path="/my-profile" component={LazyMyProfile} />
+        <Route path="/login" component={LazyLoginPage} />
+        <Route path="/register" component={LazyRegisterPage} />
+        <Route path="*" component={Lazy404Page} />
       </Switch>
     </Router>
   );

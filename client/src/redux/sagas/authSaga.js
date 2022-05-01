@@ -21,11 +21,11 @@ function* login({ payload }) {
       return yield put(
         genericAction(LOGIN, ENUM_STATUS.SUCCESS, response.data.data.user)
       );
+    } else {
+      MemoryClient.remove("lp");
+      yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, response.data));
     }
-    MemoryClient.remove("lp");
-    yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, response.data));
   } catch (e) {
-    console.log("saga error : ", e);
     yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, e.message));
   }
 }

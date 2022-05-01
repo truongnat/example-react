@@ -8,5 +8,7 @@ const sagaMiddleware = createSagaMiddleware();
 // mount it on the Store
 export const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
 
+window.__store = store;
+
 // then run the saga
 sagaMiddleware.run(rootSaga);
