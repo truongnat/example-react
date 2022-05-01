@@ -4,18 +4,32 @@ const { UserRepo } = require("../schema/user.schema");
 require("dotenv").config();
 const { ServerException } = require("../exceptions");
 const authMiddleware = require("../middleware/auth.middleware");
+const { Controller } = require("../core");
+const { UserService } = require("../services");
 const router = express.Router();
 
-class UserController {
+class UserController extends Controller {
   _path = "/user";
   _router = router;
   constructor() {
+    super();
     this.initializeRoutes();
   }
 
   async update(req, res, next) {
-    const userInfo = req.body;
+    try {
+      await UserService.updateUser(req.userId, req.objUpdate);
+      res.json({
+        status: 200,
+        message: "success",
+      });
+    } catch (error) {
+      next(new ServerException(error.message));
+    }
+  }
 
+  async formatDataBeforeUpdate(req, res, next) {
+    const userInfo = req.body;
     let objUpdate = {};
     if (userInfo.username) {
       objUpdate.username = userInfo.username;
@@ -26,15 +40,9 @@ class UserController {
     if (userInfo.avatar_url) {
       objUpdate.avatar_url = userInfo.avatar_url;
     }
-    try {
-      await UserRepo.updateOne({ _id: req.userId }, { ...objUpdate });
-      res.json({
-        status: 200,
-        message: "success",
-      });
-    } catch (error) {
-      next(new ServerException(error.message));
-    }
+    req.objUpdate = objUpdate;
+
+    next();
   }
 
   async search(req, res, next) {
@@ -51,7 +59,12 @@ class UserController {
 
   initializeRoutes() {
     this._router.get(`${this._path}/search`, this.search);
-    this._router.post(`${this._path}/update`, authMiddleware, this.update);
+    this._router.put(
+      `${this._path}/update`,
+      authMiddleware,
+      this.formatDataBeforeUpdate,
+      this.update
+    );
   }
 }
 

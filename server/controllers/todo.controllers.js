@@ -1,5 +1,6 @@
 const express = require("express");
 const { STATUS_TODO } = require("../constants");
+const { Controller } = require("../core");
 const {
   BadRequestException,
   ServerException,
@@ -10,11 +11,12 @@ const { TodoRepo } = require("../schema/todo.schema");
 const { TodoService } = require("../services");
 const router = express.Router();
 
-class TodoController {
+class TodoController extends Controller {
   _path = "/todo";
   _router = router;
 
   constructor() {
+    super();
     this.initializeRoutes();
   }
 

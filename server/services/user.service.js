@@ -1,0 +1,55 @@
+const { DEFAULT_AVATAR } = require("../constants");
+const { Service } = require("../core");
+const bcrypt = require("bcrypt");
+const { UserRepo } = require("../schema/user.schema");
+const { NotFoundException } = require("../exceptions");
+
+class UserService extends Service {
+  async createUser({ username, password }) {
+    try {
+      const hashPassword = await bcrypt.hash(password, 10);
+
+      return await UserRepo.create({
+        username: username,
+        password: hashPassword,
+        avatar_url: DEFAULT_AVATAR,
+      });
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  }
+
+  async getUserById(_id) {
+    try {
+      const user = await UserRepo.findOne({ _id });
+
+      if (!user) {
+        throw new NotFoundException(`User with id ${_id} not found`);
+      }
+      return {
+        _id: user._id,
+        username: user.username,
+        avatar_url: user.avatar_url,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  }
+
+  async updateUser(_id, userUpdate) {
+    try {
+      return await UserRepo.findByIdAndUpdate(
+        { _id },
+        {
+          ...userUpdate,
+        }
+      );
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  }
+}
+
+module.exports = new UserService();

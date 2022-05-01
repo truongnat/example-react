@@ -2,7 +2,6 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { UserRepo } = require("../schema/user.schema");
-require("dotenv").config();
 const {
   ServerException,
   NotFoundException,
@@ -10,49 +9,26 @@ const {
   UnauthorizedException,
 } = require("../exceptions");
 const authMiddleware = require("../middleware/auth.middleware");
-const { DEFAULT_AVATAR } = require("../constants");
+const { Controller } = require("../core");
+const { UserService, AuthService } = require("../services");
 const router = express.Router();
 
-class AuthController {
+class AuthController extends Controller {
   _path = "/auth";
   _router = router;
   constructor() {
+    super();
     this.initializeRoutes();
   }
 
   async registerAccount(req, res, next) {
     const user = req.body.user;
-    if (!user) {
-      return next(new BadRequestException("user is not provider"));
-    }
-    if (!user["username"] || !user["password"]) {
-      const errors = [];
-      if (!user.username) {
-        errors.push({
-          field: "username",
-          message: "username is not empty!",
-        });
-      }
-
-      if (!user.password) {
-        errors.push({
-          field: "password",
-          message: "password is not empty!",
-        });
-      }
-      return next(new NotFoundException("failure", errors));
-    }
     try {
       const userExisting = await UserRepo.findOne({ username: user.username });
       if (userExisting) {
         return next(new BadRequestException("User already exists"));
       }
-      const hashPassword = await bcrypt.hash(user.password, 10);
-      await UserRepo.create({
-        username: user.username,
-        password: hashPassword,
-        avatar_url: DEFAULT_AVATAR,
-      });
+      await UserService.createUser(user);
       res.json({
         status: 200,
         message: "success",
@@ -64,37 +40,22 @@ class AuthController {
 
   async login(req, res, next) {
     try {
-      const { username, password } = req.body;
-      const user = await UserRepo.findOne({ username: username });
-      if (!user) {
-        return next(new BadRequestException("User not found"));
-      }
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return next(new BadRequestException("Password not matching!"));
-      }
-      const token = await jwt.sign(
-        {
-          id: user._id,
-          username: user.username,
-        },
-        process.env.SECRET_KEY,
-        {
-          expiresIn: 60 * 60 * 60,
-          algorithm: "HS256",
-        }
-      );
+      const { username, _id } = req.user;
 
-      await UserRepo.updateOne({ _id: user._id }, { oldToken: token });
+      const payload = {
+        id: _id,
+        username,
+      };
+
+      const token = await AuthService.generateToken(payload);
+
+      await UserRepo.updateOne({ _id }, { oldToken: token });
       return res.json({
         status: 200,
         message: "success",
         data: {
           access_token: token,
-          user: {
-            username: user.username,
-            id: user._id,
-          },
+          user: payload,
         },
       });
     } catch (error) {
@@ -112,23 +73,10 @@ class AuthController {
 
   async checkingMe(req, res, next) {
     try {
-      const user = await UserRepo.findOne({ _id: req.userId });
-      const response = {
-        _id: user._id,
-        username: user.username,
-        createdAt: user.createdAt,
-        avatar_url: user.avatar_url,
-        updatedAt: user.updatedAt,
-      };
-      if (!user) {
-        return next(
-          new BadRequestException("username or password not matching!")
-        );
-      }
       return res.json({
         status: 200,
         message: "success",
-        data: response,
+        data: await UserService.getUserById(req.userId),
       });
     } catch (e) {
       next(new ServerException(error.message));
@@ -137,49 +85,103 @@ class AuthController {
 
   async refreshToken(req, res, next) {
     try {
-      const { oldToken } = req.body;
-      const decoded = jwt.decode(oldToken);
-      if (decoded) {
-        const { id, username } = decoded;
+      const { _id, username } = req.user;
 
-        const userExist = await UserRepo.findOne({ _id: id });
+      const newToken = await AuthService.generateToken({
+        id: _id,
+        username,
+      });
 
-        if (!userExist) {
-          return next(new NotFoundException("User not found"));
-        }
-
-        if (userExist.oldToken !== oldToken) {
-          return next(new BadRequestException("Token invalid!"));
-        }
-
-        const newToken = await jwt.sign(
-          {
-            id,
-            username,
-          },
-          process.env.SECRET_KEY,
-          {
-            expiresIn: "7d",
-            algorithm: "HS256",
-          }
-        );
-        await UserRepo.updateOne({ _id: id }, { oldToken: newToken });
-        return res.json({
-          status: 200,
-          message: "success",
-          data: {
-            access_token: newToken,
-          },
-        });
-      }
+      await UserRepo.updateOne({ _id: id }, { oldToken: newToken });
+      return res.json({
+        status: 200,
+        message: "success",
+        data: {
+          access_token: newToken,
+        },
+      });
     } catch (error) {
       next(new UnauthorizedException());
     }
   }
 
+  async validateBeforeCreateAccount(req, res, next) {
+    const user = req.body.user;
+    if (!user) {
+      return next(new BadRequestException("User is not provider"));
+    }
+    const { username, password } = user;
+    if (!username || !password) {
+      const errors = [];
+      if (!user.username) {
+        errors.push({
+          field: "username",
+          message: "Username is not empty!",
+        });
+      }
+
+      if (!user.password) {
+        errors.push({
+          field: "password",
+          message: "Password is not empty!",
+        });
+      }
+      return next(new NotFoundException("failure", errors));
+    }
+
+    next();
+  }
+
+  async validateBeforeLogin(req, res, next) {
+    const { username, password } = req.body;
+    const user = await UserRepo.findOne({ username: username });
+    if (!user) {
+      return next(new BadRequestException("User not found"));
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return next(new BadRequestException("Password not matching!"));
+    }
+
+    req.user = user;
+    next();
+  }
+
+  async validateBeforeRefreshToken(req, res, next) {
+    const { oldToken } = req.body;
+    const decoded = jwt.decode(oldToken);
+    if (!decoded) {
+      return next(new BadRequestException("Bad request!"));
+    }
+
+    const { id } = decoded;
+
+    const userExist = await UserRepo.findOne({ _id: id });
+
+    if (!userExist) {
+      return next(new NotFoundException("User not found"));
+    }
+
+    if (userExist.oldToken !== oldToken) {
+      return next(new BadRequestException("OldToken invalid!"));
+    }
+
+    req.user = userExist;
+
+    next();
+  }
+
   initializeRoutes() {
-    this._router.post(`${this._path}/register`, this.registerAccount);
-    this._router.post(`${this._path}/login`, this.login);
+    this._router.post(
+      `${this._path}/register`,
+      this.validateBeforeCreateAccount,
+      this.registerAccount
+    );
+    this._router.post(
+      `${this._path}/login`,
+      this.validateBeforeLogin,
+      this.login
+    );
     this._router.post(`${this._path}/logout`, this.logout);
     this._router.post(`${this._path}/refresh-token`, this.refreshToken);
     this._router.get(
