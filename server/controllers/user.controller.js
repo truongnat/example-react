@@ -1,9 +1,9 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const { UserRepo } = require("../schema/user.schema");
+const { UserRepository } = require("../schema");
 require("dotenv").config();
 const { ServerException } = require("../exceptions");
-const authMiddleware = require("../middleware/auth.middleware");
+const { AuthMiddleware } = require("../middleware");
 const { Controller } = require("../core");
 const { UserService } = require("../services");
 const router = express.Router();
@@ -47,7 +47,7 @@ class UserController extends Controller {
 
   async search(req, res, next) {
     const { username } = req.query;
-    const results = await UserRepo.find({
+    const results = await UserRepository.find({
       username: new RegExp(username, "i"),
     });
     res.json({
@@ -61,7 +61,7 @@ class UserController extends Controller {
     this._router.get(`${this._path}/search`, this.search);
     this._router.put(
       `${this._path}/update`,
-      authMiddleware,
+      AuthMiddleware,
       this.formatDataBeforeUpdate,
       this.update
     );

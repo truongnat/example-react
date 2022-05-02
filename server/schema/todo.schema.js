@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const uuid = require("node-uuid");
+const { STATUS_TODO } = require("../constants");
 
 const todoSchema = new Schema(
   {
@@ -15,7 +16,7 @@ const todoSchema = new Schema(
     userId: String,
     status: {
       type: String,
-      enum: ["initial", "todo", "review", "done", "keeping"],
+      enum: STATUS_TODO,
     },
   },
   {
@@ -23,5 +24,4 @@ const todoSchema = new Schema(
   }
 );
 
-const TodoRepo = mongoose.model("todos", todoSchema);
-module.exports = { TodoRepo };
+module.exports = mongoose.model("todo", todoSchema);

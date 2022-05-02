@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const uuid = require('node-uuid');
-const { UserRepo } = require('./user.schema');
+const uuid = require("node-uuid");
 
 const roomSchema = new Schema(
   {
@@ -12,9 +11,15 @@ const roomSchema = new Schema(
       },
     },
     name: String,
-    author: UserRepo,
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
     lastMessage: String,
-    lastUserSend: UserRepo,
+    lastUserSend: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
     avatarUrl: String,
     isDeleted: Boolean,
   },
@@ -23,5 +28,4 @@ const roomSchema = new Schema(
   }
 );
 
-const RoomRepo = mongoose.model('room', roomSchema);
-module.exports = { RoomRepo };
+module.exports = mongoose.model("room", roomSchema);

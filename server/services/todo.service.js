@@ -1,18 +1,18 @@
 const { ENUM_STATUS_TODO } = require("../constants");
 const { Service } = require("../core");
 const { NotFoundException } = require("../exceptions");
-const { TodoRepo } = require("../schema/todo.schema");
+const { TodoRepository } = require("../schema");
 
 class TodoService extends Service {
   async createTodo(userId, { title, content }) {
     try {
-      const todoExists = await TodoRepo.findOne({ title });
+      const todoExists = await TodoRepository.findOne({ title });
 
       if (todoExists) {
         throw new NotFoundException(`todo with ${title} duplicate`);
       }
 
-      return await TodoRepo.create({
+      return await TodoRepository.create({
         title,
         content,
         userId,
@@ -26,7 +26,7 @@ class TodoService extends Service {
   async getAllTodo(userId, status) {
     try {
       const conditionsFilter = status ? { status } : {};
-      return await TodoRepo.find({
+      return await TodoRepository.find({
         userId,
         ...conditionsFilter,
       });
@@ -37,7 +37,7 @@ class TodoService extends Service {
 
   async updateTodo(_id, { title, content, status }) {
     try {
-      return await TodoRepo.findByIdAndUpdate(
+      return await TodoRepository.findByIdAndUpdate(
         { _id },
         {
           title: title,
@@ -52,7 +52,7 @@ class TodoService extends Service {
 
   async deleteTodo(_id) {
     try {
-      return await TodoRepo.findOneAndDelete({ _id });
+      return await TodoRepository.findOneAndDelete({ _id });
     } catch (e) {
       throw new Error(e.message);
     }

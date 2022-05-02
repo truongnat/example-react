@@ -6,7 +6,7 @@ const {
   ServerException,
   NotFoundException,
 } = require("../exceptions");
-const authMiddleware = require("../middleware/auth.middleware");
+const { AuthMiddleware } = require("../middleware");
 const { TodoRepo } = require("../schema/todo.schema");
 const { TodoService } = require("../services");
 const router = express.Router();
@@ -157,7 +157,7 @@ class TodoController extends Controller {
 
   initializeRoutes() {
     this._router
-      .all(`${this._path}/*`, authMiddleware)
+      .all(`${this._path}/*`, AuthMiddleware)
       .get(`${this._path}/getAll`, this.getAll)
       .post(`${this._path}/create`, this.validateBeforeCreate, this.create)
       .put(

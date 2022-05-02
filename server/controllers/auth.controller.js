@@ -1,14 +1,14 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { UserRepo } = require("../schema/user.schema");
+const { UserRepository } = require("../schema");
 const {
   ServerException,
   NotFoundException,
   BadRequestException,
   UnauthorizedException,
 } = require("../exceptions");
-const authMiddleware = require("../middleware/auth.middleware");
+const { AuthMiddleware } = require("../middleware");
 const { Controller } = require("../core");
 const { UserService, AuthService } = require("../services");
 const router = express.Router();
@@ -24,7 +24,9 @@ class AuthController extends Controller {
   async registerAccount(req, res, next) {
     const user = req.body.user;
     try {
-      const userExisting = await UserRepo.findOne({ username: user.username });
+      const userExisting = await UserRepository.findOne({
+        username: user.username,
+      });
       if (userExisting) {
         return next(new BadRequestException("User already exists"));
       }
@@ -49,7 +51,7 @@ class AuthController extends Controller {
 
       const token = await AuthService.generateToken(payload);
 
-      await UserRepo.updateOne({ _id }, { oldToken: token });
+      await UserRepository.updateOne({ _id }, { oldToken: token });
       return res.json({
         status: 200,
         message: "success",
@@ -92,7 +94,7 @@ class AuthController extends Controller {
         username,
       });
 
-      await UserRepo.updateOne({ _id: id }, { oldToken: newToken });
+      await UserRepository.updateOne({ _id: id }, { oldToken: newToken });
       return res.json({
         status: 200,
         message: "success",
@@ -134,7 +136,7 @@ class AuthController extends Controller {
 
   async validateBeforeLogin(req, res, next) {
     const { username, password } = req.body;
-    const user = await UserRepo.findOne({ username: username });
+    const user = await UserRepository.findOne({ username: username });
     if (!user) {
       return next(new BadRequestException("User not found"));
     }
@@ -156,7 +158,7 @@ class AuthController extends Controller {
 
     const { id } = decoded;
 
-    const userExist = await UserRepo.findOne({ _id: id });
+    const userExist = await UserRepository.findOne({ _id: id });
 
     if (!userExist) {
       return next(new NotFoundException("User not found"));
@@ -186,7 +188,7 @@ class AuthController extends Controller {
     this._router.post(`${this._path}/refresh-token`, this.refreshToken);
     this._router.get(
       `${this._path}/checking-me`,
-      authMiddleware,
+      AuthMiddleware,
       this.checkingMe
     );
   }

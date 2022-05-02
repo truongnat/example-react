@@ -13,4 +13,4 @@ function LoggerMiddleware(request, response, next) {
   next();
 }
 
-module.exports = { LoggerMiddleware };
+module.exports = LoggerMiddleware;

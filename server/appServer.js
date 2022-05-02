@@ -4,10 +4,10 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const { join } = require("path");
 const mongoose = require("mongoose");
-const { ErrorsMiddleware } = require("./middleware/errors.middleware");
-const { LoggerMiddleware } = require("./middleware/logger.middleware");
+const { ErrorsMiddleware, LoggerMiddleware } = require("./middleware");
 const SocketServer = require("./socketServer");
 const { ConsoleLogger } = require("./core");
+
 class AppServer {
   _app = express();
   _port = 5000;

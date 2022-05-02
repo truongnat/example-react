@@ -3,7 +3,7 @@ require("dotenv").config();
 const { UserRepo } = require("../schema/user.schema");
 const { UnauthorizedException, NotFoundException } = require("../exceptions");
 
-async function authMiddleware(req, res, next) {
+async function AuthMiddleware(req, res, next) {
   try {
     const tokenClient = req.headers.authorization;
     if (!tokenClient) {
@@ -28,4 +28,4 @@ async function authMiddleware(req, res, next) {
   }
 }
 
-module.exports = authMiddleware;
+module.exports = AuthMiddleware;

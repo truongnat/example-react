@@ -1,5 +1,5 @@
 function ErrorsMiddleware(exception, request, response, next) {
-  console.log('logging exception : ', exception);
+  console.log("logging exception : ", exception);
   const status = exception.status;
   const message = exception.message;
   const errors = exception.errors || null;
@@ -11,4 +11,4 @@ function ErrorsMiddleware(exception, request, response, next) {
   });
 }
 
-module.exports = { ErrorsMiddleware };
+module.exports = ErrorsMiddleware;

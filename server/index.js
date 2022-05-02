@@ -1,12 +1,14 @@
-const TodoController = require("./controllers/todo.controllers");
-const UserController = require("./controllers/user.controller");
-const AuthController = require("./controllers/auth.controller");
 const AppServer = require("./appServer");
+const {
+  AuthController,
+  TodoController,
+  UserController,
+} = require("./controllers");
 
 const app = new AppServer([
-  new TodoController(),
-  new UserController(),
   new AuthController(),
+  new UserController(),
+  new TodoController(),
 ]);
 
 app.startListening();

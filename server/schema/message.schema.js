@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const uuid = require('node-uuid');
-const { UserRepo } = require('./user.schema');
+const uuid = require("node-uuid");
 
 const messageSchema = new Schema(
   {
@@ -12,7 +11,10 @@ const messageSchema = new Schema(
       },
     },
     content: String,
-    author: UserRepo,
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
     isDeleted: Boolean,
   },
   {
@@ -20,5 +22,4 @@ const messageSchema = new Schema(
   }
 );
 
-const MessageRepo = mongoose.model('message', messageSchema);
-module.exports = { MessageRepo };
+module.exports = mongoose.model("message", messageSchema);
