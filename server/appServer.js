@@ -40,6 +40,9 @@ class AppServer {
     this._app.use(cors(this.buildCorsOpt()));
     this._app.use(bodyParser.json());
     this._app.use(express.static(join(__dirname, "build")));
+    this._app.get("*", (req, res) => {
+      res.sendFile(join(__dirname, "./build/index.html"));
+    });
   }
 
   initErrorHandling() {
