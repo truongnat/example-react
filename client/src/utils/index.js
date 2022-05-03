@@ -63,3 +63,13 @@ export const uploadFileFirebase = async (userId, file) => {
 export function classes(...parts) {
   return parts.filter(Boolean).join(" ");
 }
+
+export function createToast(toast, payload) {
+  toast({
+    duration: 3000,
+    isClosable: true,
+    variant: "left-accent",
+    position: "top",
+    ...payload,
+  });
+}

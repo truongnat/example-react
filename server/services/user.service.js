@@ -26,13 +26,7 @@ class UserService extends Service {
       if (!user) {
         throw new NotFoundException(`User with id ${_id} not found`);
       }
-      return {
-        _id: user._id,
-        username: user.username,
-        avatar_url: user.avatar_url,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      };
+      return user;
     } catch (e) {
       throw new Error(e.message);
     }

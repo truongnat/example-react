@@ -1,129 +1,98 @@
-import React, { useState } from 'react';
-
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Stack,
-  useToast,
-  Link,
-} from '@chakra-ui/react';
-import { useHistory } from 'react-router-dom';
-import { Authenticate } from '../services';
+import React from "react";
+import { Button, Flex, Stack, useToast, Link } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
+import { AuthLayout } from "../layout";
+import { useForm } from "react-hook-form";
+import { ControlInput } from "../components";
+import { useDispatch, useSelector } from "react-redux";
+import { ENUM_STATUS, genericAction, REGISTER } from "../redux/actions";
+import { authLoadingSelector } from "../redux/selector";
 
 export default function RegisterPage() {
-  const [formRegister, setFormLogin] = useState({
-    username: '',
-    password: '',
-  });
-  const [loading, setLoading] = useState(false);
-
   const toast = useToast();
   const history = useHistory();
+  const dispatch = useDispatch();
 
-  const onChangeForm = (name, val) => {
-    setFormLogin({
-      ...formRegister,
-      [name]: val,
-    });
-  };
+  const loading = useSelector(authLoadingSelector);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    if (!formRegister.username || !formRegister.password) {
-      toast({
-        title: 'Validate Form',
-        description: 'Username field or Password field is empty!',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        variant: 'left-accent',
-        position: 'top',
-      });
-      return false;
-    }
-    try {
-      setLoading(true);
-      const response = await new Authenticate().register(formRegister);
-      setLoading(false);
-      if (response.data.status === 200) {
-        toast({
-          title: 'Register success',
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-          variant: 'left-accent',
-          position: 'top',
-        });
-        setTimeout(() => {
-          history.push('/login');
-        }, 3000);
-        return;
-      }
-      toast({
-        title: 'Register failure',
-        description: 'Something went wrong!',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        variant: 'left-accent',
-        position: 'top',
-      });
-    } catch (e) {
-      setLoading(false);
-      toast({
-        title: 'Register failure',
-        description: 'Something went wrong!',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        variant: 'left-accent',
-        position: 'top',
-      });
-    }
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm({
+    defaultValues: {
+      username: "",
+      password: "",
+      rePassword: "",
+    },
+  });
+
+  const onSubmit = (data) =>
+    dispatch(
+      genericAction(REGISTER, ENUM_STATUS.FETCHING, { data, toast, history })
+    );
 
   return (
-    <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
-      <Flex p={8} flex={1} align={'center'} justify={'center'}>
-        <Stack spacing={4} w={'full'} maxW={'md'}>
-          <Heading fontSize={'2xl'}>Register new account</Heading>
-          <FormControl id='email'>
-            <FormLabel>Username or Email address</FormLabel>
-            <Input
-              type='username'
-              autoComplete='off'
-              value={formRegister.username}
-              onChange={(e) => onChangeForm('username', e.target.value)}
-            />
-          </FormControl>
-          <FormControl id='password'>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type='password'
-              autoComplete='off'
-              value={formRegister.password}
-              onChange={(e) => onChangeForm('password', e.target.value)}
-            />
-          </FormControl>
-          <Stack spacing={6}>
-            <Button
-              isLoading={loading}
-              onClick={onSubmit}
-              colorScheme={'blue'}
-              variant={'solid'}
-            >
-              Register
-            </Button>
-            <Flex justifyContent={'flex-end'}>
-              <Link href={'/login'}>Login account!</Link>
-            </Flex>
-          </Stack>
+    <AuthLayout
+      title={"Register new account!"}
+      footer={
+        <Stack spacing={6}>
+          <Button
+            isLoading={loading}
+            onClick={handleSubmit(onSubmit)}
+            colorScheme={"blue"}
+            variant={"solid"}
+          >
+            Register
+          </Button>
+          <Flex justifyContent={"flex-end"}>
+            <Link href={"/login"}>Login account!</Link>
+          </Flex>
         </Stack>
-      </Flex>
-    </Stack>
+      }
+    >
+      <Stack>
+        <ControlInput
+          name={"username"}
+          control={control}
+          rules={{ required: "Username is required!" }}
+          label={"Username or Email address"}
+          errorMessage={errors?.username?.message}
+        />
+
+        <ControlInput
+          name={"password"}
+          control={control}
+          isPassword
+          rules={{
+            required: "Password is required!",
+            minLength: {
+              value: 8,
+              message: "Password must have at least 8 characters!",
+            },
+          }}
+          label={"Password"}
+          errorMessage={errors?.password?.message}
+        />
+
+        <ControlInput
+          name={"rePassword"}
+          control={control}
+          isPassword
+          rules={{
+            required: "Repeat password is required!",
+            minLength: {
+              value: 8,
+              message: "Password must have at least 8 characters!",
+            },
+            validate: (value) =>
+              value === watch("password") || "The passwords do not match!",
+          }}
+          label={"Repeat Password"}
+          errorMessage={errors?.rePassword?.message}
+        />
+      </Stack>
+    </AuthLayout>
   );
 }

@@ -1,115 +1,86 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from "react";
 
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Stack,
-  useToast,
-  Link,
-} from '@chakra-ui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ENUM_STATUS, genericAction, LOGIN } from '../redux/actions';
-import { selectorAuth, userSelector } from '../redux/selector';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Button, Flex, Stack, useToast, Link } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
+import { authenticatedSelector, authLoadingSelector } from "../redux/selector";
+import { useHistory, useLocation } from "react-router-dom";
+import { AuthLayout } from "../layout";
+import { useForm } from "react-hook-form";
+import { ControlInput } from "../components";
 export default function LoginPage() {
-  const [formLogin, setFormLogin] = useState({
-    username: '',
-    password: '',
-  });
   const toast = useToast();
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
-  const isAuthenticated = useSelector(selectorAuth);
-  const { loading, errors } = useSelector(userSelector);
+  const isAuthenticated = useSelector(authenticatedSelector);
 
-  const onChangeForm = (name, val) => {
-    setFormLogin({
-      ...formLogin,
-      [name]: val,
-    });
-  };
+  const loading = useSelector(authLoadingSelector);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    if (!formLogin.username || !formLogin.password) {
-      toast({
-        title: 'Validate Form',
-        description: 'Username field or Password field is empty!',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        variant: 'left-accent',
-        position: 'top',
-      });
-      return;
-    }
-    dispatch(genericAction(LOGIN, ENUM_STATUS.FETCHING, formLogin));
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      username: "truong200122",
+      password: "truong2001",
+    },
+  });
+
+  const onSubmit = (data) =>
+    dispatch(genericAction(LOGIN, ENUM_STATUS.FETCHING, { data, toast }));
+
   useEffect(() => {
     if (isAuthenticated) {
-      const { from } = location.state || { from: { pathname: '/' } };
+      const { from } = location.state || { from: { pathname: "/" } };
       history.push(from);
     }
-  }, [isAuthenticated, location.state, history]);
-
-  useEffect(() => {
-    if (errors) {
-      toast({
-        title: 'Login failure',
-        description: errors.message,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        variant: 'left-accent',
-        position: 'top',
-      });
-      dispatch(genericAction(LOGIN, ENUM_STATUS.RESET, null));
-    }
-  }, [errors, toast, dispatch]);
+  }, [isAuthenticated, location.state]);
 
   return (
-    <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
-      <Flex p={8} flex={1} align={'center'} justify={'center'}>
-        <Stack spacing={4} w={'full'} maxW={'md'}>
-          <Heading fontSize={'2xl'}>Sign in to your account</Heading>
-          <FormControl id='email'>
-            <FormLabel>Username or Email address</FormLabel>
-            <Input
-              type='username'
-              autoComplete='off'
-              value={formLogin.username}
-              onChange={(e) => onChangeForm('username', e.target.value)}
-            />
-          </FormControl>
-          <FormControl id='password'>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type='password'
-              autoComplete='off'
-              value={formLogin.password}
-              onChange={(e) => onChangeForm('password', e.target.value)}
-            />
-          </FormControl>
-          <Stack spacing={6}>
-            <Button
-              isLoading={loading}
-              onClick={onSubmit}
-              colorScheme={'blue'}
-              variant={'solid'}
-            >
-              Sign in
-            </Button>
-            <Flex justifyContent={'flex-end'}>
-              <Link href={'/register'}>Register account!</Link>
-            </Flex>
-          </Stack>
+    <AuthLayout
+      title={"Sign in to your account!"}
+      footer={
+        <Stack spacing={6}>
+          <Button
+            isLoading={loading}
+            onClick={handleSubmit(onSubmit)}
+            colorScheme={"blue"}
+            variant={"solid"}
+          >
+            Sign in
+          </Button>
+          <Flex justifyContent={"flex-end"}>
+            <Link href={"/register"}>Register account!</Link>
+          </Flex>
         </Stack>
-      </Flex>
-    </Stack>
+      }
+    >
+      <Stack>
+        <ControlInput
+          name={"username"}
+          control={control}
+          rules={{ required: "Username is required!" }}
+          label={"Username or Email address"}
+          errorMessage={errors?.username?.message}
+        />
+
+        <ControlInput
+          name={"password"}
+          control={control}
+          isPassword
+          rules={{
+            required: "Password is required!",
+            minLength: {
+              value: 8,
+              message: "Password must have at least 8 characters!",
+            },
+          }}
+          label={"Password"}
+          errorMessage={errors?.password?.message}
+        />
+      </Stack>
+    </AuthLayout>
   );
 }

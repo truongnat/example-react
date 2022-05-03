@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Button,
   Flex,
@@ -13,14 +13,15 @@ import {
   IconButton,
   Center,
   useToast,
-} from '@chakra-ui/react';
-import { Footer, Header, SingleUploadFile } from '../components';
-import { HiOutlineStatusOnline } from 'react-icons/hi';
-import { useHistory } from 'react-router-dom';
-import { userSelector } from '../redux/selector';
-import { useDispatch, useSelector } from 'react-redux';
-import { Authenticate } from '../services';
-import { ENUM_STATUS, genericAction, LOGIN } from '../redux/actions';
+} from "@chakra-ui/react";
+import { Footer, Header, SingleUploadFile } from "../components";
+import { HiOutlineStatusOnline } from "react-icons/hi";
+import { useHistory } from "react-router-dom";
+import { userSelector } from "../redux/selector";
+import { useDispatch, useSelector } from "react-redux";
+import { Authenticate } from "../services";
+import { ENUM_STATUS, genericAction, LOGIN } from "../redux/actions";
+import { DEFAULT_AVATAR } from "../constants";
 
 export default function MyProfile() {
   const history = new useHistory();
@@ -34,10 +35,10 @@ export default function MyProfile() {
   const [loading, setLoading] = useState(false);
 
   const [formEdit, setFormEdit] = useState({
-    username: '',
-    password: '',
-    re_password: '',
-    avatar_url: '',
+    username: "",
+    password: "",
+    re_password: "",
+    avatar_url: "",
   });
 
   const handleChangeForm = (e) => {
@@ -55,59 +56,59 @@ export default function MyProfile() {
   };
 
   const handleSubmit = async () => {
-    let validPassword = formEdit.password === formEdit.re_password;
-    if ((formEdit.password || formEdit.re_password) && !validPassword) {
-      return toast({
-        title: 'Validate Form',
-        description: 'Password not matching!',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        variant: 'left-accent',
-        position: 'top',
-      });
-    }
-    let objUpdate = {};
-    for (const k in formEdit) {
-      if (formEdit[k] !== '' && k !== 're_password') {
-        objUpdate[k] = formEdit[k];
-      }
-    }
-
-    try {
-      setLoading(true);
-      const response = await new Authenticate().update(objUpdate);
-      setLoading(false);
-      if (response.data && response.data.status === 200) {
-        toast({
-          title: 'Update success',
-          description: 'Update process success, thanks for updating!',
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-          variant: 'left-accent',
-          position: 'top',
-        });
-        const dataUser = await new Authenticate().isAuthenticated();
-        dispatch(genericAction(LOGIN, ENUM_STATUS.SUCCESS, dataUser));
-        setFormEdit({
-          ...formEdit,
-          re_password: '',
-          avatar_url: '',
-        });
-      }
-    } catch (e) {
-      setLoading(false);
-      toast({
-        title: 'Update failure',
-        description: 'Something went wrong update profile',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        variant: 'left-accent',
-        position: 'top',
-      });
-    }
+//     let validPassword = formEdit.password === formEdit.re_password;
+//     if ((formEdit.password || formEdit.re_password) && !validPassword) {
+//       return toast({
+//         title: "Validate Form",
+//         description: "Password not matching!",
+//         status: "error",
+//         duration: 3000,
+//         isClosable: true,
+//         variant: "left-accent",
+//         position: "top",
+//       });
+//     }
+//     let objUpdate = {};
+//     for (const k in formEdit) {
+//       if (formEdit[k] !== "" && k !== "re_password") {
+//         objUpdate[k] = formEdit[k];
+//       }
+//     }
+// 
+//     try {
+//       setLoading(true);
+//       const response = await new Authenticate().update(objUpdate);
+//       setLoading(false);
+//       if (response.data && response.data.status === 200) {
+//         toast({
+//           title: "Update success",
+//           description: "Update process success, thanks for updating!",
+//           status: "success",
+//           duration: 3000,
+//           isClosable: true,
+//           variant: "left-accent",
+//           position: "top",
+//         });
+//         const dataUser = await new Authenticate().isAuthenticated();
+//         dispatch(genericAction(LOGIN, ENUM_STATUS.SUCCESS, dataUser));
+//         setFormEdit({
+//           ...formEdit,
+//           re_password: "",
+//           avatar_url: "",
+//         });
+//       }
+//     } catch (e) {
+//       setLoading(false);
+//       toast({
+//         title: "Update failure",
+//         description: "Something went wrong update profile",
+//         status: "error",
+//         duration: 3000,
+//         isClosable: true,
+//         variant: "left-accent",
+//         position: "top",
+//       });
+//     }
   };
 
   useEffect(() => {
@@ -122,103 +123,103 @@ export default function MyProfile() {
     <>
       <Header />
       <Flex
-        align={'center'}
-        justify={'center'}
-        bg={useColorModeValue('gray.50', 'gray.800')}
+        align={"center"}
+        justify={"center"}
+        bg={useColorModeValue("gray.50", "gray.800")}
       >
         <Stack
           spacing={4}
-          w={'full'}
-          maxW={'md'}
-          bg={useColorModeValue('white', 'gray.700')}
-          rounded={'xl'}
-          boxShadow={'lg'}
+          w={"full"}
+          maxW={"md"}
+          bg={useColorModeValue("white", "gray.700")}
+          rounded={"xl"}
+          boxShadow={"lg"}
           p={6}
           my={12}
         >
-          <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
+          <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
             User Profile Edit
           </Heading>
-          <FormControl id='userName'>
+          <FormControl id="userName">
             <FormLabel>User Avatar</FormLabel>
-            <Stack direction={['column', 'row']} spacing={6}>
+            <Stack direction={["column", "row"]} spacing={6}>
               <Center>
                 <Avatar
-                  size='xl'
+                  size="xl"
                   src={
                     formEdit?.avatar_url ||
                     dataUser.user?.avatar_url ||
-                    'https://avatars.dicebear.com/api/male/username.svg'
+                    DEFAULT_AVATAR
                   }
                 >
                   <AvatarBadge
                     as={IconButton}
-                    size='sm'
-                    rounded='full'
-                    top='-10px'
-                    colorScheme='green'
-                    aria-label='remove Image'
+                    size="sm"
+                    rounded="full"
+                    top="-10px"
+                    colorScheme="green"
+                    aria-label="remove Image"
                     icon={<HiOutlineStatusOnline />}
                   />
                 </Avatar>
               </Center>
-              <Center w='full' className={'relative'}>
+              <Center w="full" className={"relative"}>
                 <SingleUploadFile onComplete={handleComplete} />
               </Center>
             </Stack>
           </FormControl>
-          <FormControl id='userName' isRequired>
+          <FormControl id="userName" isRequired>
             <FormLabel>User name</FormLabel>
             <Input
-              placeholder='UserName'
-              _placeholder={{ color: 'gray.500' }}
-              type='text'
+              placeholder="UserName"
+              _placeholder={{ color: "gray.500" }}
+              type="text"
               value={formEdit.username}
-              name={'username'}
+              name={"username"}
               onChange={handleChangeForm}
             />
           </FormControl>
-          <FormControl id='password' isRequired>
+          <FormControl id="password" isRequired>
             <FormLabel>New password</FormLabel>
             <Input
-              placeholder='password'
-              _placeholder={{ color: 'gray.500' }}
-              type='password'
-              name={'password'}
+              placeholder="password"
+              _placeholder={{ color: "gray.500" }}
+              type="password"
+              name={"password"}
               value={formEdit.password}
               onChange={handleChangeForm}
             />
           </FormControl>
-          <FormControl id='re-password' isRequired>
+          <FormControl id="re-password" isRequired>
             <FormLabel>Confirm password</FormLabel>
             <Input
-              placeholder='Confirm password'
-              _placeholder={{ color: 'gray.500' }}
-              type='password'
-              name={'re_password'}
+              placeholder="Confirm password"
+              _placeholder={{ color: "gray.500" }}
+              type="password"
+              name={"re_password"}
               value={formEdit.re_password}
               onChange={handleChangeForm}
             />
           </FormControl>
-          <Stack spacing={6} direction={['column', 'row']}>
+          <Stack spacing={6} direction={["column", "row"]}>
             <Button
-              bg={'red.400'}
-              color={'white'}
-              w='full'
+              bg={"red.400"}
+              color={"white"}
+              w="full"
               _hover={{
-                bg: 'red.500',
+                bg: "red.500",
               }}
-              onClick={() => history.push('/')}
+              onClick={() => history.push("/")}
             >
               Cancel
             </Button>
             <Button
               isLoading={loading}
-              bg={'blue.400'}
-              color={'white'}
-              w='full'
+              bg={"blue.400"}
+              color={"white"}
+              w="full"
               _hover={{
-                bg: 'blue.500',
+                bg: "blue.500",
               }}
               onClick={handleSubmit}
             >

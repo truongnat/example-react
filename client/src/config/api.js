@@ -1,14 +1,14 @@
 import axios from "axios";
-import { StatusCode } from "../constants";
+// import { StatusCode } from "../constants";
 import { MemoryClient } from "../utils";
 
 // const baseURLMock = "https://jsonplaceholder.typicode.com/";
-const baseURL = "http://localhost:5000/";
+const baseURL = "http://localhost:5000";
 /**
  * @Api Custom class base axios auto inject token header on session storage.
  * @support fetch - post - put - patch - delete.
  * */
-export class Api {
+class AxiosInstance {
   _axiosInstance;
 
   constructor() {
@@ -18,49 +18,49 @@ export class Api {
           ? process.env.REACT_APP_BASE_URL
           : baseURL,
       headers: { ...this.getHeader() },
-      timeout: 10000,
+      timeout: 100000,
     });
 
-    this._axiosInstance.interceptors.request.use(
-      (config) => {
-        return config;
-      },
-      (error) => {
-        return error;
-      }
-    );
+    // this._axiosInstance.interceptors.request.use(
+    //   (config) => {
+    //     return config;
+    //   },
+    //   (error) => {
+    //     return error;
+    //   }
+    // );
 
-    this._axiosInstance.interceptors.response.use(
-      (response) => {
-        return response;
-      },
-      async (error) => {
-        const originalRequest = error.config;
-        if (
-          error.response.status === StatusCode.UnAuthorized &&
-          !originalRequest._retry
-        ) {
-          originalRequest._retry = true;
-
-          await this._axiosInstance
-            .post("/auth/refresh-token", {
-              oldToken: this.getToken(),
-            })
-            .then((res) => {
-              if (res.status === StatusCode.Created) {
-                console.log(
-                  "🚀 ~ file: api.js ~ line 68 ~ Api ~ constructor ~ res",
-                  res
-                );
-              } else {
-                MemoryClient.clearAll();
-              }
-            });
-        }
-
-        return error;
-      }
-    );
+    //     this._axiosInstance.interceptors.response.use(
+    //       (response) => {
+    //         return response;
+    //       },
+    //       async (error) => {
+    //         const originalRequest = error.config;
+    //         if (
+    //           error.response.status === StatusCode.UnAuthorized &&
+    //           !originalRequest._retry
+    //         ) {
+    //           originalRequest._retry = true;
+    //
+    //           await this._axiosInstance
+    //             .post("/auth/refresh-token", {
+    //               oldToken: this.getToken(),
+    //             })
+    //             .then((res) => {
+    //               if (res.status === StatusCode.Created) {
+    //                 console.log(
+    //                   "🚀 ~ file: api.js ~ line 68 ~ Api ~ constructor ~ res",
+    //                   res
+    //                 );
+    //               } else {
+    //                 MemoryClient.clearAll();
+    //               }
+    //             });
+    //         }
+    //
+    //         return error;
+    //       }
+    //     );
   }
 
   /**
@@ -123,3 +123,5 @@ export class Api {
     return MemoryClient.get("lp") || "";
   }
 }
+
+export const axiosInstanceClient = new AxiosInstance();

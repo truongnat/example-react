@@ -7,7 +7,7 @@ const {
   NotFoundException,
 } = require("../exceptions");
 const { AuthMiddleware } = require("../middleware");
-const { TodoRepo } = require("../schema/todo.schema");
+const { TodoRepository } = require("../schema");
 const { TodoService } = require("../services");
 const router = express.Router();
 
@@ -23,7 +23,7 @@ class TodoController extends Controller {
   async create(req, res, next) {
     const todo = req.body;
     try {
-      const todoCreated = await TodoService.createTodo(req.userId, todo);
+      const todoCreated = await TodoService.createTodo(req.user._id, todo);
       res.json({
         status: 200,
         message: "success",
@@ -47,13 +47,13 @@ class TodoController extends Controller {
         return next(new BadRequestException("getAll todo failure", errors));
       }
 
-      const todoList = await TodoService.getAllTodo(req.userId, status);
+      const todoList = await TodoService.getAllTodo(req.user._id, status);
 
       return res.json({
         status: 200,
         message: "success",
         data: {
-          todos: todoList,
+          todoList,
         },
       });
     } catch (error) {
@@ -107,10 +107,7 @@ class TodoController extends Controller {
   async validateBeforeCreate(req, res, next) {
     const todo = req.body;
     if (!todo) {
-      return res.json({
-        status: 400,
-        message: "Todo is not provider",
-      });
+      return next(new BadRequestException("Todo is not provider"));
     }
 
     const { title, content } = todo;
@@ -133,7 +130,7 @@ class TodoController extends Controller {
       return next(new BadRequestException("create todo failure", errors));
     }
 
-    const todoExists = await TodoRepo.findOne({ title });
+    const todoExists = await TodoRepository.findOne({ title });
 
     if (todoExists) {
       return next(
@@ -146,7 +143,7 @@ class TodoController extends Controller {
 
   async validateBeforeUpdateOrDelete(req, res, next) {
     const _id = req.params.todoId;
-    const todoExists = await TodoRepo.findOne({ _id });
+    const todoExists = await TodoRepository.findOne({ _id });
 
     if (!todoExists) {
       return next(new NotFoundException(`Todo with id: ${_id} not found`));

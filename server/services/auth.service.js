@@ -1,5 +1,6 @@
 const { Service } = require("../core");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 class AuthService extends Service {
   async generateToken(data) {

@@ -42,11 +42,12 @@ class AuthController extends Controller {
 
   async login(req, res, next) {
     try {
-      const { username, _id } = req.user;
+      const { username, _id, avatar_url } = req.user;
 
       const payload = {
         id: _id,
         username,
+        avatar_url,
       };
 
       const token = await AuthService.generateToken(payload);
@@ -73,12 +74,12 @@ class AuthController extends Controller {
     });
   }
 
-  async checkingMe(req, res, next) {
+  async whoAmI(req, res, next) {
     try {
       return res.json({
         status: 200,
         message: "success",
-        data: await UserService.getUserById(req.userId),
+        data: req.user,
       });
     } catch (e) {
       next(new ServerException(error.message));
@@ -138,7 +139,7 @@ class AuthController extends Controller {
     const { username, password } = req.body;
     const user = await UserRepository.findOne({ username: username });
     if (!user) {
-      return next(new BadRequestException("User not found"));
+      return next(new NotFoundException("User not found"));
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -186,11 +187,7 @@ class AuthController extends Controller {
     );
     this._router.post(`${this._path}/logout`, this.logout);
     this._router.post(`${this._path}/refresh-token`, this.refreshToken);
-    this._router.get(
-      `${this._path}/checking-me`,
-      AuthMiddleware,
-      this.checkingMe
-    );
+    this._router.get(`${this._path}/me`, AuthMiddleware, this.whoAmI);
   }
 }
 
