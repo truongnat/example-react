@@ -51,13 +51,13 @@ class AuthController extends Controller {
       };
 
       const token = await AuthService.generateToken(payload);
-
-      await UserRepository.updateOne({ _id }, { oldToken: token });
+      const refreshToken = await AuthService.generateRefreshToken(payload);
       return res.json({
         status: 200,
         message: "success",
         data: {
           access_token: token,
+          refresh_token: refreshToken,
           user: payload,
         },
       });
@@ -95,12 +95,17 @@ class AuthController extends Controller {
         username,
       });
 
-      await UserRepository.updateOne({ _id: id }, { oldToken: newToken });
+      const newRefreshToken = await AuthService.generateRefreshToken({
+        id: _id,
+        username,
+      });
+
       return res.json({
         status: 200,
         message: "success",
         data: {
           access_token: newToken,
+          refresh_token: newRefreshToken,
         },
       });
     } catch (error) {
@@ -153,6 +158,7 @@ class AuthController extends Controller {
   async validateBeforeRefreshToken(req, res, next) {
     const { oldToken } = req.body;
     const decoded = jwt.decode(oldToken);
+
     if (!decoded) {
       return next(new BadRequestException("Bad request!"));
     }
@@ -163,10 +169,6 @@ class AuthController extends Controller {
 
     if (!userExist) {
       return next(new NotFoundException("User not found"));
-    }
-
-    if (userExist.oldToken !== oldToken) {
-      return next(new BadRequestException("OldToken invalid!"));
     }
 
     req.user = userExist;
@@ -186,7 +188,11 @@ class AuthController extends Controller {
       this.login
     );
     this._router.post(`${this._path}/logout`, this.logout);
-    this._router.post(`${this._path}/refresh-token`, this.refreshToken);
+    this._router.post(
+      `${this._path}/refresh-token`,
+      this.validateBeforeRefreshToken,
+      this.refreshToken
+    );
     this._router.get(`${this._path}/me`, AuthMiddleware, this.whoAmI);
   }
 }

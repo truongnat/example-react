@@ -22,7 +22,7 @@ export default function MenuUserDropdown() {
   const dataUser = useSelector(userSelector);
 
   const handleLogout = async () => {
-    MemoryClient.removeMultiple(["lp", "anonymous_user"]);
+    MemoryClient.removeMultiple(["lp", "rlp", "anonymous_user"]);
     history.push("/login");
     dispatch(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, false));
   };

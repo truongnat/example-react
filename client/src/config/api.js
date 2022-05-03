@@ -1,4 +1,5 @@
 import axios from "axios";
+import { StatusCode } from "../constants";
 // import { StatusCode } from "../constants";
 import { MemoryClient } from "../utils";
 
@@ -17,50 +18,65 @@ class AxiosInstance {
         process.env.NODE_ENV === "production"
           ? process.env.REACT_APP_BASE_URL
           : baseURL,
-      headers: { ...this.getHeader() },
       timeout: 100000,
     });
 
-    // this._axiosInstance.interceptors.request.use(
-    //   (config) => {
-    //     return config;
-    //   },
-    //   (error) => {
-    //     return error;
-    //   }
-    // );
+    this._axiosInstance.interceptors.request.use(
+      (config) => {
+        config.headers = {
+          ...config.headers,
+          ...this.getHeader(),
+        };
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
 
-    //     this._axiosInstance.interceptors.response.use(
-    //       (response) => {
-    //         return response;
-    //       },
-    //       async (error) => {
-    //         const originalRequest = error.config;
-    //         if (
-    //           error.response.status === StatusCode.UnAuthorized &&
-    //           !originalRequest._retry
-    //         ) {
-    //           originalRequest._retry = true;
-    //
-    //           await this._axiosInstance
-    //             .post("/auth/refresh-token", {
-    //               oldToken: this.getToken(),
-    //             })
-    //             .then((res) => {
-    //               if (res.status === StatusCode.Created) {
-    //                 console.log(
-    //                   "🚀 ~ file: api.js ~ line 68 ~ Api ~ constructor ~ res",
-    //                   res
-    //                 );
-    //               } else {
-    //                 MemoryClient.clearAll();
-    //               }
-    //             });
-    //         }
-    //
-    //         return error;
-    //       }
-    //     );
+    this._axiosInstance.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      async (err) => {
+        const originalConfig = err.config;
+        console.log(
+          "🚀 ~ file: api.js ~ line 43 ~ AxiosInstance ~ originalConfig",
+          originalConfig
+        );
+
+        if (
+          originalConfig.url === "/auth/me" &&
+          err.response &&
+          this.getToken() &&
+          this.getRefreshToken()
+        ) {
+          // Access Token was expired
+          if (
+            err.response.status === StatusCode.UnAuthorized &&
+            !originalConfig._retry
+          ) {
+            originalConfig._retry = true;
+
+            try {
+              const rs = await this._axiosInstance.post("/auth/refresh-token", {
+                oldToken: this.getRefreshToken(),
+              });
+
+              const { access_token, refresh_token } = rs.data.data;
+              MemoryClient.set("lp", access_token);
+              MemoryClient.set("rlp", refresh_token);
+
+              return this._axiosInstance(originalConfig);
+            } catch (_error) {
+              return Promise.reject(_error);
+            }
+          }
+        }
+
+        return Promise.reject(err);
+      }
+    );
   }
 
   /**
@@ -114,13 +130,17 @@ class AxiosInstance {
    * */
   getHeader() {
     return {
-      Authorization: "Bearer " + this.getToken(),
       "Content-Type": "application/json",
+      "x-access-token": this.getToken(),
     };
   }
 
   getToken() {
     return MemoryClient.get("lp") || "";
+  }
+
+  getRefreshToken() {
+    return MemoryClient.get("rlp") || "";
   }
 }
 

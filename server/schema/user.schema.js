@@ -13,7 +13,6 @@ const userSchema = new Schema(
     username: String,
     password: String,
     avatar_url: String,
-    oldToken: String,
   },
   {
     timestamps: true,

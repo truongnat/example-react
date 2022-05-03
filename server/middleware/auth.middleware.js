@@ -5,13 +5,11 @@ const { UnauthorizedException, NotFoundException } = require("../exceptions");
 
 async function AuthMiddleware(req, res, next) {
   try {
-    const tokenClient = req.headers.authorization;
-
+    const tokenClient = req.headers["x-access-token"];
     if (!tokenClient) {
       return next(new UnauthorizedException());
     }
-    const token = tokenClient.split(" ")[1];
-    const validToken = jwt.verify(token, process.env.SECRET_KEY, {
+    const validToken = jwt.verify(tokenClient, process.env.SECRET_KEY, {
       algorithms: ["HS256"],
     });
 

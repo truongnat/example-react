@@ -9,6 +9,13 @@ class AuthService extends Service {
       algorithm: "HS256",
     });
   }
+
+  async generateRefreshToken(data) {
+    return await jwt.sign(data, process.env.SECRET_KEY, {
+      expiresIn: process.env.JWT_REFRESH_EXPIRED,
+      algorithm: "HS256",
+    });
+  }
 }
 
 module.exports = new AuthService();
