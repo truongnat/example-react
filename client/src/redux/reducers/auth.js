@@ -1,4 +1,10 @@
-import { ENUM_STATUS, genericType, LOGIN, REGISTER } from "../actions";
+import {
+  CHECKING_AUTH,
+  ENUM_STATUS,
+  genericType,
+  LOGIN,
+  REGISTER,
+} from "../actions";
 
 const initReducer = {
   user: null,
@@ -18,6 +24,7 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
         messageError: "",
       };
     case genericType(LOGIN, ENUM_STATUS.SUCCESS):
+    case genericType(CHECKING_AUTH, ENUM_STATUS.SUCCESS):
       return {
         ...state,
         loading: false,

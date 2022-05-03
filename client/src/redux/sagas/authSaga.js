@@ -8,6 +8,7 @@ import {
   genericAction,
   genericType,
   GET_ALL_TODO,
+  LOADING_APP,
   LOGIN,
   REGISTER,
 } from "../actions";
@@ -46,11 +47,11 @@ function* login({ payload }) {
     MemoryClient.set("lp", result.data.data.access_token);
     yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
     yield put(genericAction(LOGIN, ENUM_STATUS.SUCCESS, result.data.data.user));
-    yield put(
-      genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING, {
-        status: ENUM_STATUS_TODO.INIT,
-      })
-    );
+    // yield put(
+    //   genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING, {
+    //     status: ENUM_STATUS_TODO.INIT,
+    //   })
+    // );
   } catch (e) {
     yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, e.message));
   }
@@ -102,7 +103,29 @@ function* register({ payload }) {
   }
 }
 
+function* checkAuthSaga({ payload }) {
+  try {
+    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, true));
+    const result = yield serviceClient._authService.whoAmI();
+    if (result.status === StatusCode.Success) {
+      yield put(
+        genericAction(CHECKING_AUTH, ENUM_STATUS.SUCCESS, result.data.data)
+      );
+      yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
+    }
+    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
+
+    payload.history.push("/");
+  } catch (e) {
+    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
+  }
+}
+
 export function* authSaga() {
   yield takeLatest(genericType(LOGIN, ENUM_STATUS.FETCHING), login);
   yield takeLatest(genericType(REGISTER, ENUM_STATUS.FETCHING), register);
+  yield takeLatest(
+    genericType(CHECKING_AUTH, ENUM_STATUS.FETCHING),
+    checkAuthSaga
+  );
 }

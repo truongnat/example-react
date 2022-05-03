@@ -5,15 +5,10 @@ export const CHECKING_AUTH = "CHECKING_AUTH";
 export const LOADING_APP = "LOADING_APP";
 
 // todo list
-export const INIT_TODO = "INIT_TODO";
 export const CREATE_TODO = "CREATE_TODO";
 export const UPDATE_TODO = "UPDATE_TODO";
 export const DELETE_TODO = "DELETE_TODO";
 export const GET_ALL_TODO = "GET_ALL_TODO";
-export const FILTER_TODO_ALL = "FILTER_TODO_ALL";
-export const FILTER_TODO_COMPLETED = "FILTER_TODO_COMPLETED";
-export const FILTER_TODO_WORK = "FILTER_TODO_WORK";
-export const FILTER_TODO_SKIPPED = "FILTER_TODO_SKIPPED";
 
 // chat socket
 export const GET_ALL_ROOM = "GET_ALL_ROOM";

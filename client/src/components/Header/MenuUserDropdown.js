@@ -43,12 +43,12 @@ export default function MenuUserDropdown() {
         <Center>
           <Avatar
             size={"2xl"}
-            src={dataUser.user?.avatar_url || DEFAULT_AVATAR}
+            src={dataUser?.user?.avatar_url || DEFAULT_AVATAR}
           />
         </Center>
         <br />
         <Center>
-          <p>{dataUser.user.username || ""}</p>
+          <p>{dataUser?.user?.username || ""}</p>
         </Center>
         <br />
         <MenuDivider />

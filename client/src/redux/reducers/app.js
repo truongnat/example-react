@@ -9,7 +9,6 @@ const initReducer = {
   isAuthenticated: false,
   loading: true,
   currentType: "",
-  network: true,
 };
 
 export const AppReducer = (state = initReducer, { type, payload }) => {

@@ -13,7 +13,7 @@ export default function Header() {
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Logo />
           <TabHeader />
-          <SearchHeader />
+          {/* <SearchHeader /> */}
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
               <HeaderModeTheme />

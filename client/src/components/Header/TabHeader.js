@@ -1,26 +1,25 @@
-import { Tab, TabList, Tabs } from '@chakra-ui/react';
-import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import React from "react";
+import { Box, Link } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
+import { PAGE_KEYS } from "../../constants";
 
 export default function TabHeader() {
-  const location = useLocation();
-  const history = useHistory();
-  const indexTab = location.pathname === '/chat' ? 1 : 0;
-
-  function handleChangeTab(t) {
-    history.push(t === 1 ? '/chat' : '/');
-  }
   return (
-    <Tabs
-      onChange={handleChangeTab}
-      variant='soft-rounded'
-      colorScheme='green'
-      index={indexTab}
-    >
-      <TabList>
-        <Tab tabIndex={1}>Todo</Tab>
-        <Tab tabIndex={2}>Chat</Tab>
-      </TabList>
-    </Tabs>
+    <Box className="flex space-x-5">
+      <Link
+        className="text-lg font-semibold"
+        as={NavLink}
+        to={PAGE_KEYS.TodoPage}
+      >
+        Todo
+      </Link>
+      <Link
+        className="text-lg font-semibold"
+        as={NavLink}
+        to={PAGE_KEYS.ChatPage}
+      >
+        Chat
+      </Link>
+    </Box>
   );
 }
