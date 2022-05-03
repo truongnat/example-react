@@ -32,6 +32,9 @@
 	+ Sign in.
 	+ Sign up.
 	+ Auto remember login.
+	+ Forgot password `coming soon!`
+	+ Send email forgot password `coming soon!`
+	+ Verity OTP via email `coming soon!`
   
 - Loading all in.
 
@@ -41,7 +44,7 @@
 
 - Build static SSR.
 
-- Search friend
+- Search friend `<coming soon>`
 
 - Request add friend `<coming soon>`
 
