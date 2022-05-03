@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const { UserRepository } = require("../schema");
 require("dotenv").config();
-const { ServerException } = require("../exceptions");
+const { ServerException, BadRequestException } = require("../exceptions");
 const { AuthMiddleware } = require("../middleware");
 const { Controller } = require("../core");
 const { UserService } = require("../services");
@@ -29,16 +29,22 @@ class UserController extends Controller {
   }
 
   async formatDataBeforeUpdate(req, res, next) {
-    const userInfo = req.body;
+    const { username, password, avatarUrl } = req.body;
+
+    if (req.user.username !== username) {
+      const existUsername = await UserRepository.findOne({ username });
+      if (existUsername) {
+        return next(new BadRequestException(`${username} already exist!`));
+      }
+    }
+
     let objUpdate = {};
-    if (userInfo.username) {
-      objUpdate.username = userInfo.username;
+    objUpdate.username = username;
+    if (password) {
+      objUpdate.password = await bcrypt.hash(password, 10);
     }
-    if (userInfo.password) {
-      objUpdate.password = await bcrypt.hash(userInfo.password, 10);
-    }
-    if (userInfo.avatar_url) {
-      objUpdate.avatar_url = userInfo.avatar_url;
+    if (avatarUrl) {
+      objUpdate.avatarUrl = avatarUrl;
     }
     req.objUpdate = objUpdate;
 

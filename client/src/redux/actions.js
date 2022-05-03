@@ -10,6 +10,11 @@ export const UPDATE_TODO = "UPDATE_TODO";
 export const DELETE_TODO = "DELETE_TODO";
 export const GET_ALL_TODO = "GET_ALL_TODO";
 
+// user
+
+export const SET_USER = "SET_USER";
+export const UPDATE_USER = "UPDATE_USER";
+
 // chat socket
 export const GET_ALL_ROOM = "GET_ALL_ROOM";
 export const GET_ROOM_DETAIL = "GET_ROOM_DETAIL";

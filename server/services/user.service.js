@@ -12,7 +12,7 @@ class UserService extends Service {
       return await UserRepository.create({
         username: username,
         password: hashPassword,
-        avatar_url: DEFAULT_AVATAR,
+        avatarUrl: DEFAULT_AVATAR,
       });
     } catch (e) {
       throw new Error(e.message);

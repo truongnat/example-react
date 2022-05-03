@@ -24,7 +24,7 @@ async function AuthMiddleware(req, res, next) {
     req.user = {
       _id: checkingUser._id,
       username: checkingUser.username,
-      avatar_url: checkingUser.avatar_url,
+      avatarUrl: checkingUser.avatarUrl,
       createdAt: checkingUser.createdAt,
       updatedAt: checkingUser.updatedAt,
     };

@@ -42,12 +42,11 @@ class AuthController extends Controller {
 
   async login(req, res, next) {
     try {
-      const { username, _id, avatar_url } = req.user;
+      const { username, _id } = req.user;
 
       const payload = {
         id: _id,
         username,
-        avatar_url,
       };
 
       const token = await AuthService.generateToken(payload);

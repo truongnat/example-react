@@ -21,8 +21,11 @@ export default function MenuUserDropdown() {
   const dispatch = useDispatch();
   const dataUser = useSelector(userSelector);
 
+  const avatarUrl =
+    MemoryClient.get("c_avt") || dataUser.user?.avatarUrl || DEFAULT_AVATAR;
+
   const handleLogout = async () => {
-    MemoryClient.removeMultiple(["lp", "rlp", "anonymous_user"]);
+    MemoryClient.clearAll()
     history.push("/login");
     dispatch(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, false));
   };
@@ -36,15 +39,12 @@ export default function MenuUserDropdown() {
         cursor={"pointer"}
         minW={0}
       >
-        <Avatar size={"sm"} src={dataUser.user?.avatar_url || DEFAULT_AVATAR} />
+        <Avatar size={"sm"} src={avatarUrl} />
       </MenuButton>
       <MenuList alignItems={"center"}>
         <br />
         <Center>
-          <Avatar
-            size={"2xl"}
-            src={dataUser?.user?.avatar_url || DEFAULT_AVATAR}
-          />
+          <Avatar size={"2xl"} src={avatarUrl} />
         </Center>
         <br />
         <Center>

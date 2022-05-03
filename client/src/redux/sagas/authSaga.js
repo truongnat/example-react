@@ -10,6 +10,7 @@ import {
   LOADING_APP,
   LOGIN,
   REGISTER,
+  SET_USER,
 } from "../actions";
 
 function* login({ payload }) {
@@ -45,7 +46,9 @@ function* login({ payload }) {
     MemoryClient.set("lp", access_token);
     MemoryClient.set("rlp", refresh_token);
     yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
-    yield put(genericAction(LOGIN, ENUM_STATUS.SUCCESS, result.data.data.user));
+    yield put(
+      genericAction(SET_USER, ENUM_STATUS.PUSH_NORMAL, result.data.data.user)
+    );
   } catch (e) {
     yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, e.message));
   }
@@ -81,7 +84,7 @@ function* register({ payload }) {
 
       return;
     }
-
+    yield put(genericAction(REGISTER, ENUM_STATUS.SUCCESS));
     createToast(payload.toast, {
       title: "Register successfully, login now!",
       status: "success",
@@ -99,7 +102,7 @@ function* checkAuthSaga({ payload }) {
     const result = yield serviceClient._authService.whoAmI();
     if (result.status === StatusCode.Success) {
       yield put(
-        genericAction(CHECKING_AUTH, ENUM_STATUS.SUCCESS, result.data.data)
+        genericAction(SET_USER, ENUM_STATUS.PUSH_NORMAL, result.data.data)
       );
       yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
       payload.history.push("/");

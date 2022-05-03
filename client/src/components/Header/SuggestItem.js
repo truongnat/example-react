@@ -3,7 +3,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import React from "react";
 import { DEFAULT_AVATAR } from "../../constants";
 export default function SuggestItem({
-  avatar_url = DEFAULT_AVATAR,
+  avatarUrl = DEFAULT_AVATAR,
   username = "",
   isFriend = false,
   description = "N/A",
@@ -14,7 +14,7 @@ export default function SuggestItem({
       justifyContent={"space-between"}
       className={"p-2 cursor-pointer transition-all hover:bg-gray-100"}
     >
-      <Avatar src={avatar_url} />
+      <Avatar src={avatarUrl} />
       <Box ml="3" className="w-full flex flex-col justify-between">
         <Text fontWeight="bold" className="flex justify-between">
           {username}

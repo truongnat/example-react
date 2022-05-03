@@ -7,7 +7,6 @@ import {
 } from "../actions";
 
 const initReducer = {
-  user: null,
   loading: false,
   currentType: "",
   messageError: "",
@@ -28,7 +27,6 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
       return {
         ...state,
         loading: false,
-        user: payload,
         currentType: type,
         messageError: "",
       };
@@ -38,7 +36,6 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
         ...state,
         loading: false,
         messageError: payload,
-        user: null,
         currentType: type,
       };
     case genericType(LOGIN, ENUM_STATUS.RESET):

@@ -1,7 +1,7 @@
 //================== MAIN FEATURE ==================//
 export const authenticatedSelector = (state) => state.app.isAuthenticated;
 export const todoSelector = (state) => state.todo;
-export const userSelector = (state) => state.auth;
+export const userSelector = (state) => state.user;
 
 //================== LOADING ==================//
 export const selectorLoadingApp = (state) => state.app.loading;
