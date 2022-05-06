@@ -24,6 +24,7 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
       };
     case genericType(LOGIN, ENUM_STATUS.SUCCESS):
     case genericType(CHECKING_AUTH, ENUM_STATUS.SUCCESS):
+    case genericType(REGISTER, ENUM_STATUS.SUCCESS):
       return {
         ...state,
         loading: false,

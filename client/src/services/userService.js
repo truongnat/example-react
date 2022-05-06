@@ -20,7 +20,7 @@ export class UserService {
 
   async searchUser(data) {
     try {
-      return await this._axios.fetch(`${this._path}/search?username=${data}`);
+      return await this._axios.fetch(`${this._path}/search?email=${data}`);
     } catch (e) {
       console.log(
         "🚀 ~ file: userService.js ~ line 25 ~ UserService ~ searchUser ~ e",

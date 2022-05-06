@@ -10,29 +10,22 @@ import {
 } from "../actions";
 
 function* updateUser({ payload }) {
-  const data = {
-    username: payload.data.username,
-    password: payload.data.password,
-    avatarUrl: payload.data.avatarUrl,
-  };
   try {
-    const result = yield serviceClient._userService.updateUser(data);
+    const { response } = yield serviceClient._userService.updateUser({
+      ...payload.data,
+    });
 
     if (
-      result?.response?.status === StatusCode.BadRequest ||
-      result?.response?.status === StatusCode.NotFound
+      response?.status === StatusCode.BadRequest ||
+      response?.status === StatusCode.NotFound
     ) {
       yield put(
-        genericAction(
-          UPDATE_USER,
-          ENUM_STATUS.FAILURE,
-          result.response.data.message
-        )
+        genericAction(UPDATE_USER, ENUM_STATUS.FAILURE, response.data.message)
       );
 
       createToast(payload.toast, {
         title: "Update user failure",
-        description: result.response.data.message,
+        description: response.data.message,
         status: "error",
       });
 

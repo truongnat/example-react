@@ -6,11 +6,10 @@ const { ServerException, BadRequestException } = require("../exceptions");
 const { AuthMiddleware } = require("../middleware");
 const { Controller } = require("../core");
 const { UserService } = require("../services");
-const router = express.Router();
 
 class UserController extends Controller {
   _path = "/user";
-  _router = router;
+  _router = express.Router();
   constructor() {
     super();
     this.initializeRoutes();
@@ -29,22 +28,24 @@ class UserController extends Controller {
   }
 
   async formatDataBeforeUpdate(req, res, next) {
-    const { username, password, avatarUrl } = req.body;
+    const { email, password, avatarUrl, username } = req.body;
 
-    if (req.user.username !== username) {
-      const existUsername = await UserRepository.findOne({ username });
-      if (existUsername) {
-        return next(new BadRequestException(`${username} already exist!`));
+    if (req.user.email !== email) {
+      const existUser = await UserRepository.findOne({ email });
+      if (existUser) {
+        return next(new BadRequestException(`${email} already exist!`));
       }
     }
 
     let objUpdate = {};
-    objUpdate.username = username;
     if (password) {
       objUpdate.password = await bcrypt.hash(password, 10);
     }
     if (avatarUrl) {
       objUpdate.avatarUrl = avatarUrl;
+    }
+    if (username) {
+      objUpdate.username = username;
     }
     req.objUpdate = objUpdate;
 
@@ -52,9 +53,9 @@ class UserController extends Controller {
   }
 
   async search(req, res, next) {
-    const { username } = req.query;
+    const { email } = req.query;
     const results = await UserRepository.find({
-      username: new RegExp(username, "i"),
+      email: new RegExp(email, "i"),
     });
     res.json({
       status: 200,

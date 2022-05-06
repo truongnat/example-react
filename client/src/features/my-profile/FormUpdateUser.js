@@ -11,7 +11,7 @@ import { ENUM_STATUS, genericAction, UPDATE_USER } from "../../redux/actions";
 export default function FormUpdateUser({ avatarUrl }) {
   const history = useHistory();
 
-  const dataUser = useSelector(userSelector);
+  const { user } = useSelector(userSelector);
 
   const toast = useToast();
 
@@ -25,6 +25,7 @@ export default function FormUpdateUser({ avatarUrl }) {
     setValue,
   } = useForm({
     defaultValues: {
+      email: "",
       username: "",
       password: "",
       rePassword: "",
@@ -36,10 +37,11 @@ export default function FormUpdateUser({ avatarUrl }) {
     dispatch(genericAction(UPDATE_USER, ENUM_STATUS.FETCHING, { data, toast }));
 
   useEffect(() => {
-    if (dataUser.user) {
-      setValue("username", dataUser.user.username);
+    if (user) {
+      setValue("email", user.email);
+      setValue("username", user.username);
     }
-  }, [dataUser.user, setValue]);
+  }, [user, setValue]);
 
   useEffect(() => {
     setValue("avatarUrl", avatarUrl);
@@ -48,18 +50,17 @@ export default function FormUpdateUser({ avatarUrl }) {
   return (
     <Stack>
       <ControlInput
-        name={"username"}
+        name={"email"}
         control={control}
-        rules={{ required: "Username is required!" }}
-        label={"Username or Email address"}
-        errorMessage={errors?.username?.message}
+        label={"Email address"}
+        isDisabled={true}
       />
+      <ControlInput name={"username"} control={control} label={"Username"} />
       <ControlInput
         name={"password"}
         control={control}
         isPassword
         rules={{
-          // required: "Password is required!",
           minLength: {
             value: 8,
             message: "Password must have at least 8 characters!",
@@ -73,7 +74,6 @@ export default function FormUpdateUser({ avatarUrl }) {
         control={control}
         isPassword
         rules={{
-          // required: "Repeat password is required!",
           minLength: {
             value: 8,
             message: "Password must have at least 8 characters!",

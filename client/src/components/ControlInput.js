@@ -24,6 +24,7 @@ export function ControlInputComp({
   isPassword,
   component: Component = Input,
   children,
+  ...rest
 }) {
   const [show, setShow] = React.useState(false);
   const handleShowInput = () => setShow(!show);
@@ -44,6 +45,7 @@ export function ControlInputComp({
           <InputGroup>
             <Component
               {...field}
+              {...rest}
               type={checkTypeInput()}
               color={colorMode === "light" ? "black" : "white"}
               placeholder={placeholder}

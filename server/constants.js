@@ -13,4 +13,15 @@ const ENUM_STATUS_TODO = {
 };
 
 Object.freeze(ENUM_STATUS_TODO);
-module.exports = { STATUS_TODO, DEFAULT_AVATAR, REGEX_EMAIL, ENUM_STATUS_TODO };
+
+const MAX_TIME_OTP = 120;
+const MIN_LENGTH_PASS = 8;
+
+module.exports = {
+  STATUS_TODO,
+  DEFAULT_AVATAR,
+  REGEX_EMAIL,
+  ENUM_STATUS_TODO,
+  MAX_TIME_OTP,
+  MIN_LENGTH_PASS,
+};

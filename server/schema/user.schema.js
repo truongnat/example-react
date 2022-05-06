@@ -6,13 +6,17 @@ const userSchema = new Schema(
   {
     _id: {
       type: String,
-      default: function () {
-        return uuid.v4();
-      },
+      default: () => uuid.v4(),
     },
     username: String,
     password: String,
     avatarUrl: String,
+    email: String,
+    otp: String,
+    active: {
+      type: Boolean,
+      default: () => true,
+    },
   },
   {
     timestamps: true,

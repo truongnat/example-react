@@ -5,12 +5,12 @@ const { UserRepository } = require("../schema");
 const { NotFoundException } = require("../exceptions");
 
 class UserService extends Service {
-  async createUser({ username, password }) {
+  async createUser({ email, password }) {
     try {
       const hashPassword = await bcrypt.hash(password, 10);
 
       return await UserRepository.create({
-        username: username,
+        email: email,
         password: hashPassword,
         avatarUrl: DEFAULT_AVATAR,
       });

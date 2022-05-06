@@ -15,21 +15,23 @@ import {
 
 function* login({ payload }) {
   try {
-    const result = yield serviceClient._authService.login(payload.data);
+    const { response, data } = yield serviceClient._authService.login(
+      payload.data
+    );
 
     if (
-      result?.response?.status === StatusCode.BadRequest ||
-      result?.response?.status === StatusCode.NotFound
+      response?.status === StatusCode.BadRequest ||
+      response?.status === StatusCode.NotFound
     ) {
       yield put(
-        genericAction(LOGIN, ENUM_STATUS.FAILURE, result.response.data.message)
+        genericAction(LOGIN, ENUM_STATUS.FAILURE, response.data.message)
       );
       MemoryClient.remove("lp");
       MemoryClient.remove("rlp");
 
       createToast(payload.toast, {
         title: "Login failure",
-        description: result.response.data.message,
+        description: response.data.message,
         status: "error",
       });
 
@@ -41,13 +43,13 @@ function* login({ payload }) {
       status: "success",
     });
 
-    const { access_token, refresh_token } = result.data.data;
+    const { access_token, refresh_token } = data?.data;
 
     MemoryClient.set("lp", access_token);
     MemoryClient.set("rlp", refresh_token);
     yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
     yield put(
-      genericAction(SET_USER, ENUM_STATUS.PUSH_NORMAL, result.data.data.user)
+      genericAction(SET_USER, ENUM_STATUS.PUSH_NORMAL, data?.data?.user)
     );
   } catch (e) {
     yield put(genericAction(LOGIN, ENUM_STATUS.FAILURE, e.message));
@@ -58,27 +60,24 @@ function* register({ payload }) {
   try {
     const dataRegister = {
       user: {
-        username: payload.data.username,
-        password: payload.data.password,
+        ...payload.data,
       },
     };
-    const result = yield serviceClient._authService.register(dataRegister);
+    const { response } = yield serviceClient._authService.register(
+      dataRegister
+    );
 
     if (
-      result?.response?.status === StatusCode.BadRequest ||
-      result?.response?.status === StatusCode.NotFound
+      response?.status === StatusCode.BadRequest ||
+      response?.status === StatusCode.NotFound
     ) {
       yield put(
-        genericAction(
-          REGISTER,
-          ENUM_STATUS.FAILURE,
-          result.response.data.message
-        )
+        genericAction(REGISTER, ENUM_STATUS.FAILURE, response.data.message)
       );
 
       createToast(payload.toast, {
         title: "Register failure",
-        description: result.response.data.message,
+        description: response.data.message,
         status: "error",
       });
 

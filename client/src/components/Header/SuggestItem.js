@@ -4,7 +4,7 @@ import React from "react";
 import { DEFAULT_AVATAR } from "../../constants";
 export default function SuggestItem({
   avatarUrl = DEFAULT_AVATAR,
-  username = "",
+  email = "",
   isFriend = false,
   description = "N/A",
 }) {
@@ -17,7 +17,7 @@ export default function SuggestItem({
       <Avatar src={avatarUrl} />
       <Box ml="3" className="w-full flex flex-col justify-between">
         <Text fontWeight="bold" className="flex justify-between">
-          {username}
+          {email}
           {isFriend ? (
             <Badge ml="1" colorScheme="purple">
               Friend

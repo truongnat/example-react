@@ -1,7 +1,11 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { UserRepository } = require("../schema");
-const { UnauthorizedException, NotFoundException } = require("../exceptions");
+const {
+  UnauthorizedException,
+  NotFoundException,
+  ForbiddenException,
+} = require("../exceptions");
 
 async function AuthMiddleware(req, res, next) {
   try {
@@ -21,9 +25,16 @@ async function AuthMiddleware(req, res, next) {
     if (!checkingUser) {
       return next(new NotFoundException("User not found!"));
     }
+
+    if (!checkingUser.active) {
+      return next(new ForbiddenException("User is temporarily locked!"));
+    }
+
     req.user = {
       _id: checkingUser._id,
+      email: checkingUser.email,
       username: checkingUser.username,
+      active: checkingUser.active,
       avatarUrl: checkingUser.avatarUrl,
       createdAt: checkingUser.createdAt,
       updatedAt: checkingUser.updatedAt,

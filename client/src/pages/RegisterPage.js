@@ -7,6 +7,7 @@ import { ControlInput } from "../components";
 import { useDispatch, useSelector } from "react-redux";
 import { ENUM_STATUS, genericAction, REGISTER } from "../redux/actions";
 import { authLoadingSelector } from "../redux/selector";
+import { REGEX_EMAIL } from "../constants";
 
 export default function RegisterPage() {
   const toast = useToast();
@@ -22,7 +23,7 @@ export default function RegisterPage() {
     watch,
   } = useForm({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       rePassword: "",
     },
@@ -54,11 +55,14 @@ export default function RegisterPage() {
     >
       <Stack>
         <ControlInput
-          name={"username"}
+          name={"email"}
           control={control}
-          rules={{ required: "Username is required!" }}
-          label={"Username or Email address"}
-          errorMessage={errors?.username?.message}
+          rules={{
+            required: "Email is required!",
+            pattern: { value: REGEX_EMAIL, message: "Email invalid!" },
+          }}
+          label={"Email address"}
+          errorMessage={errors?.email?.message}
         />
 
         <ControlInput

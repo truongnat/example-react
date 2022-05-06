@@ -25,7 +25,7 @@ export default function MenuUserDropdown() {
     MemoryClient.get("c_avt") || dataUser.user?.avatarUrl || DEFAULT_AVATAR;
 
   const handleLogout = async () => {
-    MemoryClient.clearAll()
+    MemoryClient.clearAll();
     history.push("/login");
     dispatch(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, false));
   };
@@ -48,7 +48,7 @@ export default function MenuUserDropdown() {
         </Center>
         <br />
         <Center>
-          <p>{dataUser?.user?.username || ""}</p>
+          <p>{dataUser?.user?.email || ""}</p>
         </Center>
         <br />
         <MenuDivider />

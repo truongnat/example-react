@@ -8,6 +8,8 @@ import { useHistory, useLocation } from "react-router-dom";
 import { AuthLayout } from "../layout";
 import { useForm } from "react-hook-form";
 import { ControlInput } from "../components";
+import { REGEX_EMAIL } from "../constants";
+
 export default function LoginPage() {
   const toast = useToast();
   const dispatch = useDispatch();
@@ -23,7 +25,7 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: "truong200122",
+      email: "truong200122",
       password: "truong2001",
     },
   });
@@ -59,11 +61,14 @@ export default function LoginPage() {
     >
       <Stack>
         <ControlInput
-          name={"username"}
+          name={"email"}
           control={control}
-          rules={{ required: "Username is required!" }}
-          label={"Username or Email address"}
-          errorMessage={errors?.username?.message}
+          rules={{
+            required: "Email is required!",
+            pattern: { value: REGEX_EMAIL, message: "Email invalid!" },
+          }}
+          label={"Email address"}
+          errorMessage={errors?.email?.message}
         />
 
         <ControlInput

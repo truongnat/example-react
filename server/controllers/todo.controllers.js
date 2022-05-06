@@ -9,11 +9,10 @@ const {
 const { AuthMiddleware } = require("../middleware");
 const { TodoRepository } = require("../schema");
 const { TodoService } = require("../services");
-const router = express.Router();
 
 class TodoController extends Controller {
   _path = "/todo";
-  _router = router;
+  _router = express.Router();
 
   constructor() {
     super();
