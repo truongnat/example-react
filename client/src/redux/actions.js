@@ -3,6 +3,8 @@ export const LOGIN = "LOGIN";
 export const REGISTER = "REGISTER";
 export const CHECKING_AUTH = "CHECKING_AUTH";
 export const LOADING_APP = "LOADING_APP";
+export const FORGOT_PASSWORD = "FORGOT_PASSWORD";
+export const VERITY_OTP = "VERITY_OTP";
 
 // todo list
 export const CREATE_TODO = "CREATE_TODO";
@@ -30,7 +32,6 @@ export const KICK_PARTICIPANT = "KICK_PARTICIPANT";
 export const CHANGE_ROLE_HOST_ROOM = "CHANGE_ROLE_HOST_ROOM";
 
 // common
-
 export const ENUM_STATUS = {
   FETCHING: "FETCHING",
   SUCCESS: "SUCCESS",

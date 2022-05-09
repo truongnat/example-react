@@ -1,25 +1,17 @@
 import React from "react";
-import { Box, Link } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
+import { Box } from "@chakra-ui/react";
 import { PAGE_KEYS } from "../../constants";
+import ButtonRoute from "../ButtonRoute";
 
 export default function TabHeader() {
   return (
     <Box className="flex space-x-5">
-      <Link
-        className="text-lg font-semibold"
-        as={NavLink}
-        to={PAGE_KEYS.TodoPage}
-      >
+      <ButtonRoute classNames={"font-bold"} route={PAGE_KEYS.TodoPage}>
         Todo
-      </Link>
-      <Link
-        className="text-lg font-semibold"
-        as={NavLink}
-        to={PAGE_KEYS.ChatPage}
-      >
+      </ButtonRoute>
+      <ButtonRoute classNames={"font-bold"} route={PAGE_KEYS.ChatPage}>
         Chat
-      </Link>
+      </ButtonRoute>
     </Box>
   );
 }

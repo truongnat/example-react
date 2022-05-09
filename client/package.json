@@ -19,6 +19,7 @@
     "lodash": "^4.17.21",
     "logrocket": "^2.1.1",
     "moment": "^2.29.3",
+    "notiflix": "^3.2.5",
     "postcss": "^7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

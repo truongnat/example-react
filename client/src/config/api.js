@@ -1,7 +1,7 @@
 import axios from "axios";
 import { StatusCode } from "../constants";
-// import { StatusCode } from "../constants";
 import { MemoryClient } from "../utils";
+import { Notify } from "notiflix/build/notiflix-notify-aio";
 
 // const baseURLMock = "https://jsonplaceholder.typicode.com/";
 const baseURL = "http://localhost:5000";
@@ -39,41 +39,24 @@ class AxiosInstance {
         return response;
       },
       async (err) => {
+        const errCode = err?.response?.status;
         const originalConfig = err.config;
-        console.log(
-          "🚀 ~ file: api.js ~ line 43 ~ AxiosInstance ~ originalConfig",
-          originalConfig
-        );
 
         if (
-          originalConfig.url === "/auth/me" &&
-          err.response &&
+          errCode === StatusCode.UnAuthorized &&
           this.getToken() &&
-          this.getRefreshToken()
+          this.getRefreshToken() &&
+          !originalConfig._retry
         ) {
-          // Access Token was expired
-          if (
-            err.response.status === StatusCode.UnAuthorized &&
-            !originalConfig._retry
-          ) {
-            originalConfig._retry = true;
-
-            try {
-              const rs = await this._axiosInstance.post("/auth/refresh-token", {
-                oldToken: this.getRefreshToken(),
-              });
-
-              const { access_token, refresh_token } = rs.data.data;
-              MemoryClient.set("lp", access_token);
-              MemoryClient.set("rlp", refresh_token);
-
-              return this._axiosInstance(originalConfig);
-            } catch (_error) {
-              return Promise.reject(_error);
-            }
-          }
+          originalConfig._retry = true;
+          return await this.handleRefreshToken(originalConfig);
+        } else if (errCode === StatusCode.ManyRequest) {
+          Notify.failure("Many requests, try again after some minutes!");
+        } else if (errCode === StatusCode.ServerError) {
+          Notify.failure("Something went wrong, try again after some minutes!");
+        } else if (errCode === StatusCode.NetworkError) {
+          Notify.failure("Connection network error, Please check network!");
         }
-
         return Promise.reject(err);
       }
     );
@@ -141,6 +124,22 @@ class AxiosInstance {
 
   getRefreshToken() {
     return MemoryClient.get("rlp") || "";
+  }
+
+  async handleRefreshToken(originalConfig) {
+    try {
+      const rs = await this._axiosInstance.post("/auth/refresh-token", {
+        oldToken: this.getRefreshToken(),
+      });
+
+      const { access_token, refresh_token } = rs.data.data;
+      MemoryClient.set("lp", access_token);
+      MemoryClient.set("rlp", refresh_token);
+
+      return this._axiosInstance(originalConfig);
+    } catch (_error) {
+      return Promise.reject(_error);
+    }
   }
 }
 

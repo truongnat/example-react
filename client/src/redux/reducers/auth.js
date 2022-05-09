@@ -1,13 +1,15 @@
 import {
+  FORGOT_PASSWORD,
   CHECKING_AUTH,
   ENUM_STATUS,
   genericType,
-  LOGIN,
   REGISTER,
+  LOGIN,
+  VERITY_OTP,
 } from "../actions";
 
 const initReducer = {
-  loading: false,
+  loading: false, // property loading internal
   currentType: "",
   messageError: "",
 };
@@ -16,26 +18,29 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
   switch (type) {
     case genericType(LOGIN, ENUM_STATUS.FETCHING):
     case genericType(REGISTER, ENUM_STATUS.FETCHING):
+    case genericType(FORGOT_PASSWORD, ENUM_STATUS.FETCHING):
+    case genericType(VERITY_OTP, ENUM_STATUS.FETCHING):
       return {
         ...state,
-        loading: true,
         currentType: type,
         messageError: "",
       };
     case genericType(LOGIN, ENUM_STATUS.SUCCESS):
     case genericType(CHECKING_AUTH, ENUM_STATUS.SUCCESS):
     case genericType(REGISTER, ENUM_STATUS.SUCCESS):
+    case genericType(FORGOT_PASSWORD, ENUM_STATUS.SUCCESS):
+    case genericType(VERITY_OTP, ENUM_STATUS.SUCCESS):
       return {
         ...state,
-        loading: false,
         currentType: type,
         messageError: "",
       };
     case genericType(LOGIN, ENUM_STATUS.FAILURE):
     case genericType(REGISTER, ENUM_STATUS.FAILURE):
+    case genericType(FORGOT_PASSWORD, ENUM_STATUS.FAILURE):
+    case genericType(VERITY_OTP, ENUM_STATUS.FAILURE):
       return {
         ...state,
-        loading: false,
         messageError: payload,
         currentType: type,
       };

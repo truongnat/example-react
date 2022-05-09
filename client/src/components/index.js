@@ -5,3 +5,4 @@ export { default as TextError } from "./TextError";
 export { default as SingleUploadFile } from "./SingleUploadFile";
 export { default as IconSticky } from "./IconSticky";
 export { default as ControlInput } from "./ControlInput";
+export { default as ButtonRoute } from "./ButtonRoute";

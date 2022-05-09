@@ -3,11 +3,11 @@ import { Button, Flex, Stack, useToast, Link } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import { AuthLayout } from "../layout";
 import { useForm } from "react-hook-form";
-import { ControlInput } from "../components";
+import { ButtonRoute, ControlInput } from "../components";
 import { useDispatch, useSelector } from "react-redux";
 import { ENUM_STATUS, genericAction, REGISTER } from "../redux/actions";
 import { authLoadingSelector } from "../redux/selector";
-import { REGEX_EMAIL } from "../constants";
+import { PAGE_KEYS, REGEX_EMAIL } from "../constants";
 
 export default function RegisterPage() {
   const toast = useToast();
@@ -48,7 +48,9 @@ export default function RegisterPage() {
             Register
           </Button>
           <Flex justifyContent={"flex-end"}>
-            <Link href={"/login"}>Login account!</Link>
+            <ButtonRoute route={PAGE_KEYS.LoginPage}>
+              Login account!
+            </ButtonRoute>
           </Flex>
         </Stack>
       }

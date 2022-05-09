@@ -50,4 +50,29 @@ export class AuthService {
     const response = await this.whoAmI();
     return !!response.data;
   }
+
+  async forgotPassword(data) {
+    try {
+      return await this._axios.post(`${this._path}/forgot-password`, data);
+    } catch (e) {
+      console.log(
+        "🚀 ~ file: authService.js ~ line 58 ~ AuthService ~ forgotPassword ~ e",
+        e
+      );
+      return e;
+    }
+  }
+
+  async verifyOtpForgot(data) {
+    try {
+      return await this._axios.post(`${this._path}/verify-otp-forgot`, data);
+    } catch (e) {
+      console.log(
+        "🚀 ~ file: authService.js ~ line 70 ~ AuthService ~ verifyOtpForgot ~ e",
+        e
+      );
+
+      return e;
+    }
+  }
 }

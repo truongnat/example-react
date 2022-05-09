@@ -279,7 +279,7 @@ class AuthController extends Controller {
     const { email } = req.body;
     const existUser = await UserRepository.findOne({ email });
     if (!existUser) {
-      return next(BadRequestException("User not found!"));
+      return next(new NotFoundException("User not found!"));
     }
 
     req.otp = generateOTP(6);

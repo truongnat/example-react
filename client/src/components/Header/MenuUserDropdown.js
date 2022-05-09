@@ -11,7 +11,7 @@ import {
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { DEFAULT_AVATAR } from "../../constants";
+import { DEFAULT_AVATAR, PAGE_KEYS } from "../../constants";
 import { CHECKING_AUTH, ENUM_STATUS, genericAction } from "../../redux/actions";
 import { userSelector } from "../../redux/selector";
 import { MemoryClient } from "../../utils";
@@ -26,7 +26,7 @@ export default function MenuUserDropdown() {
 
   const handleLogout = async () => {
     MemoryClient.clearAll();
-    history.push("/login");
+    history.push(PAGE_KEYS.LoginPage);
     dispatch(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, false));
   };
 
@@ -52,7 +52,7 @@ export default function MenuUserDropdown() {
         </Center>
         <br />
         <MenuDivider />
-        <MenuItem onClick={() => history.push("/my-profile")}>
+        <MenuItem onClick={() => history.push(PAGE_KEYS.ProfilePage)}>
           Account Settings
         </MenuItem>
         <MenuItem onClick={handleLogout} Cl>
