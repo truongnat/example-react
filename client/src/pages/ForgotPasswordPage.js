@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { Button, Flex, Stack, useToast } from "@chakra-ui/react";
+import { Button, Flex, Stack } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { ENUM_STATUS, FORGOT_PASSWORD, genericAction } from "../redux/actions";
 import { authenticatedSelector, authLoadingSelector } from "../redux/selector";
@@ -11,7 +11,6 @@ import { ButtonRoute, ControlInput } from "../components";
 import { PAGE_KEYS, REGEX_EMAIL } from "../constants";
 
 export default function ForgotPasswordPage() {
-  const toast = useToast();
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
@@ -33,7 +32,6 @@ export default function ForgotPasswordPage() {
     dispatch(
       genericAction(FORGOT_PASSWORD, ENUM_STATUS.FETCHING, {
         data,
-        toast,
         history,
       })
     );

@@ -16,7 +16,7 @@ export const UserReducer = (state = initReducer, { type, payload }) => {
         loading: false,
         currentType: type,
         messageError: "",
-        user: payload,
+        user: payload || state.user,
       };
     case genericType(UPDATE_USER, ENUM_STATUS.FETCHING):
       return {

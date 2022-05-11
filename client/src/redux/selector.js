@@ -7,6 +7,7 @@ export const userSelector = (state) => state.user;
 export const selectorLoadingApp = (state) => state.app.loading;
 export const authLoadingSelector = (state) => state.auth.loading;
 export const todoLoadingSelector = (state) => state.todo.loading;
+export const userLoadingSelector = (state) => state.user.loading;
 
 //================== ERROR MESSAGE ==================//
 export const errorAuthSelector = (state) => state.auth.messageError;

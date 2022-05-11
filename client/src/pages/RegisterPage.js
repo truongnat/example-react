@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Flex, Stack, useToast, Link } from "@chakra-ui/react";
+import { Button, Flex, Stack } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import { AuthLayout } from "../layout";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,6 @@ import { authLoadingSelector } from "../redux/selector";
 import { PAGE_KEYS, REGEX_EMAIL } from "../constants";
 
 export default function RegisterPage() {
-  const toast = useToast();
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -30,9 +29,7 @@ export default function RegisterPage() {
   });
 
   const onSubmit = (data) =>
-    dispatch(
-      genericAction(REGISTER, ENUM_STATUS.FETCHING, { data, toast, history })
-    );
+    dispatch(genericAction(REGISTER, ENUM_STATUS.FETCHING, { data, history }));
 
   return (
     <AuthLayout

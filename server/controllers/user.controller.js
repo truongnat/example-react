@@ -28,17 +28,24 @@ class UserController extends Controller {
   }
 
   async formatDataBeforeUpdate(req, res, next) {
-    const { email, password, avatarUrl, username } = req.body;
+    const {
+      username,
+      newPassword: password,
+      currentPassword,
+      avatarUrl,
+    } = req.body;
 
-    if (req.user.email !== email) {
-      const existUser = await UserRepository.findOne({ email });
-      if (existUser) {
-        return next(new BadRequestException(`${email} already exist!`));
-      }
-    }
+    // need re-query because req.user does not include password
+    const getUser = await UserRepository.findOne({ email: req.user.email });
+    console.log(req.user);
 
     let objUpdate = {};
     if (password) {
+      const isMatch = await bcrypt.compare(currentPassword, getUser.password);
+
+      if (!isMatch) {
+        return next(new BadRequestException("Password incorrect!"));
+      }
       objUpdate.password = await bcrypt.hash(password, 10);
     }
     if (avatarUrl) {

@@ -4,7 +4,6 @@ import {
   Button,
   Flex,
   Stack,
-  useToast,
   Link,
   PinInput,
   PinInputField,
@@ -17,7 +16,6 @@ import { AuthLayout } from "../layout";
 import { PAGE_KEYS } from "../constants";
 
 export default function VerifyOtpForgotPassPage() {
-  const toast = useToast();
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
@@ -34,7 +32,6 @@ export default function VerifyOtpForgotPassPage() {
           otp,
           email: new URLSearchParams(location.search).get("e") || "",
         },
-        toast,
         history,
       })
     );

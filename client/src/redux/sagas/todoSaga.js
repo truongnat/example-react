@@ -2,7 +2,6 @@ import { put, takeLatest } from "@redux-saga/core/effects";
 import { StatusCode } from "../../constants";
 import { createFactoryApp } from "../../factory";
 import { serviceClient } from "../../services";
-import { createToast } from "../../utils";
 import {
   CREATE_TODO,
   ENUM_STATUS,
@@ -12,25 +11,23 @@ import {
   GET_ALL_TODO,
   DELETE_TODO,
 } from "../actions";
+import { Notify } from "notiflix/build/notiflix-notify-aio";
 
 function* createTodo({ payload }) {
   try {
-    const result = yield serviceClient._todoService.createTodo(payload.data);
+    const { response, data } = yield serviceClient._todoService.createTodo(
+      payload.data
+    );
 
-    if (result?.response?.status === StatusCode.BadRequest) {
+    if (response?.status === StatusCode.BadRequest) {
       yield put(
-        genericAction(
-          CREATE_TODO,
-          ENUM_STATUS.FAILURE,
-          result.response.data.message
-        )
+        genericAction(CREATE_TODO, ENUM_STATUS.FAILURE, response?.data?.message)
       );
 
-      createToast(payload.toast, {
-        title: "Create todo failure",
-        description: result.response.data.message,
-        status: "error",
+      Notify.failure("Create todo failure !", {
+        position: "center-top",
       });
+
       return;
     }
 
@@ -39,9 +36,8 @@ function* createTodo({ payload }) {
       content: "",
     });
 
-    createToast(payload.toast, {
-      title: "Create todo successfully",
-      status: "success",
+    Notify.success("Create todo successfully !", {
+      position: "center-top",
     });
     yield put(
       genericAction(GET_ALL_TODO, ENUM_STATUS.FETCHING, {
@@ -49,17 +45,21 @@ function* createTodo({ payload }) {
       })
     );
   } catch (e) {
-    console.log("🚀 ~ file: todoSaga.js ~ line 29 ~ e", e);
+    Notify.failure(e.message, {
+      position: "center-top",
+    });
     yield put(genericAction(CREATE_TODO, ENUM_STATUS.FAILURE, e.message));
   }
 }
 
 function* getAllTodo({ payload }) {
   try {
-    const result = yield serviceClient._todoService.getAllTodo(payload?.status);
+    const { response, data } = yield serviceClient._todoService.getAllTodo(
+      payload?.status
+    );
 
-    if (result?.data?.data?.todoList) {
-      const mappedData = result.data.data.todoList.map((todo) =>
+    if (data?.data?.todoList) {
+      const mappedData = data.data.todoList.map((todo) =>
         createFactoryApp("Todo", todo)
       );
       yield put(genericAction(GET_ALL_TODO, ENUM_STATUS.SUCCESS, mappedData));
@@ -81,18 +81,17 @@ function* updateTodo({ payload }) {
         )
       );
 
-      createToast(payload.toast, {
-        title: "Update todo failure",
-        description: result.response.data.message,
-        status: "error",
+      Notify.failure("Update todo failure", {
+        position: "center-top",
       });
+
       return;
     }
 
-    createToast(payload.toast, {
-      title: "Update todo successfully",
-      status: "success",
+    Notify.success("Update todo successfully", {
+      position: "center-top",
     });
+
     payload.onClose();
 
     yield put(
@@ -101,7 +100,9 @@ function* updateTodo({ payload }) {
       })
     );
   } catch (e) {
-    console.log("🚀 ~ file: todoSaga.js ~ line 98 ~ e", e);
+    Notify.failure(e.message, {
+      position: "center-top",
+    });
     yield put(genericAction(UPDATE_TODO, ENUM_STATUS.FAILURE, e.message));
   }
 }
@@ -120,17 +121,15 @@ function* deleteTodo({ payload }) {
         )
       );
 
-      createToast(payload.toast, {
-        title: "Delete todo failure",
-        description: result.response.data.message,
-        status: "error",
+      Notify.failure("Delete todo failure", {
+        position: "center-top",
       });
+
       return;
     }
 
-    createToast(payload.toast, {
-      title: "Delete todo successfully",
-      status: "success",
+    Notify.success("Delete todo successfully", {
+      position: "center-top",
     });
 
     payload.onClose();
@@ -141,7 +140,10 @@ function* deleteTodo({ payload }) {
       })
     );
   } catch (e) {
-    console.log("🚀 ~ file: todoSaga.js ~ line 131 ~ e", e);
+    Notify.failure(e.message, {
+      position: "center-top",
+    });
+
     yield put(genericAction(DELETE_TODO, ENUM_STATUS.FAILURE, e.message));
   }
 }

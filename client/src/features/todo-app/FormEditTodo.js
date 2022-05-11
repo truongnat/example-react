@@ -1,5 +1,5 @@
 import React from "react";
-import { Select, Button, useToast, Textarea } from "@chakra-ui/react";
+import { Select, Button, Textarea } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { STATUS_TODO } from "../../constants";
 import { ControlInput } from "../../components";
@@ -18,7 +18,6 @@ export default function FormEditTodo({ dataInit, onClose }) {
       ...dataInit,
     },
   });
-  const toast = useToast();
   const dispatch = useDispatch();
   const { status: statusType } = useSelector(todoSelector);
   const onSubmit = (todo) => {
@@ -28,7 +27,6 @@ export default function FormEditTodo({ dataInit, onClose }) {
         id: dataInit._id,
       },
       statusType,
-      toast,
       onClose,
     };
     dispatch(genericAction(UPDATE_TODO, ENUM_STATUS.FETCHING, payload));

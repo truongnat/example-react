@@ -1,17 +1,17 @@
 import { put, takeLatest } from "@redux-saga/core/effects";
 import { StatusCode } from "../../constants";
 import { serviceClient } from "../../services";
-import { createToast } from "../../utils";
 import {
   ENUM_STATUS,
   genericAction,
   genericType,
   UPDATE_USER,
 } from "../actions";
+import { Notify } from "notiflix/build/notiflix-notify-aio";
 
 function* updateUser({ payload }) {
   try {
-    const { response } = yield serviceClient._userService.updateUser({
+    const { response, data } = yield serviceClient._userService.updateUser({
       ...payload.data,
     });
 
@@ -22,21 +22,27 @@ function* updateUser({ payload }) {
       yield put(
         genericAction(UPDATE_USER, ENUM_STATUS.FAILURE, response.data.message)
       );
-
-      createToast(payload.toast, {
-        title: "Update user failure",
-        description: response.data.message,
-        status: "error",
+      Notify.failure("Update user failure", {
+        position: "center-top",
       });
-
       return;
     }
 
-    createToast(payload.toast, {
-      title: "Update user successfully",
-      status: "success",
-    });
+    if (data?.status === StatusCode.Success) {
+      Notify.success("Update user successfully", {
+        position: "center-top",
+      });
+      payload.reset({
+        currentPassword: "",
+        newPassword: "",
+        reNewPassword: "",
+      });
+      yield put(genericAction(UPDATE_USER, ENUM_STATUS.SUCCESS));
+    }
   } catch (e) {
+    Notify.success(e.message, {
+      position: "center-top",
+    });
     yield put(genericAction(UPDATE_USER, ENUM_STATUS.FAILURE, e.message));
   }
 }

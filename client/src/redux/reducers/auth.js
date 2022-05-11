@@ -22,6 +22,7 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
     case genericType(VERITY_OTP, ENUM_STATUS.FETCHING):
       return {
         ...state,
+        loading: true,
         currentType: type,
         messageError: "",
       };
@@ -34,6 +35,7 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
         ...state,
         currentType: type,
         messageError: "",
+        loading: false,
       };
     case genericType(LOGIN, ENUM_STATUS.FAILURE):
     case genericType(REGISTER, ENUM_STATUS.FAILURE):
@@ -43,12 +45,14 @@ export const AuthReducer = (state = initReducer, { type, payload }) => {
         ...state,
         messageError: payload,
         currentType: type,
+        loading: false,
       };
     case genericType(LOGIN, ENUM_STATUS.RESET):
       return {
         ...state,
         ...initReducer,
         currentType: type,
+        loading: false,
       };
     default:
       return Object.assign({}, state);

@@ -1,7 +1,7 @@
 import { put, takeLatest } from "@redux-saga/core/effects";
 import { PAGE_KEYS, StatusCode } from "../../constants";
 import { serviceClient } from "../../services";
-import { createToast, MemoryClient } from "../../utils";
+import { MemoryClient } from "../../utils";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import {
   CHECKING_AUTH,
@@ -32,17 +32,22 @@ function* login({ payload }) {
       );
       MemoryClient.remove("lp");
       MemoryClient.remove("rlp");
-      Notify.failure(response?.data?.message);
+      Notify.failure(response?.data?.message, {
+        position: "center-top",
+      });
       return;
     }
 
-    Notify.success("Login successfully");
+    Notify.success("Login successfully", {
+      position: "center-top",
+    });
 
     const { access_token, refresh_token } = data?.data;
 
     MemoryClient.set("lp", access_token);
     MemoryClient.set("rlp", refresh_token);
     yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
+    yield put(genericAction(LOGIN, ENUM_STATUS.SUCCESS));
     yield put(
       genericAction(SET_USER, ENUM_STATUS.PUSH_NORMAL, data?.data?.user)
     );
@@ -70,12 +75,16 @@ function* register({ payload }) {
         genericAction(REGISTER, ENUM_STATUS.FAILURE, response.data.message)
       );
 
-      Notify.failure(response?.data?.message);
+      Notify.failure(response?.data?.message, {
+        position: "center-top",
+      });
 
       return;
     }
     yield put(genericAction(REGISTER, ENUM_STATUS.SUCCESS));
-    Notify.success("Register successfully, login now!");
+    Notify.success("Register successfully, login now!", {
+      position: "center-top",
+    });
 
     payload.history.push(PAGE_KEYS.LoginPage);
   } catch (e) {
@@ -87,13 +96,13 @@ function* checkAuthSaga({ payload }) {
   try {
     yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, true));
     const { data } = yield serviceClient._authService.whoAmI();
+    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
 
     if (data?.status === StatusCode.Success) {
       yield put(genericAction(SET_USER, ENUM_STATUS.PUSH_NORMAL, data.data));
       yield put(genericAction(CHECKING_AUTH, ENUM_STATUS.PUSH_NORMAL, true));
       payload.history.push(PAGE_KEYS.HomePage);
     }
-    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
   } catch (e) {
     yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
   }
@@ -101,16 +110,14 @@ function* checkAuthSaga({ payload }) {
 
 function* forgotPassword({ payload }) {
   try {
-    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, true));
-
     const { response, data } = yield serviceClient._authService.forgotPassword(
       payload.data
     );
 
-    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
-
     if (response?.status === StatusCode.NotFound) {
-      Notify.failure(response?.data?.message);
+      Notify.failure(response?.data?.message, {
+        position: "center-top",
+      });
       yield put(
         genericAction(
           FORGOT_PASSWORD,
@@ -122,7 +129,9 @@ function* forgotPassword({ payload }) {
     }
 
     if (data?.status === StatusCode.Success) {
-      Notify.success("Forgot successfully, verify now!");
+      Notify.success("Forgot successfully, verify now!", {
+        position: "center-top",
+      });
 
       yield put(genericAction(FORGOT_PASSWORD, ENUM_STATUS.SUCCESS));
       payload.history.push({
@@ -132,19 +141,14 @@ function* forgotPassword({ payload }) {
     }
   } catch (e) {
     yield put(genericAction(FORGOT_PASSWORD, ENUM_STATUS.FAILURE, e.message));
-    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
   }
 }
 
 function* verifyOtpForgotPassword({ payload }) {
   try {
-    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, true));
-
     const { response, data } = yield serviceClient._authService.verifyOtpForgot(
       payload.data
     );
-
-    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
 
     if (
       response?.status === StatusCode.NotFound ||
@@ -159,13 +163,17 @@ function* verifyOtpForgotPassword({ payload }) {
     }
 
     if (data?.status === StatusCode.Success) {
-      Notify.success("Verify successfully, login now!");
+      Notify.success(
+        "Verify successfully, plz check email receiver new password!",
+        {
+          position: "center-top",
+        }
+      );
       yield put(genericAction(VERITY_OTP, ENUM_STATUS.SUCCESS));
       payload.history.push(PAGE_KEYS.LoginPage);
     }
   } catch (e) {
     yield put(genericAction(VERITY_OTP, ENUM_STATUS.FAILURE, e.message));
-    yield put(genericAction(LOADING_APP, ENUM_STATUS.PUSH_NORMAL, false));
   }
 }
 

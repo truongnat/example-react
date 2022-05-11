@@ -1,28 +1,24 @@
 import React from "react";
-import { Button, FormLabel, useToast } from "@chakra-ui/react";
-import { createToast, uploadFileFirebase } from "../utils";
+import { Button, FormLabel } from "@chakra-ui/react";
+import { uploadFileFirebase } from "../utils";
 import { useSelector } from "react-redux";
 import { userSelector } from "../redux/selector";
+import { Notify } from "notiflix/build/notiflix-notify-aio";
 
 export default function SingleUploadFile({ onComplete, label }) {
   const dataUser = useSelector(userSelector);
-  const toast = useToast();
   const onChangeFile = async (e) => {
     if (!e.target.files || (e.target.files && !e.target.files.length)) {
-      createToast(toast, {
-        title: "Error load file",
-        description: "Something went wrong load file!",
-        status: "error",
+      Notify.failure("Something went wrong load file!", {
+        position: "center-top",
       });
       return;
     }
     let imgFile = e.target.files[0];
     let validFile = ["image/png", "image/jpeg"].includes(imgFile.type);
     if (!validFile) {
-      createToast(toast, {
-        title: "Valid file",
-        description: "File includes .png | .jpg !",
-        status: "error",
+      Notify.failure("File includes .png | .jpg !", {
+        position: "center-top",
       });
       return;
     }
