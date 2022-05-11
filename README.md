@@ -32,13 +32,14 @@
 	+ Sign in.
 	+ Sign up.
 	+ Auto remember login.
-	+ Forgot password `coming soon!`
-	+ Send email forgot password `coming soon!`
-	+ Verity OTP via email `coming soon!`
+	+ Forgot password.
+	+ Send email forgot password.
+	+ Verity OTP via email.
+	+ Update user information, change password.
   
 - Loading all in.
 
-- CRUD todos example.
+- CRUD todo example.
 
 - UI profile and more...etc.
 
