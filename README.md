@@ -3,13 +3,13 @@
 
 <a>
 
-<img  src="https://cdn.freebiesupply.com/logos/large/2x/react-1-logo-svg-vector.svg"  width="320"  alt="Server API Logo" />
+<img  src="./client/public/logo-mern.png"  width="320"  alt="Server API Logo" />
 
 </a>
 
 </p>
 
-<p  align="center">Document learning React Js.</p>
+<p  align="center">Mern Stack.</p>
 
 
 ## Description
@@ -125,6 +125,9 @@ $ npm run start:prod | yarn start:prod
 ```bash
 
 cd {root project}.
+
+- open .env file, set IS_SSR=true
+ *IS_SSR enable public folder build from client*
 
 # bash script
 
