@@ -10,10 +10,6 @@ export class UserService {
     try {
       return await this._axios.put(`${this._path}/update`, data);
     } catch (e) {
-      console.log(
-        "🚀 ~ file: userService.js ~ line 14 ~ UserService ~ updateUser ~ e",
-        e
-      );
       return e;
     }
   }
@@ -22,11 +18,6 @@ export class UserService {
     try {
       return await this._axios.fetch(`${this._path}/search?email=${data}`);
     } catch (e) {
-      console.log(
-        "🚀 ~ file: userService.js ~ line 25 ~ UserService ~ searchUser ~ e",
-        e
-      );
-
       return e;
     }
   }

@@ -24,6 +24,8 @@ const roomSchema = new Schema(
         return uuid.v4();
       },
     },
+    participants: Array,
+    messages: Array,
   },
   {
     timestamps: true,

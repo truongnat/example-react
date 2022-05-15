@@ -10,11 +10,9 @@ const messageSchema = new Schema(
         return uuid.v4();
       },
     },
+    chatRoomId: String,
     content: String,
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-    },
+    author: String,
     room: {
       type: Schema.Types.ObjectId,
       ref: "room",

@@ -1,15 +1,22 @@
 import React, { Suspense } from "react";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { RootRouter } from "./router";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import { FallbackLoading } from "./components";
 import { BrowserRouter } from "react-router-dom";
+import { StepsStyleConfig as Steps } from "chakra-ui-steps";
+
+const theme = extendTheme({
+  components: {
+    Steps,
+  },
+});
 
 function App() {
   return (
     <Suspense fallback={<FallbackLoading />}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <Provider store={store}>
           <BrowserRouter>
             <RootRouter />

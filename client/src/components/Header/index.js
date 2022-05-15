@@ -16,7 +16,7 @@ export default function Header() {
           {/* <SearchHeader /> */}
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
-              <HeaderModeTheme />
+              {/* <HeaderModeTheme /> */}
               <MenuUserDropdown />
             </Stack>
           </Flex>

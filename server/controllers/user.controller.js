@@ -62,6 +62,7 @@ class UserController extends Controller {
   async search(req, res, next) {
     const { email } = req.query;
     const results = await UserRepository.find({
+      _id: { $ne: req.user._id },
       email: new RegExp(email, "i"),
     });
     res.json({
@@ -72,7 +73,7 @@ class UserController extends Controller {
   }
 
   initializeRoutes() {
-    this._router.get(`${this._path}/search`, this.search);
+    this._router.get(`${this._path}/search`, AuthMiddleware, this.search);
     this._router.put(
       `${this._path}/update`,
       AuthMiddleware,
