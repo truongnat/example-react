@@ -27,8 +27,9 @@ export const StatusCode = {
 export const PAGE_KEYS = {
   HomePage: "/",
   TodoPage: "/todo",
-  ChatPage: "/chat",
+  ChatPage: "/chatting",
   ProfilePage: "/my-profile",
+  RoomPage: "/chatting/room",
 
   LoginPage: "/login",
   RegisterPage: "/register",

@@ -23,6 +23,7 @@ export default function MyProfilePage() {
         spacing={4}
         w={"full"}
         maxW={"md"}
+        mx={'auto'}
         bg={useColorModeValue("white", "gray.700")}
         rounded={"xl"}
         boxShadow={"lg"}

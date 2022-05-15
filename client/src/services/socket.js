@@ -1,47 +1,60 @@
-import io from 'socket.io-client';
+import io from "socket.io-client";
+import { MemoryClient } from "../utils";
 
-class SocketService {
-  _instance;
-  _rooms = [];
-  _messages = [];
+export class SocketService {
+	_instance;
+	_rooms = [];
+	_messages = [];
+	_userId;
 
-  constructor() {
-    this._instance = io(`ws://localhost:5000`);
+	constructor (userId) {
+		this._instance = io (`ws://localhost:5000`, {
+			auth: {
+				"x-access-token": MemoryClient.get ('lp')
+			},
+			reconnection: true,
+			autoConnect: true,
+		});
+		this._userId = userId;
+		this.sendUserId ();
+		console.log ('sss : ', this._userId);
+		this.setupSocketListeners ();
+	}
 
-    this._instance.on('get_rooms');
-  }
+	setupSocketListeners () {
+		this._instance.on ("reconnect", this.onReconnection);
+		this._instance.on ("disconnect", this.closeConnection);
+		this._instance.on ("get_rooms", this.onRoomsReceived);
+		this.createRoom();
+	}
 
-  receiverMessageListener(message) {
-    this._messages.push(message);
-  }
+	onRoomsReceived (data) {
+		console.log ('data xxx : ', data);
+	}
 
-  receiverRoomListener(rooms) {
-    this._rooms.push(rooms);
-  }
+	sendUserId () {
+		if (this._userId) {
+			this._instance.emit ("auth_user", this._userId);
+		}
+	}
 
-  deleteMessageListener(id) {
-    this._messages = this._messages.filter((m) => m.id !== id);
-  }
+	closeConnection () {
+		// this._instance.close ();
+	}
 
-  deleteRoomListener(id) {
-    this._rooms = this._messages.filter((m) => m.id !== id);
-  }
+	onReconnection () {
+		this.sendUserId ();
+	}
 
-  getRooms() {
-    return this._rooms;
-  }
 
-  getRoomById(id) {
-    return this._rooms.find((r) => r.id === id) || null;
-  }
-
-  getMessagesByRoomId(roomId) {
-    return this._messages.filter((m) => m.roomId === roomId);
-  }
-
-  closeConnection() {
-    this._instance.close();
-  }
+//	create room
+	createRoom (data) {
+		const demo = {
+			name: "aaaa",
+			avatarUrl: "ookkk",
+			lastMessage: "aaccc",
+		};
+		this._instance.emit ("create_room", demo);
+	}
 }
 
-export const socketService = new SocketService();

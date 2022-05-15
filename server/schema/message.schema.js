@@ -15,6 +15,10 @@ const messageSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "user",
     },
+    room: {
+      type: Schema.Types.ObjectId,
+      ref: "room",
+    },
     isDeleted: Boolean,
   },
   {

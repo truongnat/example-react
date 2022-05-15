@@ -54,7 +54,7 @@ function* createTodo({ payload }) {
 
 function* getAllTodo({ payload }) {
   try {
-    const { response, data } = yield serviceClient._todoService.getAllTodo(
+    const { data } = yield serviceClient._todoService.getAllTodo(
       payload?.status
     );
 
@@ -65,6 +65,9 @@ function* getAllTodo({ payload }) {
       yield put(genericAction(GET_ALL_TODO, ENUM_STATUS.SUCCESS, mappedData));
     }
   } catch (e) {
+    Notify.failure(e.message, {
+      position: "center-top",
+    });
     yield put(genericAction(GET_ALL_TODO, ENUM_STATUS.FAILURE, e.message));
   }
 }

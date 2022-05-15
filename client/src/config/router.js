@@ -16,6 +16,7 @@ const LazyVerifyOtpPassPage = lazy(() =>
 );
 
 const Lazy404Page = lazy(() => import("../pages/404Page"));
+const LazyRoomPage = lazy(() => import("../pages/RoomPage"));
 
 export const routerConfig = [
   {
@@ -43,6 +44,13 @@ export const routerConfig = [
     name: "ChatPage",
     path: PAGE_KEYS.ChatPage,
     component: LazyChatPage,
+    exact: true,
+    isPrivate: true,
+  },
+  {
+    name: "RoomPage",
+    path: PAGE_KEYS.RoomPage + "/:id",
+    component: LazyRoomPage,
     exact: true,
     isPrivate: true,
   },

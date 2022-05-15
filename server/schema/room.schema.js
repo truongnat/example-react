@@ -11,17 +11,19 @@ const roomSchema = new Schema(
       },
     },
     name: String,
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-    },
-    lastMessage: String,
-    lastUserSend: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-    },
     avatarUrl: String,
-    isDeleted: Boolean,
+    author: {
+      type: String,
+      default: function () {
+        return uuid.v4();
+      },
+    },
+    lastMessage: {
+      type: String,
+      default: function () {
+        return uuid.v4();
+      },
+    },
   },
   {
     timestamps: true,

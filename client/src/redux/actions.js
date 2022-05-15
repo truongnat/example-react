@@ -19,9 +19,10 @@ export const UPDATE_USER = "UPDATE_USER";
 
 // chat socket
 export const GET_ALL_ROOM = "GET_ALL_ROOM";
-export const GET_ROOM_DETAIL = "GET_ROOM_DETAIL";
+export const CREATE_ROOM = "CREATE_ROOM";
 export const DELETE_ROOM = "DELETE_ROOM";
 export const UPDATE_ROOM_INFO = "UPDATE_ROOM_INFO";
+export const ROOM_DETAIL = "ROOM_DETAIL";
 
 export const GET_ALL_MESSAGE_BY_ROOM_ID = "GET_ALL_MESSAGE_BY_ROOM_ID";
 export const SEND_MESSAGE = "SEND_MESSAGE";

@@ -18,7 +18,7 @@ class UserController extends Controller {
   async update(req, res, next) {
     try {
       await UserService.updateUser(req.user._id, req.objUpdate);
-      res.json({
+      return res.json({
         status: 200,
         message: "success",
       });

@@ -40,7 +40,7 @@ function* updateUser({ payload }) {
       yield put(genericAction(UPDATE_USER, ENUM_STATUS.SUCCESS));
     }
   } catch (e) {
-    Notify.success(e.message, {
+    Notify.failure(e.message, {
       position: "center-top",
     });
     yield put(genericAction(UPDATE_USER, ENUM_STATUS.FAILURE, e.message));

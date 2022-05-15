@@ -1,7 +1,8 @@
 import React from "react";
 import { Avatar, Flex, Tag } from "@chakra-ui/react";
 import { BsCheck2All } from "react-icons/bs";
-import { DEFAULT_AVATAR } from "../../constants";
+import { useHistory } from "react-router-dom";
+import { DEFAULT_AVATAR, PAGE_KEYS } from "../../constants";
 
 export default function RoomItem({
   avatarUrl = DEFAULT_AVATAR,
@@ -10,9 +11,19 @@ export default function RoomItem({
   time = "",
   isRead = false,
   unReadCount = 0,
+  _id,
 }) {
+  const history = useHistory();
+
+  function navigateRoom() {
+    history.push(`${PAGE_KEYS.RoomPage}/${_id}`);
+  }
+
   return (
-    <Flex className="p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 cursor-pointer">
+    <Flex
+      onClick={navigateRoom}
+      className="p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 cursor-pointer"
+    >
       <Avatar size={"md"} src={avatarUrl} />
 
       <Flex direction={"column"} className="w-full">

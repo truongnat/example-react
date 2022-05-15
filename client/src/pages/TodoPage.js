@@ -18,7 +18,7 @@ export default function TodoPage() {
 
   return (
     <MainLayout title={"Todo App"}>
-      <Box>
+      <Box maxW={'600px'} mx={'auto'}>
         <Flex className="w-full flex flex-wrap justify-center px-10 space-y-5 sm:space-y-0 sm:px-0 sm:justify-between">
           <TodoApp.SideFilter />
           <TodoApp.FormCreateTodo />

@@ -107,7 +107,7 @@ export default function FormUpdateUser({ avatarUrl }) {
         errorMessage={errors?.reNewPassword?.message}
       />
 
-      <Stack spacing={6} direction={["column", "row"]}>
+      <Stack spacing={6} direction={["column", "row"]} className={'mt-10'}>
         <Button
           bg={"red.400"}
           color={"white"}

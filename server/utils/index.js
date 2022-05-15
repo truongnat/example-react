@@ -21,7 +21,7 @@ function getSecondBetween2Date(d1, d2) {
 
 function randomPassword(_length) {
   let chars =
-    "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   let pw = "";
 

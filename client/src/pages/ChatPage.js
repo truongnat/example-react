@@ -1,55 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { Stack, Text, Box } from "@chakra-ui/react";
-import { Footer, Header, IconSticky } from "../components";
+import { Box, Flex, useDisclosure } from "@chakra-ui/react";
 import { ChatApp } from "../features";
-import { DEFAULT_AVATAR } from "../constants";
-
-const mockData = [
-  {
-    avatarUrl: DEFAULT_AVATAR,
-    name: "Telegram",
-    lastMessage: "ok toi nho ban",
-    time: "17:08",
-    isRead: true,
-    unReadCount: 1,
-  },
-  {
-    avatarUrl: DEFAULT_AVATAR,
-    name: "Mc AAA",
-    lastMessage: "ok toi nho ban",
-    time: "17:08",
-    isRead: true,
-    unReadCount: 1,
-  },
-];
+import { MainLayout } from "../layout";
+import { chatSelector } from "../redux/selector";
+import { useDispatch, useSelector } from "react-redux";
+import { IconSticky } from "../components";
+import { ENUM_STATUS, genericAction, GET_ALL_ROOM } from "../redux/actions";
 
 export default function ChatPage() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { rooms } = useSelector(chatSelector);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(genericAction(GET_ALL_ROOM, ENUM_STATUS.FETCHING));
+  }, [dispatch]);
+
   return (
-    <Stack minH={"100vh"} alignItems="center" justifyContent="start">
-      <Header />
-      <Box mt={30}>
-        <Text
-          as={"h2"}
-          fontSize="4xl"
-          bgClip="text"
-          bgGradient="linear(to-r, teal.500, green.500)"
-          fontWeight="bold"
-          textAlign="center"
-          className="my-5"
-        >
-          Chat App
-        </Text>
-      </Box>
-      <Box className="w-10/12 md:w-3/5 lg:w-2/5">
-        {mockData.map((e, i) => (
-          <ChatApp.RoomItem key={i} {...e} />
-        ))}
-      </Box>
-      <div className="mt-28 w-full">
-        <Footer />
-      </div>
-      <IconSticky fn={() => alert(123)} />
-    </Stack>
+    <MainLayout title={"Chat App"}>
+      <Flex className={"w-full flex justify-center"}>
+        <Box className="w-10/12 md:w-3/5 lg:w-2/5">
+          {rooms.map((e, i) => (
+            <ChatApp.RoomItem key={i} {...e} />
+          ))}
+        </Box>
+
+        {/*portal*/}
+        <ChatApp.CreateRoomForm isOpen={isOpen} onClose={onClose} />
+        <IconSticky
+          fn={() => onOpen()}
+          customClass={"bottom-24 bg-green-500"}
+        />
+      </Flex>
+    </MainLayout>
   );
 }

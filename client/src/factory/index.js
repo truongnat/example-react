@@ -1,6 +1,9 @@
 import { Todo } from "./todo";
+import { User } from "./user";
+import { Room } from "./room";
+import { Message } from "./message";
 
-const app = { Todo };
+const app = { Todo, User, Room, Message };
 
 // factory pattern
 // https://www.digitalocean.com/community/tutorials/js-factory-pattern

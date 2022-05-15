@@ -2,6 +2,7 @@
 export const authenticatedSelector = (state) => state.app.isAuthenticated;
 export const todoSelector = (state) => state.todo;
 export const userSelector = (state) => state.user;
+export const chatSelector = (state) => state.chat;
 
 //================== LOADING ==================//
 export const selectorLoadingApp = (state) => state.app.loading;

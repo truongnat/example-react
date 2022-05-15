@@ -5,15 +5,16 @@ import { classes } from '../utils';
 export default function IconSticky({
   icon: Icon,
   fn = () => {},
-  customClass = '',
+  customClass = 'bg-blue-500',
   sizeDefault = 35,
   colorDefault = 'white',
 }) {
   return (
     <div
       onClick={fn}
-      className={classes(
-        'w-16 h-16 flex items-center justify-center bg-blue-500 rounded-full fixed right-10 bottom-10 cursor-pointer',
+      className={
+			classes(
+        'w-16 h-16 flex items-center justify-center rounded-full fixed right-10 bottom-10 cursor-pointer',
         customClass
       )}
     >
