@@ -187,11 +187,3 @@ $ ./ssr.sh
     - Github connection:
       - Coming soon!
 ## Stay in touch
-
-- Author - [Peanut201](https://www.facebook.com/truongdq2001/)
-
-- Telegram - [@Peanut201](https://t.me/peanut201)
-
-## License
-
-Copyrighted by Peanut201.
