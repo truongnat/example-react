@@ -83,7 +83,7 @@ export default function Footer() {
           <BsFacebook />
         </SocialButton>
         <SocialButton
-          label={'Linked In'}
+          label={'LinkedIn'}
           href={'www.linkedin.com/in/peanut201'}
         >
           <BsLinkedin />
