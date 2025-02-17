@@ -84,7 +84,7 @@ export default function Footer() {
         </SocialButton>
         <SocialButton
           label={'LinkedIn'}
-          href={'www.linkedin.com/in/peanut201'}
+          href={'www.linkedin.com/in/Shivani201'}
         >
           <BsLinkedin />
         </SocialButton>
