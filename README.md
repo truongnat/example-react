@@ -16,19 +16,22 @@
 
 - Learning concept [ReactJS](https://reactjs.org/docs/getting-started.html) framework development by Facebook.
 
-- Learning ecosystem for ReactJS, example : [react-router-dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/), [Chakra UI](https://chakra-ui.com/).
+- Learning ecosystem for ReactJS, example : [react router dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/) and [Chakra UI](https://chakra-ui.com/).
+
 
 - Implement project example with [CRA](https://create-react-app.dev/).
 
 - Build project and implement with SPA or SSR.
 
 - Deploy source to hosting.
-
+    + Frontend ReactJS deploy with [vercel](https://vercel.com/).
+    + Backend NodeJs deploy with [heroku](https://dashboard.heroku.com/).
 
 
 ## Feature
 
 - Authentication :
+
 	+ Sign in.
 	+ Sign up.
 	+ Auto remember login.
@@ -72,8 +75,8 @@ We are using template Create React App.
 > *All you need left is to know a little bit of [Javascript](https://www.w3schools.com/js/) .*
 
 
+## Requirements docs:
 
-## Docs & Started
 
 - Docs for concept React JS.
 - What is [JSX](https://reactjs.org/docs/introducing-jsx.html) ?
@@ -113,7 +116,7 @@ $ npm run start:dev | yarn start:dev
 
 # production mode
 
-$ npm run start:prod | yarn start:prod
+$ npm run start | yarn start
 
 
 ```
@@ -186,5 +189,13 @@ $ ./ssr.sh
 
     - Github connection:
       - Coming soon!
+
+
+## Github
+
+
+[GitHub - truongdq2001/example-react](https://github.com/truongnat/example-react)
+
+
 ## Stay in touch
 ## Author - Shivani Yadav
