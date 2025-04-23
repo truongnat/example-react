@@ -1,0 +1,6 @@
+{
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react-dom": "^19.1.2"
+  }
+}

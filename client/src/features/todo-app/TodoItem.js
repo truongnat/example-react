@@ -1,70 +1,42 @@
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import {
-  AccordionButton,
-  Text,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Button,
-  useDisclosure,
-} from "@chakra-ui/react";
-import React from "react";
-import AlertDeleteTodo from "./AlertDeleteTodo";
-import ModalEdit from "./ModalEdit";
-import TodoBadge from "./TodoBadge";
-
-export default function TodoItem({ todo }) {
-  const {
-    isOpen: openEdit,
-    onOpen: onOpenEdit,
-    onClose: onCloseEdit,
-  } = useDisclosure();
-  const {
-    isOpen: openDelete,
-    onOpen: onOpenDelete,
-    onClose: onCloseDelete,
-  } = useDisclosure();
-  return (
-    <AccordionItem key={todo._id} className="w-full">
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = TodoItem;
+const icons_1 = require("@chakra-ui/icons");
+const react_1 = require("@chakra-ui/react");
+const react_2 = __importDefault(require("react"));
+const AlertDeleteTodo_1 = __importDefault(require("./AlertDeleteTodo"));
+const ModalEdit_1 = __importDefault(require("./ModalEdit"));
+const TodoBadge_1 = __importDefault(require("./TodoBadge"));
+function TodoItem({ todo }) {
+    const { isOpen: openEdit, onOpen: onOpenEdit, onClose: onCloseEdit, } = (0, react_1.useDisclosure)();
+    const { isOpen: openDelete, onOpen: onOpenDelete, onClose: onCloseDelete, } = (0, react_1.useDisclosure)();
+    return (<react_1.AccordionItem key={todo._id} className="w-full">
       <h2>
-        <AccordionButton>
-          <Box flex="1" textAlign="left">
+        <react_1.AccordionButton>
+          <react_1.Box flex="1" textAlign="left">
             {todo.title}
-            <TodoBadge status={todo.status} />
-          </Box>
-          <AccordionIcon />
-        </AccordionButton>
+            <TodoBadge_1.default status={todo.status}/>
+          </react_1.Box>
+          <react_1.AccordionIcon />
+        </react_1.AccordionButton>
       </h2>
-      <AccordionPanel pb={4}>
-        <Text>{todo.content}</Text>
+      <react_1.AccordionPanel pb={4}>
+        <react_1.Text>{todo.content}</react_1.Text>
         <div className="text-right space-x-5">
-          <Button
-            leftIcon={<EditIcon />}
-            colorScheme="whatsapp"
-            variant="outline"
-            onClick={() => onOpenEdit()}
-          >
+          <react_1.Button leftIcon={<icons_1.EditIcon />} colorScheme="whatsapp" variant="outline" onClick={() => onOpenEdit()}>
             edit
-          </Button>
+          </react_1.Button>
 
-          <Button
-            onClick={() => onOpenDelete()}
-            leftIcon={<DeleteIcon />}
-            colorScheme="red"
-            variant="outline"
-          >
+          <react_1.Button onClick={() => onOpenDelete()} leftIcon={<icons_1.DeleteIcon />} colorScheme="red" variant="outline">
             remove
-          </Button>
+          </react_1.Button>
 
-          <AlertDeleteTodo
-            todo={todo}
-            isOpen={openDelete}
-            onClose={onCloseDelete}
-          />
-          <ModalEdit isOpen={openEdit} onClose={onCloseEdit} dataInit={todo} />
+          <AlertDeleteTodo_1.default todo={todo} isOpen={openDelete} onClose={onCloseDelete}/>
+          <ModalEdit_1.default isOpen={openEdit} onClose={onCloseEdit} dataInit={todo}/>
         </div>
-      </AccordionPanel>
-    </AccordionItem>
-  );
+      </react_1.AccordionPanel>
+    </react_1.AccordionItem>);
 }

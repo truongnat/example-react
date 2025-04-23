@@ -1,62 +1,45 @@
-import React from "react";
-import {
-  Button,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogCloseButton,
-  AlertDialogBody,
-  AlertDialogFooter,
-  useToast,
-} from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
-import { DELETE_TODO, ENUM_STATUS, genericAction } from "../../redux/actions";
-import { todoSelector } from "../../redux/selector";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = AlertDeleteTodo;
+const react_1 = __importDefault(require("react"));
+const react_2 = require("@chakra-ui/react");
+const react_redux_1 = require("react-redux");
+const actions_1 = require("../../redux/actions");
+const selector_1 = require("../../redux/selector");
+function AlertDeleteTodo({ todo, onClose, isOpen }) {
+    const cancelRef = react_1.default.useRef();
+    const dispatch = (0, react_redux_1.useDispatch)();
+    const toast = (0, react_2.useToast)();
+    const { status: statusType } = (0, react_redux_1.useSelector)(selector_1.todoSelector);
+    const onSubmit = () => {
+        dispatch((0, actions_1.genericAction)(actions_1.DELETE_TODO, actions_1.ENUM_STATUS.FETCHING, {
+            todo,
+            toast,
+            onClose,
+            statusType,
+        }));
+    };
+    return (<react_2.AlertDialog motionPreset="slideInBottom" leastDestructiveRef={cancelRef} onClose={onClose} isOpen={isOpen} isCentered>
+      <react_2.AlertDialogOverlay />
 
-export default function AlertDeleteTodo({ todo, onClose, isOpen }) {
-  const cancelRef = React.useRef();
-  const dispatch = useDispatch();
-  const toast = useToast();
-
-  const { status: statusType } = useSelector(todoSelector);
-
-  const onSubmit = () => {
-    dispatch(
-      genericAction(DELETE_TODO, ENUM_STATUS.FETCHING, {
-        todo,
-        toast,
-        onClose,
-        statusType,
-      })
-    );
-  };
-  return (
-    <AlertDialog
-      motionPreset="slideInBottom"
-      leastDestructiveRef={cancelRef}
-      onClose={onClose}
-      isOpen={isOpen}
-      isCentered
-    >
-      <AlertDialogOverlay />
-
-      <AlertDialogContent>
-        <AlertDialogHeader>Delete todo this?</AlertDialogHeader>
-        <AlertDialogCloseButton />
-        <AlertDialogBody>
+      <react_2.AlertDialogContent>
+        <react_2.AlertDialogHeader>Delete todo this?</react_2.AlertDialogHeader>
+        <react_2.AlertDialogCloseButton />
+        <react_2.AlertDialogBody>
           Are you sure you want to delete todo of your todo list? This behavior
           will not be recoverable ? Continue.
-        </AlertDialogBody>
-        <AlertDialogFooter>
-          <Button ref={cancelRef} onClick={onClose}>
+        </react_2.AlertDialogBody>
+        <react_2.AlertDialogFooter>
+          <react_2.Button ref={cancelRef} onClick={onClose}>
             No
-          </Button>
-          <Button onClick={onSubmit} colorScheme="red" ml={3}>
+          </react_2.Button>
+          <react_2.Button onClick={onSubmit} colorScheme="red" ml={3}>
             Yes
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
+          </react_2.Button>
+        </react_2.AlertDialogFooter>
+      </react_2.AlertDialogContent>
+    </react_2.AlertDialog>);
 }
