@@ -196,40 +196,46 @@ class AuthController extends Controller {
 
   async validateBeforeCreateAccount(req, res, next) {
     const user = req.body.user;
+
     if (!user) {
       return next(new BadRequestException("User is not provider"));
     }
     const { email, password } = user;
+
+    const errors = [];
+
     if (!email || !password) {
-      const errors = [];
       if (!email) {
         errors.push({
-          field: "email",
-          message: "Email is not empty!",
+          field: 'email',
+          message: 'Email is empty!',
         });
       }
 
       if (!password) {
         errors.push({
-          field: "password",
-          message: "Password is not empty!",
+          field: 'password',
+          message: 'Password is empty!',
         });
       }
+    }
 
-      if (password.length < MIN_LENGTH_PASS) {
-        errors.push({
-          field: "password",
-          message: "Password must be greater than or equal to 8 characters!",
-        });
-      }
+    if (password.length < MIN_LENGTH_PASS) {
+      errors.push({
+        field: 'password',
+        message: 'Password must be greater than or equal to '  + MIN_LENGTH_PASS + ' characters!',
+      });
+    }
 
-      if (!REGEX_EMAIL.test(email)) {
-        errors.push({
-          field: "email",
-          message: "Email invalid!",
-        });
-      }
-      return next(new NotFoundException("failure", errors));
+    if (!REGEX_EMAIL.test(email)) {
+      errors.push({
+        field: 'email',
+        message: 'Email invalid!',
+      });
+    }
+
+    if (errors.length > 0) {
+      return next(new NotFoundException('Missing or incorrect information', errors));
     }
 
     next();
