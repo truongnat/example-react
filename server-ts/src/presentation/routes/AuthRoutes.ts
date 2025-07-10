@@ -22,7 +22,72 @@ export class AuthRoutes {
   }
 
   private initializeRoutes(): void {
-    // Public routes
+    /**
+     * @swagger
+     * /auth/register:
+     *   post:
+     *     summary: Register a new user
+     *     tags: [Authentication]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - username
+     *               - email
+     *               - password
+     *             properties:
+     *               username:
+     *                 type: string
+     *                 minLength: 2
+     *                 maxLength: 50
+     *                 pattern: '^[a-zA-Z0-9_-]+$'
+     *                 example: johndoe
+     *               email:
+     *                 type: string
+     *                 format: email
+     *                 example: john@example.com
+     *               password:
+     *                 type: string
+     *                 minLength: 8
+     *                 pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)'
+     *                 example: Password123
+     *               avatarUrl:
+     *                 type: string
+     *                 format: uri
+     *                 example: https://example.com/avatar.jpg
+     *     responses:
+     *       201:
+     *         description: User registered successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               allOf:
+     *                 - $ref: '#/components/schemas/ApiResponse'
+     *                 - type: object
+     *                   properties:
+     *                     data:
+     *                       type: object
+     *                       properties:
+     *                         user:
+     *                           $ref: '#/components/schemas/User'
+     *                         tokens:
+     *                           $ref: '#/components/schemas/AuthTokens'
+     *       400:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       409:
+     *         description: Email or username already exists
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     this.router.post(
       '/register',
       AuthValidator.register(),
@@ -30,6 +95,53 @@ export class AuthRoutes {
       this.authController.register
     );
 
+    /**
+     * @swagger
+     * /auth/login:
+     *   post:
+     *     summary: Login user
+     *     tags: [Authentication]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - email
+     *               - password
+     *             properties:
+     *               email:
+     *                 type: string
+     *                 format: email
+     *                 example: john@example.com
+     *               password:
+     *                 type: string
+     *                 example: Password123
+     *     responses:
+     *       200:
+     *         description: Login successful
+     *         content:
+     *           application/json:
+     *             schema:
+     *               allOf:
+     *                 - $ref: '#/components/schemas/ApiResponse'
+     *                 - type: object
+     *                   properties:
+     *                     data:
+     *                       type: object
+     *                       properties:
+     *                         user:
+     *                           $ref: '#/components/schemas/User'
+     *                         tokens:
+     *                           $ref: '#/components/schemas/AuthTokens'
+     *       401:
+     *         description: Invalid credentials
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     this.router.post(
       '/login',
       AuthValidator.login(),
@@ -37,13 +149,68 @@ export class AuthRoutes {
       this.authController.login
     );
 
-    // Protected routes
+    /**
+     * @swagger
+     * /auth/logout:
+     *   post:
+     *     summary: Logout user
+     *     tags: [Authentication]
+     *     security:
+     *       - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Logout successful
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/ApiResponse'
+     *       401:
+     *         description: Unauthorized
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     this.router.post(
       '/logout',
       this.authMiddleware.authenticate,
       this.authController.logout
     );
 
+    /**
+     * @swagger
+     * /auth/me:
+     *   get:
+     *     summary: Get current user profile
+     *     tags: [Authentication]
+     *     security:
+     *       - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: User profile retrieved successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               allOf:
+     *                 - $ref: '#/components/schemas/ApiResponse'
+     *                 - type: object
+     *                   properties:
+     *                     data:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: string
+     *                           format: uuid
+     *                         email:
+     *                           type: string
+     *                           format: email
+     *       401:
+     *         description: Unauthorized
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     this.router.get(
       '/me',
       this.authMiddleware.authenticate,

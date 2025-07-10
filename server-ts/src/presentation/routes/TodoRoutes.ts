@@ -5,6 +5,13 @@ import { body, param, query } from 'express-validator';
 import { ValidationMiddleware } from '@presentation/validators/ValidationMiddleware';
 import { TODO_STATUS_ARRAY } from '@shared/constants';
 
+/**
+ * @swagger
+ * tags:
+ *   name: Todos
+ *   description: Todo management
+ */
+
 export class TodoRoutes {
   private router = Router();
 
