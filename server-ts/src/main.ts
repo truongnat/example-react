@@ -163,16 +163,20 @@ class AppServer {
   private setupErrorHandling(): void {
     // 404 handler for API routes
     this.app.use('/api/*', ErrorMiddleware.notFound);
-    
+
     // Global error handler
     this.app.use(ErrorMiddleware.handle);
+  }
+
+  private setupSocket(): void {
+    this.socketService.initialize();
   }
 
   public async start(): Promise<void> {
     try {
       await this.initialize();
       
-      const server = this.app.listen(this.port, () => {
+      const server = this.server.listen(this.port, () => {
         console.log(`🚀 Server started on port ${this.port}`);
         console.log(`📊 Health check: http://localhost:${this.port}/health`);
         console.log(`🔗 API: http://localhost:${this.port}/api`);
