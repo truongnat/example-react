@@ -42,6 +42,7 @@ export class DependencyContainer {
   // Application
   private _registerUseCase!: RegisterUseCase;
   private _loginUseCase!: LoginUseCase;
+  private _getUserUseCase!: GetUserUseCase;
   private _createTodoUseCase!: CreateTodoUseCase;
   private _getTodosUseCase!: GetTodosUseCase;
 
