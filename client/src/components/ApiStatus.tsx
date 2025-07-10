@@ -16,7 +16,9 @@ export const ApiStatus: React.FC<ApiStatusProps> = ({ className }) => {
   const checkApiStatus = async () => {
     setStatus('checking')
     try {
-      const response = await fetch(`${config.apiBaseUrl}/health`, {
+      // Health endpoint is at /health, not /api/health
+      const healthUrl = config.apiBaseUrl.replace('/api', '/health')
+      const response = await fetch(healthUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
