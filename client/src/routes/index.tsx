@@ -102,7 +102,7 @@ function HomePage() {
                 </>
               ) : (
                 <>
-                  <Link to="/login">
+                  <Link search={{ redirect: '/todo' }} to="/login">
                     <Button size="lg" className="w-full sm:w-auto">
                       Sign In to Get Started
                       <ArrowRight className="ml-2 w-4 h-4" />
@@ -193,7 +193,7 @@ function HomePage() {
                       </Button>
                     </Link>
                   ) : (
-                    <Link to="/login">
+                    <Link search={{ redirect: app.link }} to="/login">
                       <Button variant="outline" className="w-full">
                         <Lock className="w-4 h-4 mr-2" />
                         Sign in to access
@@ -234,7 +234,7 @@ function HomePage() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Account</h3>
               <ul className="space-y-2">
-                <li><Link to="/login" className="text-gray-400 hover:text-white">Sign In</Link></li>
+                <li><Link to="/login" className="text-gray-400 hover:text-white" search={{ redirect: '/todo' }}>Sign In</Link></li>
                 <li><Link to="/register" className="text-gray-400 hover:text-white">Sign Up</Link></li>
                 <li><Link to="/forgot-password" className="text-gray-400 hover:text-white">Forgot Password</Link></li>
               </ul>
