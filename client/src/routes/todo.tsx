@@ -34,7 +34,7 @@ function TodoPage() {
   const [newTodoContent, setNewTodoContent] = useState('')
   const [validationError, setValidationError] = useState('')
   const [statusFilter, setStatusFilter] = useState<TodoStatus | undefined>(undefined)
-  const [sortBy, setSortBy] = useState<'created_at' | 'title' | 'status'>('created_at')
+  const [sortBy, setSortBy] = useState<'createdAt' | 'title' | 'status'>('createdAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   // React Query hooks
