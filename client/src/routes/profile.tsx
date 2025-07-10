@@ -28,22 +28,75 @@ export const Route = createFileRoute('/profile')({
 })
 
 function MyProfilePage() {
-  const { user, logout } = useAuthStore()
+  const { user } = useAuthStore()
+  const { data: currentUser, isLoading, error } = useCurrentUser()
+  const logoutMutation = useLogout()
+
   const [profile, setProfile] = useState({
-    name: user?.name || 'John Doe',
-    email: user?.email || 'john.doe@example.com',
+    name: '',
+    email: '',
     bio: 'Software developer passionate about creating amazing user experiences.',
-    avatar: user?.avatar || '/api/placeholder/120/120'
+    avatar: ''
   })
+
+  // Update profile state when user data is loaded
+  React.useEffect(() => {
+    if (currentUser) {
+      setProfile({
+        name: currentUser.username || '',
+        email: currentUser.email || '',
+        bio: 'Software developer passionate about creating amazing user experiences.',
+        avatar: currentUser.avatarUrl || '/api/placeholder/120/120'
+      })
+    }
+  }, [currentUser])
 
   const handleSave = () => {
     console.log('Saving profile:', profile)
-    // Handle profile save logic here
+    // TODO: Implement profile update API call
+    alert('Profile update functionality coming soon!')
   }
 
   const handleAvatarChange = () => {
     console.log('Change avatar clicked')
-    // Handle avatar upload logic here
+    // TODO: Implement avatar upload
+    alert('Avatar upload functionality coming soon!')
+  }
+
+  const handleLogout = () => {
+    logoutMutation.mutate()
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navigation title="My Profile" />
+        <div className="py-8">
+          <div className="max-w-2xl mx-auto px-4">
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-6 h-6 animate-spin" />
+              <span className="ml-2">Loading profile...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navigation title="My Profile" />
+        <div className="py-8">
+          <div className="max-w-2xl mx-auto px-4">
+            <div className="text-center py-8 text-red-600">
+              <p>Failed to load profile. Please try again.</p>
+              <p className="text-sm mt-2">{error.message}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -142,9 +195,14 @@ function MyProfilePage() {
             <Button
               variant="outline"
               className="w-full flex items-center gap-2"
-              onClick={logout}
+              onClick={handleLogout}
+              disabled={logoutMutation.isPending}
             >
-              <LogOut className="w-4 h-4" />
+              {logoutMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <LogOut className="w-4 h-4" />
+              )}
               Sign Out
             </Button>
             <Button variant="destructive" className="w-full">
