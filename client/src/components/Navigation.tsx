@@ -14,9 +14,14 @@ interface NavigationProps {
 export function Navigation({ showBackButton = false, title, transparent = false }: NavigationProps) {
   const location = useLocation()
   const { isAuthenticated, user } = useAuthStore()
+  const logoutMutation = useLogout()
 
   const isActive = (path: string) => {
     return location.pathname === path
+  }
+
+  const handleLogout = () => {
+    logoutMutation.mutate()
   }
 
   return (
@@ -104,6 +109,15 @@ export function Navigation({ showBackButton = false, title, transparent = false 
                     Profile
                   </Button>
                 </Link>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  {logoutMutation.isPending ? 'Signing Out...' : 'Sign Out'}
+                </Button>
               </div>
             ) : (
               <>
