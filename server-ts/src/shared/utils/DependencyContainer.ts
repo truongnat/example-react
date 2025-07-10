@@ -96,7 +96,8 @@ export class DependencyContainer {
     // Initialize controllers
     this._authController = new AuthController(
       this._registerUseCase,
-      this._loginUseCase
+      this._loginUseCase,
+      this._getUserUseCase
     );
     this._todoController = new TodoController(
       this._createTodoUseCase,
