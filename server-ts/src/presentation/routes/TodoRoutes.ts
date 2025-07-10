@@ -203,6 +203,17 @@ export class TodoRoutes {
       this.todoController.update
     );
 
+    // Update todo status
+    this.router.put(
+      '/:id/status',
+      [
+        param('id').isUUID().withMessage('Invalid todo ID'),
+        body('status').isIn(TODO_STATUS_ARRAY).withMessage('Invalid status'),
+      ],
+      ValidationMiddleware.handleValidationErrors,
+      this.todoController.updateStatus
+    );
+
     // Delete todo
     this.router.delete(
       '/:id',

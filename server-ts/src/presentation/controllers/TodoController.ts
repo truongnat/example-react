@@ -84,11 +84,32 @@ export class TodoController {
 
       // This would need an UpdateTodoUseCase implementation
       // For now, we'll return a placeholder response
-      
+
       const response: ApiResponse = {
         success: true,
         data: { id: todoId, ...requestDto, userId },
         message: 'Todo updated successfully',
+      };
+
+      res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  updateStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const todoId = req.params.id;
+      const { status } = req.body;
+      const userId = req.user!.id;
+
+      // This would need an UpdateTodoStatusUseCase implementation
+      // For now, we'll return a placeholder response
+
+      const response: ApiResponse = {
+        success: true,
+        data: { id: todoId, status, userId },
+        message: 'Todo status updated successfully',
       };
 
       res.status(HTTP_STATUS.OK).json(response);
