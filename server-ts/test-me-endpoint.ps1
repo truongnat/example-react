@@ -36,7 +36,7 @@ try {
     Write-Host "   Username: $($registerResponse.data.user.username)" -ForegroundColor Cyan
     Write-Host "   Email: $($registerResponse.data.user.email)" -ForegroundColor Cyan
 } catch {
-    if ($_.Exception.Message -like "*409*" -or $_.Exception.Message -like "*Conflict*") {
+    if (($_.Exception.Message -like "*409*") -or ($_.Exception.Message -like "*Conflict*")) {
         Write-Host "   ℹ️  User already exists, trying to login..." -ForegroundColor Blue
         
         # Try to login instead
