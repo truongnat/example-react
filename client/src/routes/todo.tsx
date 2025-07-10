@@ -37,13 +37,16 @@ function TodoPage() {
   const [sortBy, setSortBy] = useState<'createdAt' | 'title' | 'status'>('createdAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
-  // React Query hooks
-  const { data: todosData, isLoading, error, refetch } = useTodos({
+  // Memoize params to prevent unnecessary refetches
+  const todosParams = useMemo(() => ({
     status: statusFilter,
     sortBy,
     sortOrder,
     limit: 50
-  })
+  }), [statusFilter, sortBy, sortOrder])
+
+  // React Query hooks
+  const { data: todosData, isLoading, error, refetch } = useTodos(todosParams)
   const createTodoMutation = useCreateTodo()
   const updateStatusMutation = useUpdateTodoStatus()
   const deleteTodoMutation = useDeleteTodo()
