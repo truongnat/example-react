@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { RegisterUseCase } from '@application/use-cases/auth/RegisterUseCase';
 import { LoginUseCase } from '@application/use-cases/auth/LoginUseCase';
+import { GetUserUseCase } from '@application/use-cases/auth/GetUserUseCase';
 import { RegisterRequestDto, LoginRequestDto } from '@application/dtos/auth.dto';
 import { ApiResponse } from '@shared/types/common.types';
 import { HTTP_STATUS } from '@shared/constants';
@@ -8,7 +9,8 @@ import { HTTP_STATUS } from '@shared/constants';
 export class AuthController {
   constructor(
     private readonly registerUseCase: RegisterUseCase,
-    private readonly loginUseCase: LoginUseCase
+    private readonly loginUseCase: LoginUseCase,
+    private readonly getUserUseCase: GetUserUseCase
   ) {}
 
   register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
