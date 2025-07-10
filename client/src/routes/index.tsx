@@ -205,6 +205,11 @@ function HomePage() {
               </Card>
             ))}
           </div>
+
+          {/* API Status */}
+          <div className="mt-12 max-w-md mx-auto">
+            <ApiStatus />
+          </div>
         </div>
       </div>
 
