@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft } from 'lucide-react'
-import { useAuthStore } from '@/stores/authStore'
+import { useRegister } from '@/hooks/useAuth'
 
 export const Route = createFileRoute('/register')({
   component: RegisterPage,
@@ -13,41 +13,37 @@ export const Route = createFileRoute('/register')({
 
 function RegisterPage() {
   const navigate = useNavigate()
-  const { register } = useAuthStore()
+  const registerMutation = useRegister()
 
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
   })
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
     setError('')
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
-      setIsLoading(false)
       return
     }
 
-    try {
-      const success = await register(formData.name, formData.email, formData.password)
-
-      if (success) {
+    registerMutation.mutate({
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+    }, {
+      onSuccess: () => {
         navigate({ to: '/' })
-      } else {
-        setError('Registration failed. Please try again.')
+      },
+      onError: (error: any) => {
+        setError(error.message || 'Registration failed. Please try again.')
       }
-    } catch (err) {
-      setError('Registration failed. Please try again.')
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 relative">
