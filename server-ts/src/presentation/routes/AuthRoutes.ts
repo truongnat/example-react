@@ -182,6 +182,7 @@ export class AuthRoutes {
      * /auth/me:
      *   get:
      *     summary: Get current user profile
+     *     description: Retrieve complete profile information for the authenticated user
      *     tags: [Authentication]
      *     security:
      *       - bearerAuth: []
@@ -196,16 +197,15 @@ export class AuthRoutes {
      *                 - type: object
      *                   properties:
      *                     data:
-     *                       type: object
-     *                       properties:
-     *                         id:
-     *                           type: string
-     *                           format: uuid
-     *                         email:
-     *                           type: string
-     *                           format: email
+     *                       $ref: '#/components/schemas/User'
      *       401:
-     *         description: Unauthorized
+     *         description: Unauthorized - Invalid or missing token
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       404:
+     *         description: User not found or account deactivated
      *         content:
      *           application/json:
      *             schema:
