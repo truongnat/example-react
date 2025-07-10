@@ -1,17 +1,17 @@
 // vitest.config.ts
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc' // hoặc '@vitejs/plugin-react' nếu bạn không dùng SWC
-import tsconfigPaths from 'vite-tsconfig-paths' // Nếu bạn dùng path aliases
-import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react-swc'
+import tsconfigPaths from 'vite-tsconfig-paths'
 import path from "path"
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import tailwindcss from '@tailwindcss/vite'
 
 
 export default defineConfig({
   plugins: [
-    TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
-    react(), 
+    tanstackRouter(),
+    react(),
     tsconfigPaths(),
     tailwindcss(),
   ],
@@ -22,11 +22,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     }
   },
   server: {
     open: false,
-    port: 3000
+    port: 5173
   }
 })

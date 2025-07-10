@@ -8,160 +8,245 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
+import { Route as TodoRouteImport } from './routes/todo'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as R404RouteImport } from './routes/404'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as RoomIdRouteImport } from './routes/room.$id'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as PostsImport } from './routes/posts'
-import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
-import { Route as PostsIndexImport } from './routes/posts.index'
-
-// Create/Update Routes
-
-const PostsRoute = PostsImport.update({
-  id: '/posts',
-  path: '/posts',
-  getParentRoute: () => rootRoute,
+const VerifyOtpRoute = VerifyOtpRouteImport.update({
+  id: '/verify-otp',
+  path: '/verify-otp',
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRoute,
+const TodoRoute = TodoRouteImport.update({
+  id: '/todo',
+  path: '/todo',
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R404Route = R404RouteImport.update({
+  id: '/404',
+  path: '/404',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoomIdRoute = RoomIdRouteImport.update({
+  id: '/room/$id',
+  path: '/room/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
-const PostsIndexRoute = PostsIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PostsRoute,
-} as any)
-
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/404': typeof R404Route
+  '/chat': typeof ChatRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/todo': typeof TodoRoute
+  '/verify-otp': typeof VerifyOtpRoute
+  '/room/$id': typeof RoomIdRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/404': typeof R404Route
+  '/chat': typeof ChatRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/todo': typeof TodoRoute
+  '/verify-otp': typeof VerifyOtpRoute
+  '/room/$id': typeof RoomIdRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/404': typeof R404Route
+  '/chat': typeof ChatRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/todo': typeof TodoRoute
+  '/verify-otp': typeof VerifyOtpRoute
+  '/room/$id': typeof RoomIdRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/404'
+    | '/chat'
+    | '/forgot-password'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/todo'
+    | '/verify-otp'
+    | '/room/$id'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/404'
+    | '/chat'
+    | '/forgot-password'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/todo'
+    | '/verify-otp'
+    | '/room/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/404'
+    | '/chat'
+    | '/forgot-password'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/todo'
+    | '/verify-otp'
+    | '/room/$id'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  R404Route: typeof R404Route
+  ChatRoute: typeof ChatRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
+  RegisterRoute: typeof RegisterRoute
+  TodoRoute: typeof TodoRoute
+  VerifyOtpRoute: typeof VerifyOtpRoute
+  RoomIdRoute: typeof RoomIdRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-otp': {
+      id: '/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof VerifyOtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/todo': {
+      id: '/todo'
+      path: '/todo'
+      fullPath: '/todo'
+      preLoaderRoute: typeof TodoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/404': {
+      id: '/404'
+      path: '/404'
+      fullPath: '/404'
+      preLoaderRoute: typeof R404RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/posts': {
-      id: '/posts'
-      path: '/posts'
-      fullPath: '/posts'
-      preLoaderRoute: typeof PostsImport
-      parentRoute: typeof rootRoute
-    }
-    '/posts/': {
-      id: '/posts/'
-      path: '/'
-      fullPath: '/posts/'
-      preLoaderRoute: typeof PostsIndexImport
-      parentRoute: typeof PostsImport
+    '/room/$id': {
+      id: '/room/$id'
+      path: '/room/$id'
+      fullPath: '/room/$id'
+      preLoaderRoute: typeof RoomIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
-}
-
-// Create and export the route tree
-
-interface PostsRouteChildren {
-  PostsIndexRoute: typeof PostsIndexRoute
-}
-
-const PostsRouteChildren: PostsRouteChildren = {
-  PostsIndexRoute: PostsIndexRoute,
-}
-
-const PostsRouteWithChildren = PostsRoute._addFileChildren(PostsRouteChildren)
-
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/posts': typeof PostsRouteWithChildren
-  '/posts/': typeof PostsIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/posts': typeof PostsIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/posts': typeof PostsRouteWithChildren
-  '/posts/': typeof PostsIndexRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/posts' | '/posts/'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/posts'
-  id: '__root__' | '/' | '/about' | '/posts' | '/posts/'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  PostsRoute: typeof PostsRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  PostsRoute: PostsRouteWithChildren,
+  R404Route: R404Route,
+  ChatRoute: ChatRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
+  RegisterRoute: RegisterRoute,
+  TodoRoute: TodoRoute,
+  VerifyOtpRoute: VerifyOtpRoute,
+  RoomIdRoute: RoomIdRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/about",
-        "/posts"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/posts": {
-      "filePath": "posts.tsx",
-      "children": [
-        "/posts/"
-      ]
-    },
-    "/posts/": {
-      "filePath": "posts.index.tsx",
-      "parent": "/posts"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
