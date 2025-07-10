@@ -39,34 +39,57 @@ export class HttpClient {
     this.refreshToken = refreshToken;
 
     try {
-      const authData = localStorage.getItem("auth-storage");
-      if (authData) {
-        const parsed = JSON.parse(authData);
-        // Ensure state exists
-        if (!parsed.state) {
-          parsed.state = {};
-        }
-        parsed.state.tokens = { accessToken, refreshToken };
-        localStorage.setItem("auth-storage", JSON.stringify(parsed));
+      // Get current auth data or create new structure
+      let authData = localStorage.getItem("auth-storage");
+      let parsed: any;
 
-        console.log("Saved tokens to storage:", {
-          hasAccessToken: !!accessToken,
-          hasRefreshToken: !!refreshToken,
-          storageStructure: parsed,
-        });
+      if (authData) {
+        parsed = JSON.parse(authData);
       } else {
-        // Create new auth storage if it doesn't exist
-        const newAuthData = {
+        // Create initial structure matching Zustand persist format
+        parsed = {
           state: {
-            tokens: { accessToken, refreshToken },
+            user: null,
+            isAuthenticated: false,
+            tokens: null,
           },
           version: 0,
         };
-        localStorage.setItem("auth-storage", JSON.stringify(newAuthData));
-        console.log("Created new auth storage with tokens");
+      }
+
+      // Ensure state exists
+      if (!parsed.state) {
+        parsed.state = {};
+      }
+
+      // Save tokens
+      parsed.state.tokens = { accessToken, refreshToken };
+
+      // Also update authentication status if not set
+      if (accessToken) {
+        parsed.state.isAuthenticated = true;
+      }
+
+      localStorage.setItem("auth-storage", JSON.stringify(parsed));
+
+      console.log("Saved tokens to localStorage:", {
+        hasAccessToken: !!accessToken,
+        hasRefreshToken: !!refreshToken,
+        accessTokenPreview: accessToken ? `${accessToken.substring(0, 20)}...` : null,
+        fullStructure: parsed,
+      });
+
+      // Verify tokens were saved correctly
+      const verification = localStorage.getItem("auth-storage");
+      if (verification) {
+        const verifyParsed = JSON.parse(verification);
+        console.log("Verification - tokens in storage:", {
+          hasTokens: !!verifyParsed.state?.tokens,
+          hasAccessToken: !!verifyParsed.state?.tokens?.accessToken,
+        });
       }
     } catch (error) {
-      console.warn("Failed to save tokens to storage:", error);
+      console.error("Failed to save tokens to storage:", error);
     }
   }
 
