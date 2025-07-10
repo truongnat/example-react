@@ -51,8 +51,19 @@ export class HttpClient {
 
         console.log('Saved tokens to storage:', {
           hasAccessToken: !!accessToken,
-          hasRefreshToken: !!refreshToken
+          hasRefreshToken: !!refreshToken,
+          storageStructure: parsed
         })
+      } else {
+        // Create new auth storage if it doesn't exist
+        const newAuthData = {
+          state: {
+            tokens: { accessToken, refreshToken }
+          },
+          version: 0
+        }
+        localStorage.setItem('auth-storage', JSON.stringify(newAuthData))
+        console.log('Created new auth storage with tokens')
       }
     } catch (error) {
       console.warn('Failed to save tokens to storage:', error)

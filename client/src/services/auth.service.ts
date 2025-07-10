@@ -19,6 +19,12 @@ export class AuthService {
     
     if (response.success && response.data) {
       // Store tokens in HTTP client
+      console.log('Login successful, storing tokens:', {
+        hasAccessToken: !!response.data.tokens.accessToken,
+        hasRefreshToken: !!response.data.tokens.refreshToken,
+        accessTokenLength: response.data.tokens.accessToken?.length
+      })
+
       httpClient.setTokens(
         response.data.tokens.accessToken,
         response.data.tokens.refreshToken
