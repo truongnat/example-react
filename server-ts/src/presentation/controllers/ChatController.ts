@@ -44,7 +44,7 @@ export class ChatController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new ValidationException('Validation failed', errors.array());
+        throw new ValidationException('Validation failed', errors.array().map(err => err.msg));
       }
 
       const userId = (req as any).user.id;
@@ -105,7 +105,7 @@ export class ChatController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new ValidationException('Validation failed', errors.array());
+        throw new ValidationException('Validation failed', errors.array().map(err => err.msg));
       }
 
       const roomId = req.params.id as UUID;
@@ -187,7 +187,7 @@ export class ChatController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new ValidationException('Validation failed', errors.array());
+        throw new ValidationException('Validation failed', errors.array().map(err => err.msg));
       }
 
       const roomId = req.params.roomId as UUID;
