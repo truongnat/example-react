@@ -92,6 +92,9 @@ export class HttpClient {
     // Add authorization header if token exists
     if (this.accessToken) {
       headers.Authorization = `Bearer ${this.accessToken}`
+      console.log('Adding Authorization header:', `Bearer ${this.accessToken.substring(0, 20)}...`)
+    } else {
+      console.warn('No access token available for request to:', endpoint)
     }
 
     try {
