@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Code, Database, Globe, Zap, Users, MessageCircle, CheckSquare, Lock } from 'lucide-react'
 import { Navigation } from '@/components/Navigation'
 import { useAuthStore } from '@/stores/authStore'
-import { ApiStatus } from '@/components/ApiStatus'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -204,11 +203,6 @@ function HomePage() {
                 </CardContent>
               </Card>
             ))}
-          </div>
-
-          {/* API Status */}
-          <div className="mt-12 max-w-md mx-auto">
-            <ApiStatus />
           </div>
         </div>
       </div>
