@@ -222,6 +222,32 @@ npm run test:watch
 npm test -- --coverage
 ```
 
+## 📚 API Documentation
+
+### Interactive Documentation
+- **Swagger UI**: http://localhost:5000/api-docs
+- **OpenAPI Spec**: http://localhost:5000/api-docs/swagger.json
+- **Quick Access**: http://localhost:5000/docs
+
+### Testing APIs
+```bash
+# 1. Start the server
+npm run dev
+
+# 2. Open Swagger UI in browser
+open http://localhost:5000/api-docs
+
+# 3. Test authentication flow:
+#    - Use POST /auth/register or /auth/login
+#    - Copy the accessToken from response
+#    - Click "Authorize" button (🔒) in Swagger UI
+#    - Enter: Bearer <your-access-token>
+#    - Now test any protected endpoint
+
+# 4. Or use PowerShell script
+powershell -ExecutionPolicy Bypass -File test-api.ps1
+```
+
 ## 📝 Development Guidelines
 
 ### Adding New Features
