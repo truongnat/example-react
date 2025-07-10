@@ -106,10 +106,12 @@ class AppServer {
           name: 'Example Server API',
           version: '1.0.0',
           description: 'Clean Architecture Backend with TypeScript',
+          documentation: '/api-docs',
           endpoints: {
             auth: '/api/auth',
             todos: '/api/todos',
             health: '/health',
+            docs: '/api-docs',
           },
         },
         message: 'API information',
@@ -150,6 +152,7 @@ class AppServer {
         console.log(`🚀 Server started on port ${this.port}`);
         console.log(`📊 Health check: http://localhost:${this.port}/health`);
         console.log(`🔗 API: http://localhost:${this.port}/api`);
+        console.log(`📚 API Documentation: http://localhost:${this.port}/api-docs`);
         
         if (process.env.IS_SSR === 'true') {
           console.log(`🌐 SSR: http://localhost:${this.port}`);
