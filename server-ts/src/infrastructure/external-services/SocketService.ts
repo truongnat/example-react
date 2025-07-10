@@ -1,11 +1,12 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { UUID } from '@shared/types/common.types';
-import { 
-  JoinRoomDto, 
-  LeaveRoomDto, 
-  NewMessageDto, 
-  UserTypingDto 
+import {
+  JoinRoomDto,
+  LeaveRoomDto,
+  NewMessageDto,
+  UserTypingDto,
+  CreateMessageRequestDto
 } from '@application/dtos/chat.dto';
 
 interface AuthenticatedSocket extends Socket {
