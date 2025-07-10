@@ -142,11 +142,4 @@ export class SQLiteConnection extends DatabaseConnection {
       CREATE INDEX IF NOT EXISTS idx_room_participants_user_id ON room_participants (user_id);
     `);
   }
-
-  public getDatabase(): Database<sqlite3.Database, sqlite3.Statement> {
-    if (!this.db) {
-      throw new Error('Database not connected');
-    }
-    return this.db;
-  }
 }
