@@ -16,8 +16,18 @@ export class HttpClient {
       const authData = localStorage.getItem('auth-storage')
       if (authData) {
         const parsed = JSON.parse(authData)
-        this.accessToken = parsed.state?.tokens?.accessToken || null
-        this.refreshToken = parsed.state?.tokens?.refreshToken || null
+        // Check both possible structures
+        const tokens = parsed.state?.tokens || parsed.tokens
+        this.accessToken = tokens?.accessToken || null
+        this.refreshToken = tokens?.refreshToken || null
+
+        // Debug log
+        console.log('Loading tokens from storage:', {
+          hasAuthData: !!authData,
+          hasState: !!parsed.state,
+          hasTokens: !!tokens,
+          hasAccessToken: !!this.accessToken
+        })
       }
     } catch (error) {
       console.warn('Failed to load tokens from storage:', error)
@@ -27,13 +37,22 @@ export class HttpClient {
   private saveTokensToStorage(accessToken: string, refreshToken: string) {
     this.accessToken = accessToken
     this.refreshToken = refreshToken
-    
+
     try {
       const authData = localStorage.getItem('auth-storage')
       if (authData) {
         const parsed = JSON.parse(authData)
+        // Ensure state exists
+        if (!parsed.state) {
+          parsed.state = {}
+        }
         parsed.state.tokens = { accessToken, refreshToken }
         localStorage.setItem('auth-storage', JSON.stringify(parsed))
+
+        console.log('Saved tokens to storage:', {
+          hasAccessToken: !!accessToken,
+          hasRefreshToken: !!refreshToken
+        })
       }
     } catch (error) {
       console.warn('Failed to save tokens to storage:', error)
@@ -171,6 +190,10 @@ export class HttpClient {
 
   setTokens(accessToken: string, refreshToken: string) {
     this.saveTokensToStorage(accessToken, refreshToken)
+  }
+
+  reloadTokens() {
+    this.loadTokensFromStorage()
   }
 
   clearAuth() {
