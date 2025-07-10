@@ -63,10 +63,13 @@ export class AuthController {
 
   me = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      // User info is already available from auth middleware
+      // Get full user info from database using the user ID from auth middleware
+      const userId = req.user!.id;
+      const user = await this.getUserUseCase.execute(userId);
+
       const response: ApiResponse = {
         success: true,
-        data: req.user,
+        data: user,
         message: 'User profile retrieved successfully',
       };
 
