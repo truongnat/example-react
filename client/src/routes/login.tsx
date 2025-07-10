@@ -17,33 +17,24 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const navigate = useNavigate()
   const search = useSearch({ from: '/login' })
-  const { login } = useAuthStore()
+  const loginMutation = useLogin()
 
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    setError('')
 
-    try {
-      const success = await login(formData.email, formData.password)
-
-      if (success) {
+    loginMutation.mutate(formData, {
+      onSuccess: () => {
         navigate({ to: search.redirect })
-      } else {
-        setError('Invalid email or password. Try demo@example.com / password')
+      },
+      onError: (error: any) => {
+        console.error('Login error:', error)
       }
-    } catch (err) {
-      setError('Login failed. Please try again.')
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 relative">
@@ -81,9 +72,9 @@ function LoginPage() {
           </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
+            {loginMutation.error && (
               <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
-                {error}
+                {loginMutation.error.message || 'Login failed. Please try again.'}
               </div>
             )}
 
@@ -111,8 +102,8 @@ function LoginPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Signing In...' : 'Sign In'}
+            <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
           <div className="text-center space-y-2">
