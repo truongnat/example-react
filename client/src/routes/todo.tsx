@@ -8,7 +8,8 @@ import { Navigation } from '@/components/Navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { useTodos, useCreateTodo, useUpdateTodoStatus, useDeleteTodo } from '@/hooks/useTodos'
 import { TodoStatus } from '@/types/api'
-import { Loader2, Trash2, Edit } from 'lucide-react'
+import { Loader2, Trash2, Edit, Plus, CheckCircle } from 'lucide-react'
+import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading'
 
 export const Route = createFileRoute('/todo')({
   beforeLoad: ({ context, location }) => {
