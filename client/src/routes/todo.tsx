@@ -160,7 +160,14 @@ function TodoPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Your Tasks</CardTitle>
+              <div>
+                <CardTitle>Your Tasks</CardTitle>
+                {todosData && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    {todosData.total} total • {todosData.todos.filter(t => t.status === TodoStatus.COMPLETED).length} completed
+                  </p>
+                )}
+              </div>
               <div className="flex items-center gap-2 text-sm">
                 <select
                   value={statusFilter || ''}
@@ -198,7 +205,7 @@ function TodoPage() {
               <ErrorState
                 message="Failed to load tasks"
                 error={error}
-                onRetry={() => window.location.reload()}
+                onRetry={() => refetch()}
               />
             ) : todosData?.todos && todosData.todos.length > 0 ? (
               <div className="space-y-3">

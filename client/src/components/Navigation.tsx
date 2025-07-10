@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Home, User } from 'lucide-react'
+import { ArrowLeft, Home, User, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
+import { useLogout } from '@/hooks/useAuth'
 
 interface NavigationProps {
   showBackButton?: boolean
