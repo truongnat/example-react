@@ -46,8 +46,8 @@ class AppServer {
 
   public async initialize(): Promise<void> {
     try {
-      // Initialize dependency container
-      await this.container.initialize();
+      // Initialize dependency container with socket service
+      await this.container.initialize(this.socketService);
 
       // Setup middleware
       this.setupMiddleware();
@@ -121,6 +121,11 @@ class AppServer {
     // API routes
     this.app.use('/api/auth', this.container.authRoutes.getRouter());
     this.app.use('/api/todos', this.container.todoRoutes.getRouter());
+
+    // Chat routes (only if available)
+    if (this.container.chatRoutes) {
+      this.app.use('/api/chat', this.container.chatRoutes.getRouter());
+    }
 
     // API info
     this.app.get('/api', (req, res) => {

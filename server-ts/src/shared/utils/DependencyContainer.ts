@@ -166,9 +166,34 @@ export class DependencyContainer {
       this._getTodosUseCase
     );
 
+    // Initialize chat controller (only if socket service is available)
+    if (this._socketService) {
+      this._chatController = new ChatController(
+        this._createRoomUseCase,
+        this._updateRoomUseCase,
+        this._getRoomsUseCase,
+        this._getRoomUseCase,
+        this._deleteRoomUseCase,
+        this._joinRoomUseCase,
+        this._leaveRoomUseCase,
+        this._createMessageUseCase,
+        this._updateMessageUseCase,
+        this._getMessagesUseCase,
+        this._deleteMessageUseCase,
+        this._socketService
+      );
+
+      // Set chat controller in socket service to avoid circular dependency
+      this._socketService.setChatController(this._chatController);
+    }
+
     // Initialize routes
     this._authRoutes = new AuthRoutes(this._authController, this._authMiddleware);
     this._todoRoutes = new TodoRoutes(this._todoController, this._authMiddleware);
+
+    if (this._chatController) {
+      this._chatRoutes = new ChatRoutes(this._chatController);
+    }
   }
 
   public async cleanup(): Promise<void> {
@@ -196,5 +221,13 @@ export class DependencyContainer {
 
   public get authMiddleware(): AuthMiddleware {
     return this._authMiddleware;
+  }
+
+  public get chatRoutes(): ChatRoutes {
+    return this._chatRoutes;
+  }
+
+  public get socketService(): SocketService {
+    return this._socketService;
   }
 }
