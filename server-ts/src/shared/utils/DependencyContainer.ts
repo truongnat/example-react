@@ -24,8 +24,32 @@ import { GetTodosUseCase } from '@application/use-cases/todo/GetTodosUseCase';
 // Presentation
 import { AuthController } from '@presentation/controllers/AuthController';
 import { TodoController } from '@presentation/controllers/TodoController';
+import { ChatController } from '@presentation/controllers/ChatController';
 import { AuthRoutes } from '@presentation/routes/AuthRoutes';
 import { TodoRoutes } from '@presentation/routes/TodoRoutes';
+import { ChatRoutes } from '@presentation/routes/ChatRoutes';
+
+// Chat imports
+import { IRoomRepository } from '@domain/repositories/IRoomRepository';
+import { IMessageRepository } from '@domain/repositories/IMessageRepository';
+import { SQLiteRoomRepository } from '@infrastructure/repositories/SQLiteRoomRepository';
+import { SQLiteMessageRepository } from '@infrastructure/repositories/SQLiteMessageRepository';
+import { SocketService } from '@infrastructure/external-services/SocketService';
+
+// Chat use cases
+import {
+  CreateRoomUseCase,
+  UpdateRoomUseCase,
+  GetRoomsUseCase,
+  GetRoomUseCase,
+  DeleteRoomUseCase,
+  JoinRoomUseCase,
+  LeaveRoomUseCase,
+  CreateMessageUseCase,
+  UpdateMessageUseCase,
+  GetMessagesUseCase,
+  DeleteMessageUseCase
+} from '@application/use-cases/chat';
 
 export class DependencyContainer {
   private static instance: DependencyContainer;
@@ -34,10 +58,13 @@ export class DependencyContainer {
   private _databaseConnection!: DatabaseConnection;
   private _userRepository!: IUserRepository;
   private _todoRepository!: ITodoRepository;
+  private _roomRepository!: IRoomRepository;
+  private _messageRepository!: IMessageRepository;
   private _passwordService!: IPasswordService;
   private _tokenService!: ITokenService;
   private _emailService!: IEmailService;
   private _authMiddleware!: AuthMiddleware;
+  private _socketService!: SocketService;
 
   // Application
   private _registerUseCase!: RegisterUseCase;
@@ -45,6 +72,19 @@ export class DependencyContainer {
   private _getUserUseCase!: GetUserUseCase;
   private _createTodoUseCase!: CreateTodoUseCase;
   private _getTodosUseCase!: GetTodosUseCase;
+
+  // Chat use cases
+  private _createRoomUseCase!: CreateRoomUseCase;
+  private _updateRoomUseCase!: UpdateRoomUseCase;
+  private _getRoomsUseCase!: GetRoomsUseCase;
+  private _getRoomUseCase!: GetRoomUseCase;
+  private _deleteRoomUseCase!: DeleteRoomUseCase;
+  private _joinRoomUseCase!: JoinRoomUseCase;
+  private _leaveRoomUseCase!: LeaveRoomUseCase;
+  private _createMessageUseCase!: CreateMessageUseCase;
+  private _updateMessageUseCase!: UpdateMessageUseCase;
+  private _getMessagesUseCase!: GetMessagesUseCase;
+  private _deleteMessageUseCase!: DeleteMessageUseCase;
 
   // Presentation
   private _authController!: AuthController;
