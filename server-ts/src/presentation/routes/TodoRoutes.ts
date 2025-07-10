@@ -26,7 +26,76 @@ export class TodoRoutes {
     // All todo routes require authentication
     this.router.use(this.authMiddleware.authenticate);
 
-    // Get all todos
+    /**
+     * @swagger
+     * /todos:
+     *   get:
+     *     summary: Get user's todos
+     *     tags: [Todos]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: query
+     *         name: page
+     *         schema:
+     *           type: integer
+     *           minimum: 1
+     *           default: 1
+     *         description: Page number
+     *       - in: query
+     *         name: limit
+     *         schema:
+     *           type: integer
+     *           minimum: 1
+     *           maximum: 100
+     *           default: 10
+     *         description: Number of items per page
+     *       - in: query
+     *         name: status
+     *         schema:
+     *           type: string
+     *           enum: [initial, todo, review, done, keeping]
+     *         description: Filter by todo status
+     *       - in: query
+     *         name: sortBy
+     *         schema:
+     *           type: string
+     *           enum: [createdAt, updatedAt, title, status]
+     *           default: createdAt
+     *         description: Sort field
+     *       - in: query
+     *         name: sortOrder
+     *         schema:
+     *           type: string
+     *           enum: [asc, desc]
+     *           default: desc
+     *         description: Sort order
+     *     responses:
+     *       200:
+     *         description: Todos retrieved successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               allOf:
+     *                 - $ref: '#/components/schemas/ApiResponse'
+     *                 - type: object
+     *                   properties:
+     *                     data:
+     *                       allOf:
+     *                         - $ref: '#/components/schemas/PaginatedResponse'
+     *                         - type: object
+     *                           properties:
+     *                             data:
+     *                               type: array
+     *                               items:
+     *                                 $ref: '#/components/schemas/Todo'
+     *       401:
+     *         description: Unauthorized
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     this.router.get(
       '/',
       [
@@ -50,7 +119,68 @@ export class TodoRoutes {
       this.todoController.getById
     );
 
-    // Create todo
+    /**
+     * @swagger
+     * /todos:
+     *   post:
+     *     summary: Create a new todo
+     *     tags: [Todos]
+     *     security:
+     *       - bearerAuth: []
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - title
+     *               - content
+     *             properties:
+     *               title:
+     *                 type: string
+     *                 minLength: 1
+     *                 maxLength: 200
+     *                 example: Complete project documentation
+     *               content:
+     *                 type: string
+     *                 minLength: 1
+     *                 maxLength: 2000
+     *                 example: Write comprehensive API documentation with examples
+     *     responses:
+     *       201:
+     *         description: Todo created successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               allOf:
+     *                 - $ref: '#/components/schemas/ApiResponse'
+     *                 - type: object
+     *                   properties:
+     *                     data:
+     *                       type: object
+     *                       properties:
+     *                         todo:
+     *                           $ref: '#/components/schemas/Todo'
+     *       400:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       401:
+     *         description: Unauthorized
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       409:
+     *         description: Todo with this title already exists
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     this.router.post(
       '/',
       [
