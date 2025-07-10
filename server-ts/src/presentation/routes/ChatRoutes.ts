@@ -6,14 +6,17 @@ import { AuthMiddleware } from '@infrastructure/middleware/AuthMiddleware';
 export class ChatRoutes {
   private router: Router;
 
-  constructor(private readonly chatController: ChatController) {
+  constructor(
+    private readonly chatController: ChatController,
+    private readonly authMiddleware: AuthMiddleware
+  ) {
     this.router = Router();
     this.setupRoutes();
   }
 
   private setupRoutes(): void {
     // Apply authentication middleware to all chat routes
-    this.router.use(AuthMiddleware.authenticate);
+    this.router.use(this.authMiddleware.authenticate);
 
     // Room routes
     this.setupRoomRoutes();

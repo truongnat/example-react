@@ -251,7 +251,7 @@ export class ChatController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new ValidationException('Validation failed', errors.array());
+        throw new ValidationException('Validation failed', errors.array().map(err => err.msg));
       }
 
       const messageId = req.params.messageId as UUID;

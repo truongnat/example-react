@@ -192,7 +192,7 @@ export class DependencyContainer {
     this._todoRoutes = new TodoRoutes(this._todoController, this._authMiddleware);
 
     if (this._chatController) {
-      this._chatRoutes = new ChatRoutes(this._chatController);
+      this._chatRoutes = new ChatRoutes(this._chatController, this._authMiddleware);
     }
   }
 
