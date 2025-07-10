@@ -64,20 +64,20 @@ function RegisterPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
+            {(error || registerMutation.error) && (
               <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
-                {error}
+                {error || registerMutation.error?.message || 'Registration failed. Please try again.'}
               </div>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="name"
+                id="username"
                 type="text"
-                placeholder="Enter your full name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter your username"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 required
               />
             </div>
@@ -118,8 +118,8 @@ function RegisterPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Creating Account...' : 'Sign Up'}
+            <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+              {registerMutation.isPending ? 'Creating Account...' : 'Sign Up'}
             </Button>
           </form>
           <div className="text-center">
