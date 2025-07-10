@@ -89,8 +89,10 @@ export class DependencyContainer {
   // Presentation
   private _authController!: AuthController;
   private _todoController!: TodoController;
+  private _chatController!: ChatController;
   private _authRoutes!: AuthRoutes;
   private _todoRoutes!: TodoRoutes;
+  private _chatRoutes!: ChatRoutes;
 
   private constructor() {}
 
@@ -110,6 +112,8 @@ export class DependencyContainer {
     if (this._databaseConnection instanceof SQLiteConnection) {
       this._userRepository = new SQLiteUserRepository(this._databaseConnection);
       this._todoRepository = new SQLiteTodoRepository(this._databaseConnection);
+      this._roomRepository = new SQLiteRoomRepository(this._databaseConnection.db);
+      this._messageRepository = new SQLiteMessageRepository(this._databaseConnection.db);
     }
 
     // Initialize services
