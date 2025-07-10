@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { AuthTokensDto } from '@/types/api'
 
 interface User {
   id: string
@@ -11,8 +12,13 @@ interface User {
 interface AuthState {
   user: User | null
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<boolean>
+  tokens: AuthTokensDto | null
+  setUser: (user: User) => void
+  setAuthenticated: (authenticated: boolean) => void
+  setTokens: (tokens: AuthTokensDto) => void
   logout: () => void
+  // Legacy methods for backward compatibility
+  login: (email: string, password: string) => Promise<boolean>
   register: (name: string, email: string, password: string) => Promise<boolean>
 }
 
