@@ -159,7 +159,37 @@ function TodoPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Your Tasks</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Your Tasks</CardTitle>
+              <div className="flex items-center gap-2 text-sm">
+                <select
+                  value={statusFilter || ''}
+                  onChange={(e) => setStatusFilter(e.target.value as TodoStatus || undefined)}
+                  className="px-2 py-1 border rounded"
+                >
+                  <option value="">All Status</option>
+                  <option value={TodoStatus.INITIAL}>Initial</option>
+                  <option value={TodoStatus.IN_PROGRESS}>In Progress</option>
+                  <option value={TodoStatus.COMPLETED}>Completed</option>
+                  <option value={TodoStatus.CANCELLED}>Cancelled</option>
+                </select>
+                <select
+                  value={`${sortBy}-${sortOrder}`}
+                  onChange={(e) => {
+                    const [field, order] = e.target.value.split('-')
+                    setSortBy(field as any)
+                    setSortOrder(order as any)
+                  }}
+                  className="px-2 py-1 border rounded"
+                >
+                  <option value="createdAt-desc">Newest First</option>
+                  <option value="createdAt-asc">Oldest First</option>
+                  <option value="title-asc">Title A-Z</option>
+                  <option value="title-desc">Title Z-A</option>
+                  <option value="status-asc">Status A-Z</option>
+                </select>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (
