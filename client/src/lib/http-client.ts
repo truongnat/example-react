@@ -86,12 +86,37 @@ export class HttpClient {
     }
   }
 
+  private syncTokensFromAuthStore() {
+    try {
+      // Get tokens directly from authStore
+      const authData = localStorage.getItem('auth-storage')
+      if (authData) {
+        const parsed = JSON.parse(authData)
+        const tokens = parsed.state?.tokens
+        if (tokens?.accessToken && tokens?.refreshToken) {
+          this.accessToken = tokens.accessToken
+          this.refreshToken = tokens.refreshToken
+          console.log('Synced tokens from authStore:', {
+            hasAccessToken: !!this.accessToken,
+            accessTokenLength: this.accessToken?.length
+          })
+          return true
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to sync tokens from authStore:', error)
+    }
+    return false
+  }
+
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    // Always reload tokens from storage before making request
-    this.loadTokensFromStorage()
+    // Try to sync tokens from authStore first
+    if (!this.accessToken) {
+      this.syncTokensFromAuthStore()
+    }
 
     const url = `${this.baseURL}${endpoint}`
 
