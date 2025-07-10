@@ -118,22 +118,32 @@ export class HttpClient {
       throw new Error('No refresh token available')
     }
 
-    const response = await fetch(`${this.baseURL}/auth/refresh`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refreshToken: this.refreshToken }),
-    })
+    try {
+      const response = await fetch(`${this.baseURL}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken: this.refreshToken }),
+      })
 
-    if (!response.ok) {
-      throw new Error('Failed to refresh token')
+      if (!response.ok) {
+        throw new Error(`Failed to refresh token: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      if (!data.success || !data.data?.tokens) {
+        throw new Error('Invalid refresh token response')
+      }
+
+      const { accessToken, refreshToken } = data.data.tokens
+      this.saveTokensToStorage(accessToken, refreshToken)
+    } catch (error) {
+      // Clear tokens on refresh failure
+      this.clearTokens()
+      throw error
     }
-
-    const data = await response.json()
-    const { accessToken, refreshToken } = data.data.tokens
-    
-    this.saveTokensToStorage(accessToken, refreshToken)
   }
 
   // Public methods
