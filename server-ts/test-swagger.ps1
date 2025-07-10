@@ -127,10 +127,10 @@ Write-Host "   📚 Open Swagger UI: http://localhost:5000/api-docs" -Foreground
 Write-Host "   🔐 To test protected endpoints:" -ForegroundColor Cyan
 Write-Host "      1. Use POST /auth/register or /auth/login" -ForegroundColor White
 Write-Host "      2. Copy the 'accessToken' from the response" -ForegroundColor White
-Write-Host "      3. Click the 'Authorize' button (🔒) at the top" -ForegroundColor White
+Write-Host "      3. Click the 'Authorize' button (lock icon) at the top" -ForegroundColor White
 Write-Host "      4. Enter: Bearer <your-access-token>" -ForegroundColor White
 Write-Host "      5. Click 'Authorize'" -ForegroundColor White
 Write-Host "      6. Now you can test any protected endpoint!" -ForegroundColor White
 
 Write-Host "`n🎉 Swagger documentation testing completed!" -ForegroundColor Green
-Write-Host "📖 For more details, see: docs/SWAGGER.md" -ForegroundColor Cyan
+Write-Host "For more details, see: docs/SWAGGER.md" -ForegroundColor Cyan
