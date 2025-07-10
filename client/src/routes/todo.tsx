@@ -111,15 +111,13 @@ function TodoPage() {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin" />
-                <span className="ml-2">Loading tasks...</span>
-              </div>
+              <LoadingState message="Loading tasks..." />
             ) : error ? (
-              <div className="text-center py-8 text-red-600">
-                <p>Failed to load tasks. Please try again.</p>
-                <p className="text-sm mt-2">{error.message}</p>
-              </div>
+              <ErrorState
+                message="Failed to load tasks"
+                error={error}
+                onRetry={() => window.location.reload()}
+              />
             ) : todosData?.todos && todosData.todos.length > 0 ? (
               <div className="space-y-3">
                 {todosData.todos.map((todo) => (
@@ -170,9 +168,11 @@ function TodoPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500">
-                <p>No tasks yet. Create your first task above! 📝</p>
-              </div>
+              <EmptyState
+                message="No tasks yet"
+                description="Create your first task above to get started!"
+                icon={<CheckCircle className="w-12 h-12 mx-auto text-gray-400" />}
+              />
             )}
           </CardContent>
         </Card>
