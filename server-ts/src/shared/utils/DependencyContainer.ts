@@ -103,17 +103,22 @@ export class DependencyContainer {
     return DependencyContainer.instance;
   }
 
-  public async initialize(): Promise<void> {
+  public async initialize(socketService?: SocketService): Promise<void> {
     // Initialize database connection
     this._databaseConnection = await DatabaseConnectionFactory.create();
     await this._databaseConnection.connect();
+
+    // Store socket service if provided
+    if (socketService) {
+      this._socketService = socketService;
+    }
 
     // Initialize repositories
     if (this._databaseConnection instanceof SQLiteConnection) {
       this._userRepository = new SQLiteUserRepository(this._databaseConnection);
       this._todoRepository = new SQLiteTodoRepository(this._databaseConnection);
-      this._roomRepository = new SQLiteRoomRepository(this._databaseConnection.db);
-      this._messageRepository = new SQLiteMessageRepository(this._databaseConnection.db);
+      this._roomRepository = new SQLiteRoomRepository(this._databaseConnection.getDatabase());
+      this._messageRepository = new SQLiteMessageRepository(this._databaseConnection.getDatabase());
     }
 
     // Initialize services
@@ -136,6 +141,19 @@ export class DependencyContainer {
     this._getUserUseCase = new GetUserUseCase(this._userRepository);
     this._createTodoUseCase = new CreateTodoUseCase(this._todoRepository);
     this._getTodosUseCase = new GetTodosUseCase(this._todoRepository);
+
+    // Initialize chat use cases
+    this._createRoomUseCase = new CreateRoomUseCase(this._roomRepository);
+    this._updateRoomUseCase = new UpdateRoomUseCase(this._roomRepository);
+    this._getRoomsUseCase = new GetRoomsUseCase(this._roomRepository);
+    this._getRoomUseCase = new GetRoomUseCase(this._roomRepository);
+    this._deleteRoomUseCase = new DeleteRoomUseCase(this._roomRepository, this._messageRepository);
+    this._joinRoomUseCase = new JoinRoomUseCase(this._roomRepository);
+    this._leaveRoomUseCase = new LeaveRoomUseCase(this._roomRepository);
+    this._createMessageUseCase = new CreateMessageUseCase(this._messageRepository, this._roomRepository);
+    this._updateMessageUseCase = new UpdateMessageUseCase(this._messageRepository);
+    this._getMessagesUseCase = new GetMessagesUseCase(this._messageRepository, this._roomRepository);
+    this._deleteMessageUseCase = new DeleteMessageUseCase(this._messageRepository);
 
     // Initialize controllers
     this._authController = new AuthController(
