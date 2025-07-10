@@ -22,11 +22,7 @@ export const todoKeys = {
 export const useTodos = (params?: GetTodosRequestDto) => {
   return useQuery({
     queryKey: todoKeys.list(params),
-    queryFn: () => {
-      // Ensure tokens are loaded before making request
-      httpClient.reloadTokens()
-      return todoService.getTodos(params)
-    },
+    queryFn: () => todoService.getTodos(params),
     staleTime: 30 * 1000, // 30 seconds
     retry: (failureCount, error: any) => {
       // Don't retry on 401 errors
