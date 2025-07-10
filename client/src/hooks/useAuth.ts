@@ -58,7 +58,9 @@ export const useLogin = () => {
       setAuthenticated(true)
       setTokens(data.tokens)
 
-      // Ensure HTTP client has the tokens (redundant but safe)
+      // Force set tokens in HTTP client to ensure they're available immediately
+      httpClient.forceSetTokens(data.tokens.accessToken, data.tokens.refreshToken)
+      // Also save to localStorage
       httpClient.setTokens(data.tokens.accessToken, data.tokens.refreshToken)
 
       // Set user data in query cache

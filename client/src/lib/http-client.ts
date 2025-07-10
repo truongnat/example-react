@@ -9,6 +9,13 @@ export class HttpClient {
   constructor(baseURL: string = config.apiBaseUrl) {
     this.baseURL = baseURL;
     this.loadTokensFromStorage();
+
+    // Log initial state
+    console.log("HTTP Client initialized:", {
+      baseURL: this.baseURL,
+      hasAccessToken: !!this.accessToken,
+      hasRefreshToken: !!this.refreshToken,
+    });
   }
 
   private loadTokensFromStorage() {
@@ -268,6 +275,16 @@ export class HttpClient {
 
   reloadTokens() {
     this.loadTokensFromStorage();
+  }
+
+  // Method to manually set tokens (called by auth hooks)
+  forceSetTokens(accessToken: string, refreshToken: string) {
+    console.log("Force setting tokens:", {
+      hasAccessToken: !!accessToken,
+      hasRefreshToken: !!refreshToken,
+    });
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
   }
 
   clearAuth() {
