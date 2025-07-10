@@ -1,5 +1,5 @@
 import { config } from './config'
-import type { ApiResponse, ApiError } from '@/types/api'
+import type { ApiResponse } from '@/types/api'
 
 export class HttpClient {
   private baseURL: string
@@ -120,7 +120,7 @@ export class HttpClient {
 
     const url = `${this.baseURL}${endpoint}`
 
-    const headers: HeadersInit = {
+    const headers: HeadersInit & { Authorization?: string } = {
       'Content-Type': 'application/json',
       ...options.headers,
     }
