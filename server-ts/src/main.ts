@@ -5,6 +5,7 @@ import path from 'path';
 import { DependencyContainer } from '@shared/utils/DependencyContainer';
 import { ErrorMiddleware } from '@infrastructure/middleware/ErrorMiddleware';
 import { LoggerMiddleware } from '@infrastructure/middleware/LoggerMiddleware';
+import { SwaggerMiddleware } from '@infrastructure/middleware/SwaggerMiddleware';
 import { ApiResponse } from '@shared/types/common.types';
 import { HTTP_STATUS } from '@shared/constants';
 
@@ -72,6 +73,12 @@ class AppServer {
   }
 
   private setupRoutes(): void {
+    // Swagger documentation
+    this.app.use('/api-docs', SwaggerMiddleware.serve, SwaggerMiddleware.setup);
+    this.app.get('/api-docs/swagger.json', SwaggerMiddleware.serveSpec);
+    this.app.get('/api-docs/health', SwaggerMiddleware.healthCheck);
+    this.app.get('/docs', SwaggerMiddleware.redirectToDocs);
+
     // Health check
     this.app.get('/health', (req, res) => {
       const response: ApiResponse = {
@@ -80,6 +87,7 @@ class AppServer {
           status: 'healthy',
           timestamp: new Date().toISOString(),
           uptime: process.uptime(),
+          documentation: '/api-docs',
         },
         message: 'Server is healthy',
       };
