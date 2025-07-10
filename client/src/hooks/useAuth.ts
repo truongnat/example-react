@@ -36,7 +36,7 @@ export const useCurrentUser = () => {
 // Login mutation
 export const useLogin = () => {
   const queryClient = useQueryClient()
-  const { setUser, setAuthenticated } = useAuthStore()
+  const { setUser, setAuthenticated, setTokens } = useAuthStore()
 
   return useMutation({
     mutationFn: (credentials: LoginRequestDto) => authService.login(credentials),
@@ -49,10 +49,11 @@ export const useLogin = () => {
         avatar: data.user.avatarUrl,
       })
       setAuthenticated(true)
-      
+      setTokens(data.tokens)
+
       // Set user data in query cache
       queryClient.setQueryData(authKeys.me(), data.user)
-      
+
       // Invalidate and refetch user data
       queryClient.invalidateQueries({ queryKey: authKeys.all })
     },
@@ -65,7 +66,7 @@ export const useLogin = () => {
 // Register mutation
 export const useRegister = () => {
   const queryClient = useQueryClient()
-  const { setUser, setAuthenticated } = useAuthStore()
+  const { setUser, setAuthenticated, setTokens } = useAuthStore()
 
   return useMutation({
     mutationFn: (userData: RegisterRequestDto) => authService.register(userData),
@@ -78,10 +79,11 @@ export const useRegister = () => {
         avatar: data.user.avatarUrl,
       })
       setAuthenticated(true)
-      
+      setTokens(data.tokens)
+
       // Set user data in query cache
       queryClient.setQueryData(authKeys.me(), data.user)
-      
+
       // Invalidate and refetch user data
       queryClient.invalidateQueries({ queryKey: authKeys.all })
     },
