@@ -47,6 +47,7 @@ src/
 - **Docker Support**: Containerized deployment with Docker Compose
 - **SSR Support**: Serve React applications with server-side rendering
 - **Health Checks**: Built-in health check endpoints
+- **API Documentation**: Interactive Swagger/OpenAPI documentation
 
 ## 🗄️ Database Options
 
@@ -157,6 +158,11 @@ docker-compose up -d  # Start all services
 
 ## 📡 API Endpoints
 
+### 📚 **API Documentation**
+- **Swagger UI**: http://localhost:5000/api-docs
+- **OpenAPI Spec**: http://localhost:5000/api-docs/swagger.json
+- **Quick Access**: http://localhost:5000/docs
+
 ### Authentication
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
@@ -164,7 +170,7 @@ docker-compose up -d  # Start all services
 - `GET /api/auth/me` - Get current user
 
 ### Todos
-- `GET /api/todos` - Get user todos
+- `GET /api/todos` - Get user todos (with pagination, filtering, sorting)
 - `POST /api/todos` - Create todo
 - `GET /api/todos/:id` - Get todo by ID
 - `PUT /api/todos/:id` - Update todo
