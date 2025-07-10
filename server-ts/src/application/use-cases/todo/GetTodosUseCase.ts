@@ -7,11 +7,22 @@ export class GetTodosUseCase {
   constructor(private readonly todoRepository: ITodoRepository) {}
 
   async execute(request: GetTodosRequestDto, userId: UUID): Promise<GetTodosResponseDto> {
+    // Map camelCase sortBy to snake_case for database
+    const sortByMapping: Record<string, string> = {
+      'createdAt': 'created_at',
+      'updatedAt': 'updated_at',
+      'title': 'title',
+      'status': 'status',
+      'userId': 'user_id'
+    };
+
+    const sortBy = request.sortBy ? sortByMapping[request.sortBy] || 'created_at' : 'created_at';
+
     // Prepare pagination options
     const options: PaginationOptions = {
       page: request.page || PAGINATION_DEFAULTS.PAGE,
       limit: Math.min(request.limit || PAGINATION_DEFAULTS.LIMIT, PAGINATION_DEFAULTS.MAX_LIMIT),
-      sortBy: request.sortBy || 'createdAt',
+      sortBy,
       sortOrder: request.sortOrder || 'desc',
     };
 
