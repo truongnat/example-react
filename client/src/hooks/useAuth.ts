@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { authService } from '@/services/auth.service'
+import { httpClient } from '@/lib/http-client'
 import { useAuthStore } from '@/stores/authStore'
 import type {
   LoginRequestDto,
@@ -41,6 +42,12 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (credentials: LoginRequestDto) => authService.login(credentials),
     onSuccess: (data) => {
+      console.log('Login mutation onSuccess, received data:', {
+        hasUser: !!data.user,
+        hasTokens: !!data.tokens,
+        accessTokenLength: data.tokens?.accessToken?.length
+      })
+
       // Update auth store
       setUser({
         id: data.user.id,
@@ -50,6 +57,9 @@ export const useLogin = () => {
       })
       setAuthenticated(true)
       setTokens(data.tokens)
+
+      // Ensure HTTP client has the tokens (redundant but safe)
+      httpClient.setTokens(data.tokens.accessToken, data.tokens.refreshToken)
 
       // Set user data in query cache
       queryClient.setQueryData(authKeys.me(), data.user)
