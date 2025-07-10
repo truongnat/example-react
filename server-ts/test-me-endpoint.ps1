@@ -147,7 +147,7 @@ try {
     $unauthorizedResponse = Invoke-RestMethod -Uri "http://localhost:5000/api/auth/me" -Method GET
     Write-Host "❌ Endpoint should have failed without token!" -ForegroundColor Red
 } catch {
-    if ($_.Exception.Message -like "*401*" -or $_.Exception.Message -like "*Unauthorized*") {
+    if (($_.Exception.Message -like "*401*") -or ($_.Exception.Message -like "*Unauthorized*")) {
         Write-Host "✅ Correctly rejected request without token" -ForegroundColor Green
     } else {
         Write-Host "⚠️  Unexpected error: $($_.Exception.Message)" -ForegroundColor Yellow
