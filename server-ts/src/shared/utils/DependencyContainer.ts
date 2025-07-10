@@ -17,6 +17,7 @@ import { ITokenService } from '@application/interfaces/ITokenService';
 import { IEmailService } from '@application/interfaces/IEmailService';
 import { RegisterUseCase } from '@application/use-cases/auth/RegisterUseCase';
 import { LoginUseCase } from '@application/use-cases/auth/LoginUseCase';
+import { GetUserUseCase } from '@application/use-cases/auth/GetUserUseCase';
 import { CreateTodoUseCase } from '@application/use-cases/todo/CreateTodoUseCase';
 import { GetTodosUseCase } from '@application/use-cases/todo/GetTodosUseCase';
 
