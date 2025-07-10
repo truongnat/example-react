@@ -5,10 +5,13 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import { DependencyContainer } from '@shared/utils/DependencyContainer';
 import { ErrorMiddleware } from '@infrastructure/middleware/ErrorMiddleware';
 import { LoggerMiddleware } from '@infrastructure/middleware/LoggerMiddleware';
 import { SwaggerMiddleware } from '@infrastructure/middleware/SwaggerMiddleware';
+import { SocketService } from '@infrastructure/external-services/SocketService';
 import { ApiResponse } from '@shared/types/common.types';
 import { HTTP_STATUS } from '@shared/constants';
 
@@ -17,13 +20,28 @@ dotenv.config();
 
 class AppServer {
   private app: Application;
+  private server: any;
+  private io: SocketIOServer;
   private port: number;
   private container: DependencyContainer;
+  private socketService: SocketService;
 
   constructor() {
     this.app = express();
+    this.server = createServer(this.app);
     this.port = parseInt(process.env.PORT || '5000');
     this.container = DependencyContainer.getInstance();
+
+    // Initialize Socket.IO
+    this.io = new SocketIOServer(this.server, {
+      cors: {
+        origin: (process.env.CORS_ALLOW_ORIGINS || 'http://localhost:3000').split(','),
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
+
+    this.socketService = new SocketService(this.io);
   }
 
   public async initialize(): Promise<void> {
@@ -36,6 +54,9 @@ class AppServer {
 
       // Setup routes
       this.setupRoutes();
+
+      // Setup Socket.IO
+      this.setupSocket();
 
       // Setup SSR if enabled
       if (process.env.IS_SSR === 'true') {
