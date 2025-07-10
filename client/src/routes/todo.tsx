@@ -28,6 +28,41 @@ export const Route = createFileRoute('/todo')({
 })
 
 function TodoPage() {
+  const [newTodoTitle, setNewTodoTitle] = useState('')
+  const [newTodoContent, setNewTodoContent] = useState('')
+
+  // React Query hooks
+  const { data: todosData, isLoading, error } = useTodos()
+  const createTodoMutation = useCreateTodo()
+  const updateStatusMutation = useUpdateTodoStatus()
+  const deleteTodoMutation = useDeleteTodo()
+
+  const handleCreateTodo = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newTodoTitle.trim()) return
+
+    createTodoMutation.mutate({
+      title: newTodoTitle,
+      content: newTodoContent || newTodoTitle,
+    }, {
+      onSuccess: () => {
+        setNewTodoTitle('')
+        setNewTodoContent('')
+      }
+    })
+  }
+
+  const handleToggleStatus = (todoId: string, currentStatus: string) => {
+    const newStatus = currentStatus === TodoStatus.COMPLETED ? TodoStatus.INITIAL : TodoStatus.COMPLETED
+    updateStatusMutation.mutate({ id: todoId, data: { status: newStatus } })
+  }
+
+  const handleDeleteTodo = (todoId: string) => {
+    if (confirm('Are you sure you want to delete this todo?')) {
+      deleteTodoMutation.mutate(todoId)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation title="Todo App" />
@@ -43,13 +78,29 @@ function TodoPage() {
             <CardTitle>Add New Task</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-2">
+            <form onSubmit={handleCreateTodo} className="space-y-4">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter task title..."
+                  value={newTodoTitle}
+                  onChange={(e) => setNewTodoTitle(e.target.value)}
+                  className="flex-1"
+                  required
+                />
+                <Button type="submit" disabled={createTodoMutation.isPending}>
+                  {createTodoMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    'Add Task'
+                  )}
+                </Button>
+              </div>
               <Input
-                placeholder="Enter a new task..."
-                className="flex-1"
+                placeholder="Enter task description (optional)..."
+                value={newTodoContent}
+                onChange={(e) => setNewTodoContent(e.target.value)}
               />
-              <Button>Add Task</Button>
-            </div>
+            </form>
           </CardContent>
         </Card>
 
@@ -58,30 +109,70 @@ function TodoPage() {
             <CardTitle>Your Tasks</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {/* Sample tasks */}
-              <div className="flex items-center space-x-3 p-3 border rounded-lg">
-                <Checkbox id="task1" />
-                <label htmlFor="task1" className="flex-1 text-sm">
-                  Complete the project documentation
-                </label>
-                <Button variant="outline" size="sm">Edit</Button>
-                <Button variant="destructive" size="sm">Delete</Button>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin" />
+                <span className="ml-2">Loading tasks...</span>
               </div>
-
-              <div className="flex items-center space-x-3 p-3 border rounded-lg">
-                <Checkbox id="task2" />
-                <label htmlFor="task2" className="flex-1 text-sm">
-                  Review code changes
-                </label>
-                <Button variant="outline" size="sm">Edit</Button>
-                <Button variant="destructive" size="sm">Delete</Button>
+            ) : error ? (
+              <div className="text-center py-8 text-red-600">
+                <p>Failed to load tasks. Please try again.</p>
+                <p className="text-sm mt-2">{error.message}</p>
               </div>
-
+            ) : todosData?.todos && todosData.todos.length > 0 ? (
+              <div className="space-y-3">
+                {todosData.todos.map((todo) => (
+                  <div key={todo.id} className="flex items-center space-x-3 p-3 border rounded-lg">
+                    <Checkbox
+                      id={`task-${todo.id}`}
+                      checked={todo.status === TodoStatus.COMPLETED}
+                      onCheckedChange={() => handleToggleStatus(todo.id, todo.status)}
+                      disabled={updateStatusMutation.isPending}
+                    />
+                    <div className="flex-1">
+                      <label
+                        htmlFor={`task-${todo.id}`}
+                        className={`block text-sm font-medium ${
+                          todo.status === TodoStatus.COMPLETED
+                            ? 'line-through text-gray-500'
+                            : 'text-gray-900'
+                        }`}
+                      >
+                        {todo.title}
+                      </label>
+                      {todo.content !== todo.title && (
+                        <p className="text-xs text-gray-600 mt-1">{todo.content}</p>
+                      )}
+                      <p className="text-xs text-gray-400 mt-1">
+                        Created: {new Date(todo.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // TODO: Implement edit functionality
+                        alert('Edit functionality coming soon!')
+                      }}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDeleteTodo(todo.id)}
+                      disabled={deleteTodoMutation.isPending}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
               <div className="text-center py-8 text-gray-500">
-                <p>No more tasks. Great job! 🎉</p>
+                <p>No tasks yet. Create your first task above! 📝</p>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
         </div>

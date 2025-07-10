@@ -1,13 +1,14 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Camera, Save, LogOut } from 'lucide-react'
+import { Camera, Save, LogOut, Loader2 } from 'lucide-react'
 import { Navigation } from '@/components/Navigation'
 import { useAuthStore } from '@/stores/authStore'
+import { useCurrentUser, useLogout } from '@/hooks/useAuth'
 
 export const Route = createFileRoute('/profile')({
   beforeLoad: ({ context, location }) => {
