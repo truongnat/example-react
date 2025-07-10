@@ -10,7 +10,6 @@ import { useTodos, useCreateTodo, useUpdateTodoStatus, useDeleteTodo } from '@/h
 import { TodoStatus } from '@/types/api'
 import { Loader2, Trash2, Edit, Plus, CheckCircle } from 'lucide-react'
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading'
-import { AuthDebug } from '@/components/AuthDebug'
 
 export const Route = createFileRoute('/todo')({
   beforeLoad: ({ context, location }) => {
@@ -269,9 +268,6 @@ function TodoPage() {
             )}
           </CardContent>
         </Card>
-
-        {/* Debug Info - Remove in production */}
-        {process.env.NODE_ENV === 'development' && <AuthDebug />}
         </div>
       </div>
     </div>
