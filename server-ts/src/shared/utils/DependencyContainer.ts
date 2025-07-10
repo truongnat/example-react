@@ -89,6 +89,7 @@ export class DependencyContainer {
       this._passwordService,
       this._tokenService
     );
+    this._getUserUseCase = new GetUserUseCase(this._userRepository);
     this._createTodoUseCase = new CreateTodoUseCase(this._todoRepository);
     this._getTodosUseCase = new GetTodosUseCase(this._todoRepository);
 
