@@ -31,24 +31,59 @@ export const Route = createFileRoute('/todo')({
 function TodoPage() {
   const [newTodoTitle, setNewTodoTitle] = useState('')
   const [newTodoContent, setNewTodoContent] = useState('')
+  const [validationError, setValidationError] = useState('')
+  const [statusFilter, setStatusFilter] = useState<TodoStatus | undefined>(undefined)
+  const [sortBy, setSortBy] = useState<'createdAt' | 'title' | 'status'>('createdAt')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   // React Query hooks
-  const { data: todosData, isLoading, error } = useTodos()
+  const { data: todosData, isLoading, error, refetch } = useTodos({
+    status: statusFilter,
+    sortBy,
+    sortOrder,
+    limit: 50
+  })
   const createTodoMutation = useCreateTodo()
   const updateStatusMutation = useUpdateTodoStatus()
   const deleteTodoMutation = useDeleteTodo()
 
+  const validateForm = () => {
+    if (!newTodoTitle.trim()) {
+      setValidationError('Title is required')
+      return false
+    }
+    if (newTodoTitle.trim().length < 3) {
+      setValidationError('Title must be at least 3 characters long')
+      return false
+    }
+    if (newTodoTitle.trim().length > 200) {
+      setValidationError('Title must be less than 200 characters')
+      return false
+    }
+    if (newTodoContent.trim().length > 2000) {
+      setValidationError('Content must be less than 2000 characters')
+      return false
+    }
+    setValidationError('')
+    return true
+  }
+
   const handleCreateTodo = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newTodoTitle.trim()) return
+
+    if (!validateForm()) return
 
     createTodoMutation.mutate({
-      title: newTodoTitle,
-      content: newTodoContent || newTodoTitle,
+      title: newTodoTitle.trim(),
+      content: newTodoContent.trim() || newTodoTitle.trim(),
     }, {
       onSuccess: () => {
         setNewTodoTitle('')
         setNewTodoContent('')
+        setValidationError('')
+      },
+      onError: (error: any) => {
+        setValidationError(error.message || 'Failed to create todo')
       }
     })
   }
@@ -80,19 +115,31 @@ function TodoPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCreateTodo} className="space-y-4">
+              {(validationError || createTodoMutation.error) && (
+                <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                  {validationError || createTodoMutation.error?.message || 'Failed to create todo'}
+                </div>
+              )}
               <div className="flex gap-2">
                 <Input
                   placeholder="Enter task title..."
                   value={newTodoTitle}
-                  onChange={(e) => setNewTodoTitle(e.target.value)}
+                  onChange={(e) => {
+                    setNewTodoTitle(e.target.value)
+                    if (validationError) setValidationError('')
+                  }}
                   className="flex-1"
                   required
+                  maxLength={200}
                 />
-                <Button type="submit" disabled={createTodoMutation.isPending}>
+                <Button type="submit" disabled={createTodoMutation.isPending || !newTodoTitle.trim()}>
                   {createTodoMutation.isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    'Add Task'
+                    <>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Task
+                    </>
                   )}
                 </Button>
               </div>
@@ -100,7 +147,12 @@ function TodoPage() {
                 placeholder="Enter task description (optional)..."
                 value={newTodoContent}
                 onChange={(e) => setNewTodoContent(e.target.value)}
+                maxLength={2000}
               />
+              <div className="text-xs text-gray-500">
+                Title: {newTodoTitle.length}/200 characters
+                {newTodoContent && ` • Description: ${newTodoContent.length}/2000 characters`}
+              </div>
             </form>
           </CardContent>
         </Card>
