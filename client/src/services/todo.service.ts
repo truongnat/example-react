@@ -63,12 +63,13 @@ export class TodoService {
   }
 
   async updateTodoStatus(id: string, data: UpdateTodoStatusRequestDto): Promise<TodoDto> {
-    const response = await httpClient.put<UpdateTodoResponseDto>(`/todos/${id}/status`, data)
-    
+    // Use the general update endpoint with status in body
+    const response = await httpClient.put<UpdateTodoResponseDto>(`/todos/${id}`, data)
+
     if (response.success && response.data) {
       return response.data.todo
     }
-    
+
     throw new Error(response.message || 'Failed to update todo status')
   }
 
