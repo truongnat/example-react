@@ -79,8 +79,11 @@ export class HttpClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
+    // Always reload tokens from storage before making request
+    this.loadTokensFromStorage()
+
     const url = `${this.baseURL}${endpoint}`
-    
+
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       ...options.headers,

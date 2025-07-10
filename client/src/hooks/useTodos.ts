@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { todoService } from '@/services/todo.service'
+import { httpClient } from '@/lib/http-client'
 import type {
   CreateTodoRequestDto,
   UpdateTodoRequestDto,
@@ -21,7 +22,11 @@ export const todoKeys = {
 export const useTodos = (params?: GetTodosRequestDto) => {
   return useQuery({
     queryKey: todoKeys.list(params),
-    queryFn: () => todoService.getTodos(params),
+    queryFn: () => {
+      // Ensure tokens are loaded before making request
+      httpClient.reloadTokens()
+      return todoService.getTodos(params)
+    },
     staleTime: 30 * 1000, // 30 seconds
     retry: (failureCount, error: any) => {
       // Don't retry on 401 errors
