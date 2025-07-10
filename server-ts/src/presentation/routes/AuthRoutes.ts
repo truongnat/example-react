@@ -4,6 +4,13 @@ import { AuthValidator } from '@presentation/validators/AuthValidator';
 import { ValidationMiddleware } from '@presentation/validators/ValidationMiddleware';
 import { AuthMiddleware } from '@infrastructure/middleware/AuthMiddleware';
 
+/**
+ * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: User authentication and authorization
+ */
+
 export class AuthRoutes {
   private router = Router();
 
