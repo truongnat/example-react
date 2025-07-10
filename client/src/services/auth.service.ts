@@ -1,0 +1,118 @@
+import { httpClient } from '@/lib/http-client'
+import type {
+  LoginRequestDto,
+  LoginResponseDto,
+  RegisterRequestDto,
+  RegisterResponseDto,
+  UserProfileDto,
+  ForgotPasswordRequestDto,
+  ForgotPasswordResponseDto,
+  VerifyOtpRequestDto,
+  ResetPasswordRequestDto,
+  ChangePasswordRequestDto,
+  ApiResponse
+} from '@/types/api'
+
+export class AuthService {
+  async login(credentials: LoginRequestDto): Promise<LoginResponseDto> {
+    const response = await httpClient.post<LoginResponseDto>('/auth/login', credentials)
+    
+    if (response.success && response.data) {
+      // Store tokens in HTTP client
+      httpClient.setTokens(
+        response.data.tokens.accessToken,
+        response.data.tokens.refreshToken
+      )
+      return response.data
+    }
+    
+    throw new Error(response.message || 'Login failed')
+  }
+
+  async register(userData: RegisterRequestDto): Promise<RegisterResponseDto> {
+    const response = await httpClient.post<RegisterResponseDto>('/auth/register', userData)
+    
+    if (response.success && response.data) {
+      // Store tokens in HTTP client
+      httpClient.setTokens(
+        response.data.tokens.accessToken,
+        response.data.tokens.refreshToken
+      )
+      return response.data
+    }
+    
+    throw new Error(response.message || 'Registration failed')
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await httpClient.post('/auth/logout')
+    } catch (error) {
+      // Even if logout fails on server, clear local tokens
+      console.warn('Logout request failed:', error)
+    } finally {
+      httpClient.clearAuth()
+    }
+  }
+
+  async getCurrentUser(): Promise<UserProfileDto> {
+    const response = await httpClient.get<UserProfileDto>('/auth/me')
+    
+    if (response.success && response.data) {
+      return response.data
+    }
+    
+    throw new Error(response.message || 'Failed to get user profile')
+  }
+
+  async forgotPassword(email: ForgotPasswordRequestDto): Promise<ForgotPasswordResponseDto> {
+    const response = await httpClient.post<ForgotPasswordResponseDto>('/auth/forgot-password', email)
+    
+    if (response.success && response.data) {
+      return response.data
+    }
+    
+    throw new Error(response.message || 'Failed to send reset email')
+  }
+
+  async verifyOtp(data: VerifyOtpRequestDto): Promise<void> {
+    const response = await httpClient.post('/auth/verify-otp', data)
+    
+    if (!response.success) {
+      throw new Error(response.message || 'OTP verification failed')
+    }
+  }
+
+  async resetPassword(data: ResetPasswordRequestDto): Promise<void> {
+    const response = await httpClient.post('/auth/reset-password', data)
+    
+    if (!response.success) {
+      throw new Error(response.message || 'Password reset failed')
+    }
+  }
+
+  async changePassword(data: ChangePasswordRequestDto): Promise<void> {
+    const response = await httpClient.post('/auth/change-password', data)
+    
+    if (!response.success) {
+      throw new Error(response.message || 'Password change failed')
+    }
+  }
+
+  // Helper method to check if user is authenticated
+  isAuthenticated(): boolean {
+    try {
+      const authData = localStorage.getItem('auth-storage')
+      if (authData) {
+        const parsed = JSON.parse(authData)
+        return parsed.state?.isAuthenticated === true && parsed.state?.tokens?.accessToken
+      }
+    } catch (error) {
+      console.warn('Failed to check authentication status:', error)
+    }
+    return false
+  }
+}
+
+// Export singleton instance
+export const authService = new AuthService()
