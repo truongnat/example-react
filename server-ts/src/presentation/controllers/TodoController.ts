@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateTodoUseCase } from '@application/use-cases/todo/CreateTodoUseCase';
 import { GetTodosUseCase } from '@application/use-cases/todo/GetTodosUseCase';
-import { CreateTodoRequestDto, GetTodosRequestDto, UpdateTodoRequestDto } from '@application/dtos/todo.dto';
+import { CreateTodoRequestDto, GetTodosRequestDto, UpdateTodoRequestDto, UpdateTodoStatusRequestDto } from '@application/dtos/todo.dto';
 import { ApiResponse } from '@shared/types/common.types';
 import { HTTP_STATUS } from '@shared/constants';
 import { NotFoundException } from '@shared/exceptions';
