@@ -17,9 +17,14 @@ interface AuthenticatedSocket extends Socket {
 export class SocketService {
   private io: SocketIOServer;
   private connectedUsers: Map<UUID, string> = new Map(); // userId -> socketId
+  private chatController: any; // Will be injected later to avoid circular dependency
 
   constructor(io: SocketIOServer) {
     this.io = io;
+  }
+
+  public setChatController(chatController: any): void {
+    this.chatController = chatController;
   }
 
   public initialize(): void {
@@ -41,6 +46,11 @@ export class SocketService {
       // Handle room leaving
       socket.on('leave-room', (data: LeaveRoomDto) => {
         this.handleLeaveRoom(socket, data);
+      });
+
+      // Handle real-time message sending
+      socket.on('send-message', async (data: CreateMessageRequestDto) => {
+        await this.handleSendMessage(socket, data);
       });
 
       // Handle typing indicators
@@ -104,9 +114,30 @@ export class SocketService {
     console.log(`User ${socket.username} left room ${data.roomId}`);
   }
 
+  private async handleSendMessage(socket: AuthenticatedSocket, data: CreateMessageRequestDto): Promise<void> {
+    try {
+      if (!this.chatController) {
+        console.error('ChatController not injected into SocketService');
+        socket.emit('error', { message: 'Server configuration error' });
+        return;
+      }
+
+      // Call ChatController to handle message creation and broadcasting
+      await this.chatController.handleCreateMessage(
+        data,
+        socket.userId!,
+        socket.username!,
+        '' // avatarUrl - can be fetched from user service if needed
+      );
+    } catch (error) {
+      console.error('Error handling send message:', error);
+      socket.emit('error', { message: 'Failed to send message' });
+    }
+  }
+
   private handleTyping(socket: AuthenticatedSocket, data: UserTypingDto): void {
     const roomId = `room-${data.roomId}`;
-    
+
     // Broadcast typing status to other users in the room
     socket.to(roomId).emit('user-typing', {
       userId: socket.userId,
