@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { Plus, Search, Users, Hash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
