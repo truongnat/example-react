@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { MoreVertical, Edit2, Trash2, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useChatStore, ChatMessage } from '@/stores/chatStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useUpdateMessage, useDeleteMessage } from '@/hooks/useChat';
+import { MessageActions } from './MessageActions';
 
 interface MessageListProps {
   roomId: string;
@@ -26,7 +26,6 @@ interface MessageItemProps {
 function MessageItem({ message, isOwn, showAvatar, onEdit, onDelete }: MessageItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
-  const [showMenu, setShowMenu] = useState(false);
 
   const handleEdit = () => {
     if (editContent.trim() && editContent !== message.content) {
@@ -45,9 +44,12 @@ function MessageItem({ message, isOwn, showAvatar, onEdit, onDelete }: MessageIt
     }
   };
 
-  const copyMessage = () => {
-    navigator.clipboard.writeText(message.content);
-    setShowMenu(false);
+  const handleEditMessage = (messageId: string) => {
+    setIsEditing(true);
+  };
+
+  const handleDeleteMessage = (messageId: string) => {
+    onDelete(messageId);
   };
 
   return (
@@ -112,57 +114,13 @@ function MessageItem({ message, isOwn, showAvatar, onEdit, onDelete }: MessageIt
           
           {/* Message actions */}
           {!isEditing && !message.isOptimistic && (
-            <div className={`absolute top-0 ${isOwn ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'} opacity-0 group-hover:opacity-100 transition-opacity`}>
-              <div className="relative">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 w-6 p-0"
-                  onClick={() => setShowMenu(!showMenu)}
-                >
-                  <MoreVertical className="w-3 h-3" />
-                </Button>
-                
-                {showMenu && (
-                  <div className={`absolute top-full mt-1 bg-white border rounded-lg shadow-lg py-1 z-10 ${
-                    isOwn ? 'right-0' : 'left-0'
-                  }`}>
-                    <button
-                      onClick={copyMessage}
-                      className="flex items-center gap-2 px-3 py-1 text-sm hover:bg-gray-100 w-full text-left"
-                    >
-                      <Copy className="w-3 h-3" />
-                      Copy
-                    </button>
-                    
-                    {isOwn && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setIsEditing(true);
-                            setShowMenu(false);
-                          }}
-                          className="flex items-center gap-2 px-3 py-1 text-sm hover:bg-gray-100 w-full text-left"
-                        >
-                          <Edit2 className="w-3 h-3" />
-                          Edit
-                        </button>
-                        
-                        <button
-                          onClick={() => {
-                            onDelete(message.id);
-                            setShowMenu(false);
-                          }}
-                          className="flex items-center gap-2 px-3 py-1 text-sm hover:bg-gray-100 text-red-600 w-full text-left"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
+            <div className={`absolute top-0 ${isOwn ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'}`}>
+              <MessageActions
+                message={message}
+                isOwner={isOwn}
+                onEdit={handleEditMessage}
+                onDelete={handleDeleteMessage}
+              />
             </div>
           )}
         </div>

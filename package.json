@@ -1,28 +1,11 @@
 {
   "name": "example-react-monorepo",
   "version": "1.0.0",
-  "description": "MERN Stack monorepo with Bun package management",
-  "private": true,
-  "type": "module",
-  "workspaces": [
-    "client",
-    "server"
-  ],
-  "scripts": {
-    "update-to-latest": "bun update-to-latest.js",
-    "setup:monorepo": "bun setup-structure.js monorepo",
-    "setup:separate": "bun setup-structure.js separate",
-    "dev": "concurrently \"bun run dev:client\" \"bun run dev:server\"",
-    "dev:client": "bun --cwd client run dev",
-    "dev:server": "bun --cwd server run dev",
-    "build": "bun --cwd client run build",
-    "start": "bun --cwd server run start",
-    "test": "bun --cwd client run test",
-    "clean": "rm -rf client/node_modules server/node_modules node_modules client/bun.lock server/bun.lock bun.lock"
-  },
+  "author": "",
   "devDependencies": {
     "concurrently": "latest"
   },
+  "description": "MERN Stack monorepo with Bun package management",
   "engines": {
     "bun": ">=1.0.0"
   },
@@ -35,9 +18,23 @@
     "bun",
     "monorepo"
   ],
-  "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@radix-ui/react-checkbox": "^1.3.2"
-  }
+  "private": true,
+  "scripts": {
+    "update-to-latest": "bun update-to-latest.js",
+    "setup:monorepo": "bun setup-structure.js monorepo",
+    "setup:separate": "bun setup-structure.js separate",
+    "dev": "concurrently \"cd client && bun run dev\" \"cd server-ts && bun run dev\"",
+    "dev:client": "bun --prefix client run dev",
+    "dev:server": "bun --prefix server-ts run dev",
+    "build": "bun --prefix client run build",
+    "start": "bun --prefix server-ts run start",
+    "test": "bun --prefix client run test",
+    "clean": "rm -rf client/node_modules server-ts/node_modules node_modules client/bun.lock server-ts/bun.lock bun.lock"
+  },
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server-ts"
+  ]
 }

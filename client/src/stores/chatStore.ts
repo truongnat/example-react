@@ -149,17 +149,25 @@ export const useChatStore = create<ChatState>()(
       addMessage: (message) => {
         set((state) => {
           const roomMessages = state.messagesByRoom[message.roomId] || [];
-          
-          // Remove optimistic message if this is the real message
-          const filteredMessages = roomMessages.filter(msg => 
-            !(msg.isOptimistic && msg.content === message.content && 
-              Math.abs(new Date(msg.createdAt).getTime() - new Date(message.createdAt).getTime()) < 5000)
+
+          // Check if message already exists (avoid duplicates)
+          const existingMessage = roomMessages.find(msg => msg.id === message.id);
+          if (existingMessage) {
+            return state; // Message already exists, don't add
+          }
+
+          // Remove optimistic message if this is the real message from same author with same content
+          const filteredMessages = roomMessages.filter(msg =>
+            !(msg.isOptimistic &&
+              msg.content === message.content &&
+              msg.authorId === message.authorId &&
+              Math.abs(new Date(msg.createdAt).getTime() - new Date(message.createdAt).getTime()) < 10000) // 10 seconds window
           );
-          
+
           return {
             messagesByRoom: {
               ...state.messagesByRoom,
-              [message.roomId]: [message, ...filteredMessages]
+              [message.roomId]: [...filteredMessages, message] // Add new message at the end
             }
           };
         });
@@ -186,7 +194,7 @@ export const useChatStore = create<ChatState>()(
         set((state) => ({
           messagesByRoom: {
             ...state.messagesByRoom,
-            [messageData.roomId]: [optimisticMessage, ...(state.messagesByRoom[messageData.roomId] || [])]
+            [messageData.roomId]: [...(state.messagesByRoom[messageData.roomId] || []), optimisticMessage] // Add optimistic message at the end
           }
         }));
         

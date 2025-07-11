@@ -34,6 +34,7 @@ export interface DatabaseConfig {
 export interface JWTPayload {
   userId: UUID;
   email: string;
+  username: string;
   iat?: number;
   exp?: number;
 }

@@ -5,6 +5,8 @@ export class HttpClient {
   private baseURL: string;
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
+  private refreshAttempts: number = 0;
+  private maxRefreshAttempts: number = 3;
 
   constructor(baseURL: string = config.apiBaseUrl) {
     this.baseURL = baseURL;
@@ -44,6 +46,7 @@ export class HttpClient {
   private saveTokensToStorage(accessToken: string, refreshToken: string) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
+    this.refreshAttempts = 0; // Reset refresh attempts on successful token save
 
     try {
       // Get current auth data or create new structure
@@ -103,6 +106,7 @@ export class HttpClient {
   private clearTokens() {
     this.accessToken = null;
     this.refreshToken = null;
+    this.refreshAttempts = 0;
 
     try {
       const authData = localStorage.getItem("auth-storage");
@@ -181,16 +185,30 @@ export class HttpClient {
         if (
           response.status === 401 &&
           this.refreshToken &&
-          endpoint !== "/auth/refresh"
+          endpoint !== "/auth/refresh" &&
+          this.refreshAttempts < this.maxRefreshAttempts
         ) {
           try {
+            this.refreshAttempts++;
+            console.log(`Attempting token refresh (${this.refreshAttempts}/${this.maxRefreshAttempts})`);
+
             await this.refreshAccessToken();
             // Retry the original request with new token
             return this.request<T>(endpoint, options);
           } catch (refreshError) {
-            this.clearTokens();
+            console.error(`Token refresh failed (attempt ${this.refreshAttempts}):`, refreshError);
+
+            // If we've exhausted all refresh attempts, logout user
+            if (this.refreshAttempts >= this.maxRefreshAttempts) {
+              console.log("Max refresh attempts reached, logging out user");
+              this.handleAuthFailure();
+            }
+
             throw new ApiError("Session expired. Please login again.", 401);
           }
+        } else if (response.status === 401) {
+          // No refresh token or max attempts reached
+          this.handleAuthFailure();
         }
 
         throw new ApiError(
@@ -210,6 +228,30 @@ export class HttpClient {
         error instanceof Error ? error.message : "Network error occurred",
         0
       );
+    }
+  }
+
+  private handleAuthFailure(): void {
+    console.log("Authentication failed, clearing tokens and redirecting to login");
+    this.clearTokens();
+
+    // Clear auth store and trigger logout
+    try {
+      // Import dynamically to avoid circular dependency
+      import('@/stores/authStore').then(({ useAuthStore }) => {
+        const authStore = useAuthStore.getState();
+        authStore.logout();
+      });
+    } catch (error) {
+      console.warn("Failed to clear auth store:", error);
+      // Fallback: clear localStorage directly
+      localStorage.removeItem("auth-storage");
+    }
+
+    // Redirect to login if not already there
+    if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
+      const currentPath = window.location.pathname + window.location.search;
+      window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
     }
   }
 

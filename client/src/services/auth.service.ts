@@ -16,7 +16,8 @@ import type {
 export class AuthService {
   async login(credentials: LoginRequestDto): Promise<LoginResponseDto> {
     const response = await httpClient.post<LoginResponseDto>('/auth/login', credentials)
-    
+
+    // HttpClient already returns ApiResponse<LoginResponseDto>, so response.data is LoginResponseDto
     if (response.success && response.data) {
       // Store tokens in HTTP client
       console.log('Login successful, storing tokens:', {
@@ -31,13 +32,14 @@ export class AuthService {
       )
       return response.data
     }
-    
+
     throw new Error(response.message || 'Login failed')
   }
 
   async register(userData: RegisterRequestDto): Promise<RegisterResponseDto> {
     const response = await httpClient.post<RegisterResponseDto>('/auth/register', userData)
-    
+
+    // HttpClient already returns ApiResponse<RegisterResponseDto>, so response.data is RegisterResponseDto
     if (response.success && response.data) {
       // Store tokens in HTTP client
       httpClient.setTokens(
@@ -46,7 +48,7 @@ export class AuthService {
       )
       return response.data
     }
-    
+
     throw new Error(response.message || 'Registration failed')
   }
 
@@ -63,27 +65,30 @@ export class AuthService {
 
   async getCurrentUser(): Promise<UserProfileDto> {
     const response = await httpClient.get<UserProfileDto>('/auth/me')
-    
+
+    // HttpClient already returns ApiResponse<UserProfileDto>, so response.data is UserProfileDto
     if (response.success && response.data) {
       return response.data
     }
-    
+
     throw new Error(response.message || 'Failed to get user profile')
   }
 
   async forgotPassword(email: ForgotPasswordRequestDto): Promise<ForgotPasswordResponseDto> {
     const response = await httpClient.post<ForgotPasswordResponseDto>('/auth/forgot-password', email)
-    
+
+    // HttpClient already returns ApiResponse<ForgotPasswordResponseDto>, so response.data is ForgotPasswordResponseDto
     if (response.success && response.data) {
       return response.data
     }
-    
+
     throw new Error(response.message || 'Failed to send reset email')
   }
 
   async verifyOtp(data: VerifyOtpRequestDto): Promise<void> {
     const response = await httpClient.post('/auth/verify-otp', data)
-    
+
+    // HttpClient already returns ApiResponse, so we check response.success directly
     if (!response.success) {
       throw new Error(response.message || 'OTP verification failed')
     }
@@ -91,7 +96,8 @@ export class AuthService {
 
   async resetPassword(data: ResetPasswordRequestDto): Promise<void> {
     const response = await httpClient.post('/auth/reset-password', data)
-    
+
+    // HttpClient already returns ApiResponse, so we check response.success directly
     if (!response.success) {
       throw new Error(response.message || 'Password reset failed')
     }
@@ -99,7 +105,8 @@ export class AuthService {
 
   async changePassword(data: ChangePasswordRequestDto): Promise<void> {
     const response = await httpClient.post('/auth/change-password', data)
-    
+
+    // HttpClient already returns ApiResponse, so we check response.success directly
     if (!response.success) {
       throw new Error(response.message || 'Password change failed')
     }

@@ -75,6 +75,7 @@ export class TokenService implements ITokenService {
     const newPayload: JWTPayload = {
       userId: payload.userId,
       email: payload.email,
+      username: payload.username,
     };
 
     return this.generateTokenPair(newPayload);

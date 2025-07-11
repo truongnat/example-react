@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { ChatRoom } from '@/components/chat/ChatRoom'
 import { useAuthStore } from '@/stores/authStore'
-import { useSocketConnection } from '@/hooks/useChat'
+
 
 export const Route = createFileRoute('/room/$id')({
   beforeLoad: ({ location }) => {
@@ -25,8 +25,7 @@ export const Route = createFileRoute('/room/$id')({
 function RoomPage() {
   const { id } = useParams({ from: '/room/$id' })
 
-  // Initialize socket connection
-  useSocketConnection()
+  // Socket connection is now managed by SocketProvider
 
   return (
     <div className="min-h-screen bg-gray-50">

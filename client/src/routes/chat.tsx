@@ -4,8 +4,7 @@ import { Navigation } from '@/components/Navigation'
 import { ChatRoomList } from '@/components/chat/ChatRoomList'
 import { ChatRoom } from '@/components/chat/ChatRoom'
 import { useAuthStore } from '@/stores/authStore'
-import { useChatStore } from '@/stores/chatStore'
-import { useSocketConnection } from '@/hooks/useChat'
+
 
 export const Route = createFileRoute('/chat')({
   beforeLoad: ({ location }) => {
@@ -28,8 +27,7 @@ function ChatPage() {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null)
   const navigate = useNavigate()
 
-  // Initialize socket connection
-  useSocketConnection()
+  // Socket connection is now managed by SocketProvider
 
   const handleRoomSelect = (roomId: string) => {
     setSelectedRoomId(roomId)

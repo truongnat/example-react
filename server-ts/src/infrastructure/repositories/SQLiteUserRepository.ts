@@ -48,8 +48,23 @@ export class SQLiteUserRepository implements IUserRepository {
   async findById(id: UUID): Promise<User | null> {
     const db = this.connection.getDatabase();
     const row = await db.get<UserRow>('SELECT * FROM users WHERE id = ?', [id]);
-    
+
     return row ? this.mapRowToUser(row) : null;
+  }
+
+  async findByIds(ids: UUID[]): Promise<User[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+
+    const db = this.connection.getDatabase();
+    const placeholders = ids.map(() => '?').join(',');
+    const rows = await db.all<UserRow[]>(
+      `SELECT * FROM users WHERE id IN (${placeholders})`,
+      ids
+    );
+
+    return rows.map(row => this.mapRowToUser(row));
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -91,20 +106,30 @@ export class SQLiteUserRepository implements IUserRepository {
     };
   }
 
-  async findActiveUsers(options?: PaginationOptions): Promise<PaginatedResult<User>> {
+  async findActiveUsers(options?: PaginationOptions, excludeUserIds?: UUID[]): Promise<PaginatedResult<User>> {
     const db = this.connection.getDatabase();
     const { page = 1, limit = 10, sortBy = 'created_at', sortOrder = 'desc' } = options || {};
     const offset = (page - 1) * limit;
 
-    const countResult = await db.get<{ count: number }>('SELECT COUNT(*) as count FROM users WHERE is_active = 1');
+    // Build WHERE clause with exclusions
+    let whereClause = 'WHERE is_active = 1';
+    const params: any[] = [];
+
+    if (excludeUserIds && excludeUserIds.length > 0) {
+      const placeholders = excludeUserIds.map(() => '?').join(',');
+      whereClause += ` AND id NOT IN (${placeholders})`;
+      params.push(...excludeUserIds);
+    }
+
+    const countResult = await db.get<{ count: number }>(`SELECT COUNT(*) as count FROM users ${whereClause}`, params);
     const total = countResult?.count || 0;
 
     const rows = await db.all<UserRow[]>(`
-      SELECT * FROM users 
-      WHERE is_active = 1
+      SELECT * FROM users
+      ${whereClause}
       ORDER BY ${sortBy} ${sortOrder.toUpperCase()}
       LIMIT ? OFFSET ?
-    `, [limit, offset]);
+    `, [...params, limit, offset]);
 
     const users = rows.map(row => this.mapRowToUser(row));
 
@@ -120,8 +145,56 @@ export class SQLiteUserRepository implements IUserRepository {
   async findOnlineUsers(): Promise<User[]> {
     const db = this.connection.getDatabase();
     const rows = await db.all<UserRow[]>('SELECT * FROM users WHERE is_online = 1 AND is_active = 1');
-    
+
     return rows.map((row: UserRow) => this.mapRowToUser(row));
+  }
+
+  async searchUsers(query: string, options?: PaginationOptions, excludeUserIds?: UUID[]): Promise<PaginatedResult<User>> {
+    const db = this.connection.getDatabase();
+    const { page = 1, limit = 10, sortBy = 'username', sortOrder = 'asc' } = options || {};
+    const offset = (page - 1) * limit;
+
+    // Validate sortBy to prevent SQL injection
+    const allowedSortFields = ['username', 'email', 'created_at', 'updated_at'];
+    const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'username';
+    const safeSortOrder = sortOrder.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
+
+    // Search in username and email (case-insensitive)
+    const searchPattern = `%${query}%`;
+
+    // Build WHERE clause with exclusions
+    let whereClause = 'WHERE is_active = 1 AND (username LIKE ? OR email LIKE ?)';
+    const params: any[] = [searchPattern, searchPattern];
+
+    if (excludeUserIds && excludeUserIds.length > 0) {
+      const placeholders = excludeUserIds.map(() => '?').join(',');
+      whereClause += ` AND id NOT IN (${placeholders})`;
+      params.push(...excludeUserIds);
+    }
+
+    const countResult = await db.get<{ count: number }>(`
+      SELECT COUNT(*) as count FROM users
+      ${whereClause}
+    `, params);
+
+    const total = countResult?.count || 0;
+
+    const rows = await db.all<UserRow[]>(`
+      SELECT * FROM users
+      ${whereClause}
+      ORDER BY ${safeSortBy} ${safeSortOrder}
+      LIMIT ? OFFSET ?
+    `, [...params, limit, offset]);
+
+    const users = rows.map(row => this.mapRowToUser(row));
+
+    return {
+      data: users,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   async update(user: User): Promise<User> {

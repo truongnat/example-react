@@ -56,8 +56,8 @@ function LoginPage() {
                 Use these credentials to test the application:
               </p>
               <div className="bg-white p-3 rounded border text-left">
-                <p className="text-sm"><strong>Email:</strong> demo@example.com</p>
-                <p className="text-sm"><strong>Password:</strong> password</p>
+                <p className="text-sm"><strong>Email:</strong> john@example.com</p>
+                <p className="text-sm"><strong>Password:</strong> Password123</p>
               </div>
             </div>
           </CardContent>

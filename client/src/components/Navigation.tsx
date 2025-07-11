@@ -64,21 +64,21 @@ export function Navigation({ showBackButton = false, title, transparent = false 
                 <Home className="w-4 h-4 inline mr-1" />
                 Home
               </Link>
-              <Link 
-                to="/todo" 
+              <Link
+                to="/todo"
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/todo') 
-                    ? 'text-blue-600 bg-blue-50' 
+                  isActive('/todo')
+                    ? 'text-blue-600 bg-blue-50'
                     : 'text-gray-600 hover:text-blue-600'
                 }`}
               >
                 Todo
               </Link>
-              <Link 
-                to="/chat" 
+              <Link
+                to="/chat"
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/chat') 
-                    ? 'text-blue-600 bg-blue-50' 
+                  isActive('/chat')
+                    ? 'text-blue-600 bg-blue-50'
                     : 'text-gray-600 hover:text-blue-600'
                 }`}
               >

@@ -1,10 +1,14 @@
 import { IRoomRepository } from '@domain/repositories/IRoomRepository';
+import { SocketService } from '@infrastructure/external-services/SocketService';
 import { UpdateRoomRequestDto, UpdateRoomResponseDto } from '@application/dtos/chat.dto';
 import { UUID } from '@shared/types/common.types';
 import { NotFoundException, ForbiddenException, ValidationException, ConflictException } from '@shared/exceptions';
 
 export class UpdateRoomUseCase {
-  constructor(private readonly roomRepository: IRoomRepository) {}
+  constructor(
+    private readonly roomRepository: IRoomRepository,
+    private readonly socketService: SocketService
+  ) {}
 
   async execute(roomId: UUID, request: UpdateRoomRequestDto, userId: UUID): Promise<UpdateRoomResponseDto> {
     // Validate input
@@ -29,11 +33,23 @@ export class UpdateRoomUseCase {
       }
     }
 
+    // Get room participants before update for broadcasting
+    const participants = room.participants;
+
     // Update room
     room.updateInfo(request.name, request.avatarUrl);
 
     // Save updated room
     const updatedRoom = await this.roomRepository.update(room);
+
+    // Broadcast room update to all participants and room list
+    this.socketService.broadcastRoomUpdated({
+      roomId: updatedRoom.id,
+      roomName: updatedRoom.name,
+      avatarUrl: updatedRoom.avatarUrl,
+      participants,
+      updatedRoom: updatedRoom.toJSON(),
+    });
 
     return {
       room: updatedRoom.toJSON(),

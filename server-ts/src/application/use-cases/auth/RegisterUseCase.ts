@@ -46,6 +46,7 @@ export class RegisterUseCase {
     const tokens = await this.tokenService.generateTokenPair({
       userId: savedUser.id,
       email: savedUser.email,
+      username: savedUser.username,
     });
 
     return {

@@ -18,6 +18,38 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@tanstack/react-query',
+      '@tanstack/react-router',
+      'socket.io-client'
+    ]
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        // Only split vendor from app code - simple and effective
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            return 'vendor'
+          }
+        }
+      }
+    },
+    // Increase warning limit - accept larger chunks for better performance
+    chunkSizeWarningLimit: 1000,
+    // Optimize minification
+    minify: 'esbuild',
+    // Source maps for production debugging (optional)
+    sourcemap: false,
+    // Optimize CSS
+    cssMinify: true,
+    // Enable tree shaking
+    target: 'esnext'
+  },
   test: {
     environment: 'happy-dom', // hoặc 'jsdom'
     globals: true,        // Cho phép dùng các biến global như `describe`, `it`... không cần import

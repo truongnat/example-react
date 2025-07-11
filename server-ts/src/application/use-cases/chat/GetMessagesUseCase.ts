@@ -1,5 +1,6 @@
 import { IMessageRepository } from '@domain/repositories/IMessageRepository';
 import { IRoomRepository } from '@domain/repositories/IRoomRepository';
+import { IUserRepository } from '@domain/repositories/IUserRepository';
 import { GetMessagesResponseDto } from '@application/dtos/chat.dto';
 import { UUID, PaginationOptions } from '@shared/types/common.types';
 import { NotFoundException, ForbiddenException } from '@shared/exceptions';
@@ -7,7 +8,8 @@ import { NotFoundException, ForbiddenException } from '@shared/exceptions';
 export class GetMessagesUseCase {
   constructor(
     private readonly messageRepository: IMessageRepository,
-    private readonly roomRepository: IRoomRepository
+    private readonly roomRepository: IRoomRepository,
+    private readonly userRepository: IUserRepository
   ) {}
 
   async execute(roomId: UUID, options: PaginationOptions, userId: UUID): Promise<GetMessagesResponseDto> {
@@ -25,15 +27,25 @@ export class GetMessagesUseCase {
     // Get visible messages for the room
     const result = await this.messageRepository.findVisibleByRoomId(roomId, options);
 
+    // Get unique author IDs
+    const authorIds = [...new Set(result.data.map(message => message.authorId))];
+
+    // Fetch author information
+    const authors = await this.userRepository.findByIds(authorIds);
+    const authorMap = new Map(authors.map(author => [author.id, author]));
+
     // Convert to DTOs with author information
-    const messagesWithAuthor = result.data.map(message => ({
-      ...message.toJSON(),
-      author: {
-        id: message.authorId,
-        username: 'Unknown', // This should be populated from user service
-        avatarUrl: '',
-      },
-    }));
+    const messagesWithAuthor = result.data.map(message => {
+      const author = authorMap.get(message.authorId);
+      return {
+        ...message.toJSON(),
+        author: {
+          id: message.authorId,
+          username: author?.username || 'Unknown User',
+          avatarUrl: author?.avatarUrl || '',
+        },
+      };
+    });
 
     return {
       messages: messagesWithAuthor,

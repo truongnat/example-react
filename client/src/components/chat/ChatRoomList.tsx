@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { Plus, Search, Users, Hash } from 'lucide-react';
+import { Plus, Search, Users, Hash, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useChatStore, ChatRoom } from '@/stores/chatStore';
-import { useRooms, useCreateRoom, useJoinRoom } from '@/hooks/useChat';
+import { useRooms, useCreateRoom, useJoinRoom, useRealTimeRoomDeletion, useRealTimeRoomUpdates } from '@/hooks/useChat';
+import { useAuthStore } from '@/stores/authStore';
 import { CreateRoomDialog } from './CreateRoomDialog';
 
 interface ChatRoomListProps {
@@ -21,6 +22,7 @@ interface RoomItemProps {
 
 function RoomItem({ room, isSelected, onClick }: RoomItemProps) {
   const joinRoomMutation = useJoinRoom();
+  const { user } = useAuthStore();
 
   const handleJoinRoom = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -74,7 +76,7 @@ function RoomItem({ room, isSelected, onClick }: RoomItemProps) {
           </div>
           
           {/* Join button for rooms user is not part of */}
-          {!room.participants.includes('current-user-id') && (
+          {user && !room.participants.includes(user.id) && (
             <Button
               size="sm"
               variant="outline"
@@ -94,21 +96,43 @@ function RoomItem({ room, isSelected, onClick }: RoomItemProps) {
 export function ChatRoomList({ onRoomSelect, selectedRoomId }: ChatRoomListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  
-  const { rooms } = useChatStore();
-  const { data: roomsData, isLoading, error } = useRooms();
 
-  // Filter rooms based on search query
+  // Use API sorting instead of client-side sorting
+  // Rooms are already sorted by updated_at DESC from the backend
+  const { data: roomsData, isLoading, error, refetch } = useRooms(1, 10, 'updated_at', 'desc');
+
+  // Enable real-time room deletion updates
+  useRealTimeRoomDeletion();
+
+  // Enable real-time room updates
+  useRealTimeRoomUpdates();
+
+  // Use rooms from API data instead of store
+  const rooms = roomsData?.rooms || [];
+
+  console.log('ChatRoomList Debug:', {
+    isLoading,
+    error,
+    roomsData,
+    rooms,
+    roomsCount: rooms.length
+  });
+
+  // Filter rooms based on search query (only filtering, no sorting needed)
   const filteredRooms = rooms.filter(room =>
     room.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Sort rooms by last activity
-  const sortedRooms = [...filteredRooms].sort((a, b) => {
-    const aTime = a.lastActivity ? new Date(a.lastActivity).getTime() : 0;
-    const bTime = b.lastActivity ? new Date(b.lastActivity).getTime() : 0;
-    return bTime - aTime;
-  });
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+          <p className="text-gray-600">Loading rooms...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -128,14 +152,25 @@ export function ChatRoomList({ onRoomSelect, selectedRoomId }: ChatRoomListProps
       {/* Header */}
       <div className="p-4 border-b">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-gray-900">Chat Rooms</h2>
-          <Button
-            size="sm"
-            onClick={() => setShowCreateDialog(true)}
-            className="h-8 w-8 p-0"
-          >
-            <Plus className="w-4 h-4" />
-          </Button>
+          <h2 className="text-lg font-semibold text-gray-900">Chat Rooms ({rooms.length})</h2>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => refetch()}
+              className="h-8 w-8 p-0"
+              title="Refresh rooms"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setShowCreateDialog(true)}
+              className="h-8 w-8 p-0"
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
         
         {/* Search */}
@@ -153,11 +188,7 @@ export function ChatRoomList({ onRoomSelect, selectedRoomId }: ChatRoomListProps
       
       {/* Room list */}
       <div className="flex-1 overflow-y-auto">
-        {isLoading ? (
-          <div className="p-4 text-center text-gray-500">
-            Loading rooms...
-          </div>
-        ) : sortedRooms.length === 0 ? (
+        {filteredRooms.length === 0 ? (
           <div className="p-4 text-center text-gray-500">
             {searchQuery ? 'No rooms found' : 'No rooms available'}
             {!searchQuery && (
@@ -174,7 +205,7 @@ export function ChatRoomList({ onRoomSelect, selectedRoomId }: ChatRoomListProps
           </div>
         ) : (
           <div className="divide-y">
-            {sortedRooms.map((room) => (
+            {filteredRooms.map((room) => (
               <RoomItem
                 key={room.id}
                 room={room}

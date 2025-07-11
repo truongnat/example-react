@@ -7,11 +7,13 @@ export interface IUserRepository {
 
   // Read
   findById(id: UUID): Promise<User | null>;
+  findByIds(ids: UUID[]): Promise<User[]>;
   findByEmail(email: string): Promise<User | null>;
   findByUsername(username: string): Promise<User | null>;
   findAll(options?: PaginationOptions): Promise<PaginatedResult<User>>;
-  findActiveUsers(options?: PaginationOptions): Promise<PaginatedResult<User>>;
+  findActiveUsers(options?: PaginationOptions, excludeUserIds?: UUID[]): Promise<PaginatedResult<User>>;
   findOnlineUsers(): Promise<User[]>;
+  searchUsers(query: string, options?: PaginationOptions, excludeUserIds?: UUID[]): Promise<PaginatedResult<User>>;
 
   // Update
   update(user: User): Promise<User>;

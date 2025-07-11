@@ -8,6 +8,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 import { queryClient } from './lib/query-client'
+import { SocketProvider } from './providers/SocketProvider'
+import { ConnectionStatus } from './components/ConnectionStatus'
 
 // Import CSS
 import './index.css'
@@ -29,8 +31,11 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
+        <SocketProvider>
+          <RouterProvider router={router} />
+          <ConnectionStatus />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </SocketProvider>
       </QueryClientProvider>
     </StrictMode>,
   )

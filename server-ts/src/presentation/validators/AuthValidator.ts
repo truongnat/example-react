@@ -109,4 +109,16 @@ export class AuthValidator {
         .withMessage('Password must contain at least one lowercase letter, one uppercase letter, and one number'),
     ];
   }
+
+  static refreshToken(): ValidationChain[] {
+    return [
+      body('refreshToken')
+        .notEmpty()
+        .withMessage('Refresh token is required')
+        .isString()
+        .withMessage('Refresh token must be a string')
+        .isLength({ min: 10 })
+        .withMessage('Invalid refresh token format'),
+    ];
+  }
 }

@@ -41,6 +41,7 @@ export class LoginUseCase {
     const tokens = await this.tokenService.generateTokenPair({
       userId: user.id,
       email: user.email,
+      username: user.username,
     });
 
     return {

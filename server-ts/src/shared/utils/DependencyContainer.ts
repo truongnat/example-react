@@ -17,7 +17,10 @@ import { ITokenService } from '@application/interfaces/ITokenService';
 import { IEmailService } from '@application/interfaces/IEmailService';
 import { RegisterUseCase } from '@application/use-cases/auth/RegisterUseCase';
 import { LoginUseCase } from '@application/use-cases/auth/LoginUseCase';
+import { LogoutUseCase } from '@application/use-cases/auth/LogoutUseCase';
 import { GetUserUseCase } from '@application/use-cases/auth/GetUserUseCase';
+import { RefreshTokenUseCase } from '@application/use-cases/auth/RefreshTokenUseCase';
+import { SearchUsersUseCase } from '@application/use-cases/user/SearchUsersUseCase';
 import { CreateTodoUseCase } from '@application/use-cases/todo/CreateTodoUseCase';
 import { GetTodosUseCase } from '@application/use-cases/todo/GetTodosUseCase';
 
@@ -25,9 +28,11 @@ import { GetTodosUseCase } from '@application/use-cases/todo/GetTodosUseCase';
 import { AuthController } from '@presentation/controllers/AuthController';
 import { TodoController } from '@presentation/controllers/TodoController';
 import { ChatController } from '@presentation/controllers/ChatController';
+import { UserController } from '@presentation/controllers/UserController';
 import { AuthRoutes } from '@presentation/routes/AuthRoutes';
 import { TodoRoutes } from '@presentation/routes/TodoRoutes';
 import { ChatRoutes } from '@presentation/routes/ChatRoutes';
+import { UserRoutes } from '@presentation/routes/UserRoutes';
 
 // Chat imports
 import { IRoomRepository } from '@domain/repositories/IRoomRepository';
@@ -45,6 +50,9 @@ import {
   DeleteRoomUseCase,
   JoinRoomUseCase,
   LeaveRoomUseCase,
+  InviteUsersUseCase,
+  GetRoomMembersUseCase,
+  RemoveMemberUseCase,
   CreateMessageUseCase,
   UpdateMessageUseCase,
   GetMessagesUseCase,
@@ -69,7 +77,10 @@ export class DependencyContainer {
   // Application
   private _registerUseCase!: RegisterUseCase;
   private _loginUseCase!: LoginUseCase;
+  private _logoutUseCase!: LogoutUseCase;
   private _getUserUseCase!: GetUserUseCase;
+  private _refreshTokenUseCase!: RefreshTokenUseCase;
+  private _searchUsersUseCase!: SearchUsersUseCase;
   private _createTodoUseCase!: CreateTodoUseCase;
   private _getTodosUseCase!: GetTodosUseCase;
 
@@ -81,6 +92,9 @@ export class DependencyContainer {
   private _deleteRoomUseCase!: DeleteRoomUseCase;
   private _joinRoomUseCase!: JoinRoomUseCase;
   private _leaveRoomUseCase!: LeaveRoomUseCase;
+  private _inviteUsersUseCase!: InviteUsersUseCase;
+  private _getRoomMembersUseCase!: GetRoomMembersUseCase;
+  private _removeMemberUseCase!: RemoveMemberUseCase;
   private _createMessageUseCase!: CreateMessageUseCase;
   private _updateMessageUseCase!: UpdateMessageUseCase;
   private _getMessagesUseCase!: GetMessagesUseCase;
@@ -90,9 +104,11 @@ export class DependencyContainer {
   private _authController!: AuthController;
   private _todoController!: TodoController;
   private _chatController!: ChatController;
+  private _userController!: UserController;
   private _authRoutes!: AuthRoutes;
   private _todoRoutes!: TodoRoutes;
   private _chatRoutes!: ChatRoutes;
+  private _userRoutes!: UserRoutes;
 
   private constructor() {}
 
@@ -138,32 +154,49 @@ export class DependencyContainer {
       this._passwordService,
       this._tokenService
     );
+    this._logoutUseCase = new LogoutUseCase(
+      this._userRepository,
+      this._roomRepository,
+      this._socketService
+    );
     this._getUserUseCase = new GetUserUseCase(this._userRepository);
+    this._refreshTokenUseCase = new RefreshTokenUseCase(this._tokenService, this._userRepository);
+    this._searchUsersUseCase = new SearchUsersUseCase(this._userRepository);
     this._createTodoUseCase = new CreateTodoUseCase(this._todoRepository);
     this._getTodosUseCase = new GetTodosUseCase(this._todoRepository);
 
     // Initialize chat use cases
     this._createRoomUseCase = new CreateRoomUseCase(this._roomRepository);
-    this._updateRoomUseCase = new UpdateRoomUseCase(this._roomRepository);
+    this._updateRoomUseCase = new UpdateRoomUseCase(this._roomRepository, this._socketService);
     this._getRoomsUseCase = new GetRoomsUseCase(this._roomRepository);
     this._getRoomUseCase = new GetRoomUseCase(this._roomRepository);
-    this._deleteRoomUseCase = new DeleteRoomUseCase(this._roomRepository, this._messageRepository);
+    this._deleteRoomUseCase = new DeleteRoomUseCase(this._roomRepository, this._messageRepository, this._socketService);
     this._joinRoomUseCase = new JoinRoomUseCase(this._roomRepository);
     this._leaveRoomUseCase = new LeaveRoomUseCase(this._roomRepository);
+    this._inviteUsersUseCase = new InviteUsersUseCase(this._roomRepository, this._userRepository);
+    this._getRoomMembersUseCase = new GetRoomMembersUseCase(this._roomRepository, this._userRepository);
+    this._removeMemberUseCase = new RemoveMemberUseCase(this._roomRepository, this._userRepository, this._socketService);
     this._createMessageUseCase = new CreateMessageUseCase(this._messageRepository, this._roomRepository);
     this._updateMessageUseCase = new UpdateMessageUseCase(this._messageRepository);
-    this._getMessagesUseCase = new GetMessagesUseCase(this._messageRepository, this._roomRepository);
+    this._getMessagesUseCase = new GetMessagesUseCase(this._messageRepository, this._roomRepository, this._userRepository);
     this._deleteMessageUseCase = new DeleteMessageUseCase(this._messageRepository);
 
     // Initialize controllers
     this._authController = new AuthController(
       this._registerUseCase,
       this._loginUseCase,
-      this._getUserUseCase
+      this._logoutUseCase,
+      this._getUserUseCase,
+      this._refreshTokenUseCase
     );
     this._todoController = new TodoController(
       this._createTodoUseCase,
       this._getTodosUseCase
+    );
+
+    this._userController = new UserController(
+      this._searchUsersUseCase,
+      this._roomRepository
     );
 
     // Initialize chat controller (only if socket service is available)
@@ -176,6 +209,9 @@ export class DependencyContainer {
         this._deleteRoomUseCase,
         this._joinRoomUseCase,
         this._leaveRoomUseCase,
+        this._inviteUsersUseCase,
+        this._getRoomMembersUseCase,
+        this._removeMemberUseCase,
         this._createMessageUseCase,
         this._updateMessageUseCase,
         this._getMessagesUseCase,
@@ -190,6 +226,7 @@ export class DependencyContainer {
     // Initialize routes
     this._authRoutes = new AuthRoutes(this._authController, this._authMiddleware);
     this._todoRoutes = new TodoRoutes(this._todoController, this._authMiddleware);
+    this._userRoutes = new UserRoutes(this._userController, this._authMiddleware);
 
     if (this._chatController) {
       this._chatRoutes = new ChatRoutes(this._chatController, this._authMiddleware);
@@ -217,6 +254,10 @@ export class DependencyContainer {
 
   public get todoRoutes(): TodoRoutes {
     return this._todoRoutes;
+  }
+
+  public get userRoutes(): UserRoutes {
+    return this._userRoutes;
   }
 
   public get authMiddleware(): AuthMiddleware {

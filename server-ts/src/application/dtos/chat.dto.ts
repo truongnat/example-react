@@ -70,6 +70,27 @@ export interface GetRoomsResponseDto {
   totalPages: number;
 }
 
+export interface RoomMemberDto {
+  id: UUID;
+  username: string;
+  email: string;
+  avatarUrl: string;
+  isOnline: boolean;
+  isAuthor: boolean;
+  joinedAt: Date;
+}
+
+export interface GetRoomMembersResponseDto {
+  members: RoomMemberDto[];
+  totalMembers: number;
+  roomInfo: {
+    id: UUID;
+    name: string;
+    authorId: UUID;
+    createdAt: Date;
+  };
+}
+
 export interface GetRoomResponseDto {
   room: RoomDto;
 }

@@ -39,6 +39,11 @@ class AppServer {
         methods: ['GET', 'POST'],
         credentials: true,
       },
+      transports: ['websocket', 'polling'],
+      pingTimeout: 60000,
+      pingInterval: 25000,
+      connectTimeout: 45000,
+      allowEIO3: true,
     });
 
     this.socketService = new SocketService(this.io);
@@ -121,6 +126,7 @@ class AppServer {
     // API routes
     this.app.use('/api/auth', this.container.authRoutes.getRouter());
     this.app.use('/api/todos', this.container.todoRoutes.getRouter());
+    this.app.use('/api/users', this.container.userRoutes.getRouter());
 
     // Chat routes (only if available)
     if (this.container.chatRoutes) {

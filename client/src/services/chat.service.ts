@@ -44,44 +44,85 @@ export interface MessagesResponse {
   totalPages: number;
 }
 
-export interface ApiResponse<T = any> {
-  success: boolean;
-  data: T;
-  message: string;
+export interface InviteUsersResponse {
+  invitedUsers: {
+    id: string;
+    username: string;
+    email: string;
+  }[];
+  alreadyMembers: string[];
+  notFound: string[];
+}
+
+export interface RoomMember {
+  id: string;
+  username: string;
+  email: string;
+  avatarUrl: string;
+  isOnline: boolean;
+  isAuthor: boolean;
+  joinedAt: string;
+}
+
+export interface RoomMembersResponse {
+  members: RoomMember[];
+  totalMembers: number;
+  roomInfo: {
+    id: string;
+    name: string;
+    authorId: string;
+    createdAt: string;
+  };
 }
 
 class ChatService {
-  private baseUrl = '/api/chat';
+  private baseUrl = '/chat';
 
   // Room operations
-  async getRooms(page = 1, limit = 10): Promise<RoomsResponse> {
-    const response = await httpClient.get<ApiResponse<RoomsResponse>>(
-      `${this.baseUrl}/rooms?page=${page}&limit=${limit}`
+  async getRooms(
+    page = 1,
+    limit = 10,
+    sortBy: 'name' | 'updated_at' | 'created_at' = 'updated_at',
+    sortOrder: 'asc' | 'desc' = 'desc'
+  ): Promise<RoomsResponse> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      sortBy,
+      sortOrder
+    });
+
+    const response = await httpClient.get<RoomsResponse>(
+      `${this.baseUrl}/rooms?${params.toString()}`
     );
-    return response.data?.data || { rooms: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+    // HttpClient returns ApiResponse<RoomsResponse>, so we need response.data
+    return response.data || { rooms: [], total: 0, page: 1, limit: 10, totalPages: 0 };
   }
 
   async getRoom(roomId: string): Promise<RoomData> {
-    const response = await httpClient.get<ApiResponse<{ room: RoomData }>>(
+    const response = await httpClient.get<{ room: RoomData }>(
       `${this.baseUrl}/rooms/${roomId}`
     );
-    return response.data?.data?.room || {} as RoomData;
+    // HttpClient returns ApiResponse<{ room: RoomData }>, so we need response.data?.room
+    return response.data?.room || {} as RoomData;
   }
 
   async createRoom(data: CreateRoomRequest): Promise<RoomData> {
-    const response = await httpClient.post<ApiResponse<{ room: RoomData }>>(
+    const response = await httpClient.post<{ room: RoomData }>(
       `${this.baseUrl}/rooms`,
       data
     );
-    return response.data?.data?.room || {} as RoomData;
+    // HttpClient returns ApiResponse<{ room: RoomData }>, so we need response.data?.room
+    return response.data?.room || {} as RoomData;
   }
 
   async updateRoom(roomId: string, data: UpdateRoomRequest): Promise<RoomData> {
-    const response = await httpClient.put<ApiResponse<{ room: RoomData }>>(
+    const response = await httpClient.put<{ room: RoomData }>(
       `${this.baseUrl}/rooms/${roomId}`,
       data
     );
-    return response.data?.data?.room || {} as RoomData;
+    // HttpClient returns ApiResponse<{ room: RoomData }>, so we need response.data?.room
+    return response.data?.room || {} as RoomData;
   }
 
   async deleteRoom(roomId: string): Promise<void> {
@@ -89,30 +130,54 @@ class ChatService {
   }
 
   async joinRoom(roomId: string): Promise<RoomData> {
-    const response = await httpClient.post<ApiResponse<{ room: RoomData }>>(
+    const response = await httpClient.post<{ room: RoomData }>(
       `${this.baseUrl}/rooms/${roomId}/join`
     );
-    return response.data?.data?.room || {} as RoomData;
+    // HttpClient returns ApiResponse<{ room: RoomData }>, so we need response.data?.room
+    return response.data?.room || {} as RoomData;
   }
 
   async leaveRoom(roomId: string): Promise<void> {
     await httpClient.post(`${this.baseUrl}/rooms/${roomId}/leave`);
   }
 
+  async inviteUsers(roomId: string, userIds: string[]): Promise<InviteUsersResponse> {
+    const response = await httpClient.post<InviteUsersResponse>(
+      `${this.baseUrl}/rooms/${roomId}/invite`,
+      { userIds }
+    );
+    // HttpClient returns ApiResponse<InviteUsersResponse>, so we need response.data
+    return response.data || { invitedUsers: [], alreadyMembers: [], notFound: [] };
+  }
+
+  async getRoomMembers(roomId: string): Promise<RoomMembersResponse> {
+    const response = await httpClient.get<RoomMembersResponse>(
+      `${this.baseUrl}/rooms/${roomId}/members`
+    );
+    // HttpClient returns ApiResponse<RoomMembersResponse>, so we need response.data
+    return response.data || { members: [], totalMembers: 0, roomInfo: { id: '', name: '', authorId: '', createdAt: '' } };
+  }
+
+  async removeMember(roomId: string, memberId: string): Promise<void> {
+    await httpClient.delete(`${this.baseUrl}/rooms/${roomId}/members/${memberId}`);
+  }
+
   // Message operations
   async getMessages(roomId: string, page = 1, limit = 50): Promise<MessagesResponse> {
-    const response = await httpClient.get<ApiResponse<MessagesResponse>>(
+    const response = await httpClient.get<MessagesResponse>(
       `${this.baseUrl}/rooms/${roomId}/messages?page=${page}&limit=${limit}`
     );
-    return response.data?.data || { messages: [], total: 0, page: 1, limit: 50, totalPages: 0 };
+    // HttpClient returns ApiResponse<MessagesResponse>, so we need response.data
+    return response.data || { messages: [], total: 0, page: 1, limit: 50, totalPages: 0 };
   }
 
   async updateMessage(roomId: string, messageId: string, data: UpdateMessageRequest): Promise<MessageData> {
-    const response = await httpClient.put<ApiResponse<{ message: MessageData }>>(
+    const response = await httpClient.put<{ message: MessageData }>(
       `${this.baseUrl}/rooms/${roomId}/messages/${messageId}`,
       data
     );
-    return response.data?.data?.message || {} as MessageData;
+    // HttpClient returns ApiResponse<{ message: MessageData }>, so we need response.data?.message
+    return response.data?.message || {} as MessageData;
   }
 
   async deleteMessage(roomId: string, messageId: string): Promise<void> {

@@ -96,12 +96,18 @@ export class SQLiteRoomRepository implements IRoomRepository {
 
   async findByParticipant(userId: UUID, options: PaginationOptions = { page: 1, limit: 10 }): Promise<PaginatedResult<Room>> {
     const offset = (options.page - 1) * options.limit;
-    
+    const { sortBy = 'updated_at', sortOrder = 'desc' } = options;
+
+    // Validate sortBy to prevent SQL injection
+    const allowedSortFields = ['name', 'updated_at', 'created_at'];
+    const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'updated_at';
+    const safeSortOrder = sortOrder.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+
     const rows = await this.db.all(
       `SELECT r.* FROM rooms r
        INNER JOIN room_participants rp ON r.id = rp.room_id
        WHERE rp.user_id = ?
-       ORDER BY r.updated_at DESC 
+       ORDER BY r.${safeSortBy} ${safeSortOrder}
        LIMIT ? OFFSET ?`,
       [userId, options.limit, offset]
     );

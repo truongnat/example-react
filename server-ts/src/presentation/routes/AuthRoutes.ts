@@ -179,6 +179,53 @@ export class AuthRoutes {
 
     /**
      * @swagger
+     * /auth/refresh:
+     *   post:
+     *     summary: Refresh access token
+     *     tags: [Authentication]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - refreshToken
+     *             properties:
+     *               refreshToken:
+     *                 type: string
+     *                 description: Valid refresh token
+     *     responses:
+     *       200:
+     *         description: Token refreshed successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               allOf:
+     *                 - $ref: '#/components/schemas/ApiResponse'
+     *                 - type: object
+     *                   properties:
+     *                     data:
+     *                       type: object
+     *                       properties:
+     *                         tokens:
+     *                           $ref: '#/components/schemas/AuthTokens'
+     *       401:
+     *         description: Invalid or expired refresh token
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
+    this.router.post(
+      '/refresh',
+      AuthValidator.refreshToken(),
+      ValidationMiddleware.handleValidationErrors,
+      this.authController.refresh
+    );
+
+    /**
+     * @swagger
      * /auth/me:
      *   get:
      *     summary: Get current user profile

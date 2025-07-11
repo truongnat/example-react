@@ -6,6 +6,9 @@ export { GetRoomUseCase } from './GetRoomUseCase';
 export { DeleteRoomUseCase } from './DeleteRoomUseCase';
 export { JoinRoomUseCase } from './JoinRoomUseCase';
 export { LeaveRoomUseCase } from './LeaveRoomUseCase';
+export { InviteUsersUseCase } from './InviteUsersUseCase';
+export { GetRoomMembersUseCase } from './GetRoomMembersUseCase';
+export { RemoveMemberUseCase } from './RemoveMemberUseCase';
 
 // Message use cases
 export { CreateMessageUseCase } from './CreateMessageUseCase';

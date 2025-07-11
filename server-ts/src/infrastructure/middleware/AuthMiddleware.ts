@@ -11,6 +11,7 @@ declare global {
       user?: {
         id: string;
         email: string;
+        username: string;
       };
     }
   }
@@ -45,6 +46,7 @@ export class AuthMiddleware {
       req.user = {
         id: payload.userId,
         email: payload.email,
+        username: payload.username,
       };
 
       next();
@@ -68,6 +70,7 @@ export class AuthMiddleware {
             req.user = {
               id: payload.userId,
               email: payload.email,
+              username: payload.username,
             };
           }
         } catch {

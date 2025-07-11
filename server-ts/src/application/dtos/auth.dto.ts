@@ -21,6 +21,10 @@ export interface ForgotPasswordRequestDto {
   email: string;
 }
 
+export interface RefreshTokenRequestDto {
+  refreshToken: string;
+}
+
 export interface VerifyOtpRequestDto {
   email: string;
   otp: string;
