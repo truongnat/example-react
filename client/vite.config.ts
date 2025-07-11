@@ -11,19 +11,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     tanstackRouter(),
-    react({
-      jsxImportSource: '@emotion/react',
-      babel: {
-        plugins: [
-          [
-            '@babel/plugin-transform-react-jsx',
-            {
-              runtime: 'automatic',
-            },
-          ],
-        ],
-      },
-    }),
+    react(),
     tsconfigPaths(),
     tailwindcss(),
   ],

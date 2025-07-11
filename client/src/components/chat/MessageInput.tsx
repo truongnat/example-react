@@ -13,7 +13,7 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const typingTimeoutRef = useRef<number | null>(null);
   
   const { sendMessage, setTyping } = useChatStore();
 

@@ -34,7 +34,7 @@ interface ChatState {
   
   // UI state
   isTyping: Record<string, boolean>; // keyed by roomId
-  typingTimeouts: Record<string, NodeJS.Timeout>; // keyed by roomId
+  typingTimeouts: Record<string, number>; // keyed by roomId
   
   // Actions
   setCurrentRoom: (roomId: string | null) => void;
@@ -357,7 +357,7 @@ export const useChatStore = create<ChatState>()(
         const state = get();
         
         // Clear all timeouts
-        Object.values(state.typingTimeouts).forEach(timeout => {
+        Object.values(state.typingTimeouts).forEach((timeout: number) => {
           clearTimeout(timeout);
         });
         
