@@ -1,11 +1,9 @@
 import { createFileRoute, useParams, Link, redirect } from '@tanstack/react-router'
-import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ArrowLeft, Send } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
+import { ChatRoom } from '@/components/chat/ChatRoom'
 import { useAuthStore } from '@/stores/authStore'
+import { useSocketConnection } from '@/hooks/useChat'
 
 export const Route = createFileRoute('/room/$id')({
   beforeLoad: ({ location }) => {
