@@ -51,7 +51,7 @@ function ChatPage() {
         <div className="w-80 flex-shrink-0">
           <ChatRoomList
             onRoomSelect={handleRoomSelect}
-            selectedRoomId={selectedRoomId}
+            selectedRoomId={selectedRoomId || undefined}
           />
         </div>
 
