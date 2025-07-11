@@ -58,7 +58,7 @@ class ChatService {
     const response = await httpClient.get<ApiResponse<RoomsResponse>>(
       `${this.baseUrl}/rooms?page=${page}&limit=${limit}`
     );
-    return response.data.data;
+    return response.data?.data || { rooms: [], total: 0, page: 1, limit: 10, totalPages: 0 };
   }
 
   async getRoom(roomId: string): Promise<RoomData> {
