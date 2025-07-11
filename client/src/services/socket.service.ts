@@ -65,7 +65,7 @@ class SocketService {
     return new Promise((resolve, reject) => {
       try {
         const authStore = useAuthStore.getState();
-        const token = authStore.token;
+        const token = authStore.tokens?.accessToken;
 
         if (!token) {
           reject(new Error('No authentication token available'));
@@ -216,7 +216,7 @@ class SocketService {
       this.socket.emit('typing', {
         roomId,
         userId: authStore.user?.id,
-        username: authStore.user?.username,
+        username: authStore.user?.name,
         isTyping
       });
     }
