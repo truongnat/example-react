@@ -18,7 +18,7 @@ export function AuthRequired() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Link to="/login">
+          <Link to="/login" search={{ redirect: window.location.pathname }}>
             <Button className="w-full flex items-center gap-2">
               <LogIn className="w-4 h-4" />
               Sign In
