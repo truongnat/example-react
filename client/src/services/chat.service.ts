@@ -65,7 +65,7 @@ class ChatService {
     const response = await httpClient.get<ApiResponse<{ room: RoomData }>>(
       `${this.baseUrl}/rooms/${roomId}`
     );
-    return response.data.data.room;
+    return response.data?.data?.room || {} as RoomData;
   }
 
   async createRoom(data: CreateRoomRequest): Promise<RoomData> {
@@ -73,7 +73,7 @@ class ChatService {
       `${this.baseUrl}/rooms`,
       data
     );
-    return response.data.data.room;
+    return response.data?.data?.room || {} as RoomData;
   }
 
   async updateRoom(roomId: string, data: UpdateRoomRequest): Promise<RoomData> {
@@ -81,7 +81,7 @@ class ChatService {
       `${this.baseUrl}/rooms/${roomId}`,
       data
     );
-    return response.data.data.room;
+    return response.data?.data?.room || {} as RoomData;
   }
 
   async deleteRoom(roomId: string): Promise<void> {
@@ -92,7 +92,7 @@ class ChatService {
     const response = await httpClient.post<ApiResponse<{ room: RoomData }>>(
       `${this.baseUrl}/rooms/${roomId}/join`
     );
-    return response.data.data.room;
+    return response.data?.data?.room || {} as RoomData;
   }
 
   async leaveRoom(roomId: string): Promise<void> {
@@ -104,7 +104,7 @@ class ChatService {
     const response = await httpClient.get<ApiResponse<MessagesResponse>>(
       `${this.baseUrl}/rooms/${roomId}/messages?page=${page}&limit=${limit}`
     );
-    return response.data.data;
+    return response.data?.data || { messages: [], total: 0, page: 1, limit: 50, totalPages: 0 };
   }
 
   async updateMessage(roomId: string, messageId: string, data: UpdateMessageRequest): Promise<MessageData> {
@@ -112,7 +112,7 @@ class ChatService {
       `${this.baseUrl}/rooms/${roomId}/messages/${messageId}`,
       data
     );
-    return response.data.data.message;
+    return response.data?.data?.message || {} as MessageData;
   }
 
   async deleteMessage(roomId: string, messageId: string): Promise<void> {
