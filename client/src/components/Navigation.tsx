@@ -121,7 +121,7 @@ export function Navigation({ showBackButton = false, title, transparent = false 
               </div>
             ) : (
               <>
-                <Link to="/login" search={{}}>
+                <Link to="/login" search={{ redirect: '/' }}>
                   <Button variant="outline" size="sm">
                     Sign In
                   </Button>

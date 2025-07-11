@@ -70,6 +70,7 @@ function VerifyOtpPage() {
             <div>
               <Link
                 to="/login"
+                search={{ redirect: '/' }}
                 className="text-sm text-blue-600 hover:underline"
               >
                 Back to Sign In

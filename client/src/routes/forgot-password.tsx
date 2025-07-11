@@ -13,7 +13,7 @@ function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 relative">
       {/* Back to Login Button */}
-      <Link to="/login" className="absolute top-4 left-4">
+      <Link to="/login" search={{ redirect: '/' }} className="absolute top-4 left-4">
         <Button variant="ghost" size="sm">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Login
@@ -43,6 +43,7 @@ function ForgotPasswordPage() {
           <div className="text-center">
             <Link
               to="/login"
+              search={{ redirect: '/' }}
               className="text-sm text-blue-600 hover:underline"
             >
               Back to Sign In
