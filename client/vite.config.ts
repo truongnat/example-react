@@ -11,10 +11,25 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     tanstackRouter(),
-    react(),
+    react({
+      jsxImportSource: '@emotion/react',
+      babel: {
+        plugins: [
+          [
+            '@babel/plugin-transform-react-jsx',
+            {
+              runtime: 'automatic',
+            },
+          ],
+        ],
+      },
+    }),
     tsconfigPaths(),
     tailwindcss(),
   ],
+  define: {
+    global: 'globalThis',
+  },
   test: {
     environment: 'happy-dom', // hoặc 'jsdom'
     globals: true,        // Cho phép dùng các biến global như `describe`, `it`... không cần import
