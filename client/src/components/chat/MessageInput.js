@@ -52,7 +52,7 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
         }
         // Set new timeout to stop typing
         if (value.trim()) {
-            typingTimeoutRef.current = setTimeout(() => {
+            typingTimeoutRef.current = window.setTimeout(() => {
                 setIsTyping(false);
                 setTyping(roomId, false);
             }, 1000);

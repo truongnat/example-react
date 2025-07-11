@@ -112,7 +112,7 @@ export const useChatStore = create()(devtools((set, get) => ({
         socketService.sendTyping(roomId, isTyping);
         if (isTyping) {
             // Set timeout to stop typing after 3 seconds
-            const timeout = setTimeout(() => {
+            const timeout = window.setTimeout(() => {
                 get().setTyping(roomId, false);
             }, 3000);
             set((state) => ({
