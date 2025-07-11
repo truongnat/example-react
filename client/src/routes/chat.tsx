@@ -1,12 +1,11 @@
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
-import React from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Plus } from 'lucide-react'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
 import { Navigation } from '@/components/Navigation'
+import { ChatRoomList } from '@/components/chat/ChatRoomList'
+import { ChatRoom } from '@/components/chat/ChatRoom'
 import { useAuthStore } from '@/stores/authStore'
+import { useChatStore } from '@/stores/chatStore'
+import { useSocketConnection } from '@/hooks/useChat'
 
 export const Route = createFileRoute('/chat')({
   beforeLoad: ({ location }) => {
