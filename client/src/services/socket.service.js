@@ -18,9 +18,10 @@ class SocketService {
     }
     connect() {
         return new Promise((resolve, reject) => {
+            var _a;
             try {
                 const authStore = useAuthStore.getState();
-                const token = authStore.token;
+                const token = (_a = authStore.tokens) === null || _a === void 0 ? void 0 : _a.accessToken;
                 if (!token) {
                     reject(new Error('No authentication token available'));
                     return;
@@ -150,7 +151,7 @@ class SocketService {
             this.socket.emit('typing', {
                 roomId,
                 userId: (_a = authStore.user) === null || _a === void 0 ? void 0 : _a.id,
-                username: (_b = authStore.user) === null || _b === void 0 ? void 0 : _b.username,
+                username: (_b = authStore.user) === null || _b === void 0 ? void 0 : _b.name,
                 isTyping
             });
         }

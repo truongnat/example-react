@@ -1,4 +1,4 @@
-import React from 'react';
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
@@ -15,8 +15,5 @@ const router = createRouter({ routeTree });
 const rootElement = document.getElementById('root');
 if (!rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement);
-    root.render(React.createElement(StrictMode, null,
-        React.createElement(QueryClientProvider, { client: queryClient },
-            React.createElement(RouterProvider, { router: router }),
-            React.createElement(ReactQueryDevtools, { initialIsOpen: false }))));
+    root.render(_jsx(StrictMode, { children: _jsxs(QueryClientProvider, { client: queryClient, children: [_jsx(RouterProvider, { router: router }), _jsx(ReactQueryDevtools, { initialIsOpen: false })] }) }));
 }

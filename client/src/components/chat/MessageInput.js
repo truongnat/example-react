@@ -1,3 +1,4 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useRef, useEffect } from 'react';
 import { Send, Smile } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
     const [message, setMessage] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const textareaRef = useRef(null);
-    const typingTimeoutRef = useRef();
+    const typingTimeoutRef = useRef(null);
     const { sendMessage, setTyping } = useChatStore();
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -72,16 +73,5 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
             }
         };
     }, [roomId, isTyping, setTyping]);
-    return (React.createElement("div", { className: "border-t bg-white p-4" },
-        React.createElement("form", { onSubmit: handleSubmit, className: "flex items-end gap-2" },
-            React.createElement("div", { className: "flex-1 relative" },
-                React.createElement("textarea", { ref: textareaRef, value: message, onChange: handleInputChange, onKeyDown: handleKeyDown, placeholder: placeholder, disabled: disabled, className: "w-full resize-none rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed", style: { minHeight: '40px', maxHeight: '120px' }, rows: 1 }),
-                React.createElement("button", { type: "button", className: "absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors", disabled: disabled },
-                    React.createElement(Smile, { className: "w-4 h-4" }))),
-            React.createElement(Button, { type: "submit", size: "sm", disabled: !message.trim() || disabled, className: "h-10 px-3" },
-                React.createElement(Send, { className: "w-4 h-4" }),
-                React.createElement("span", { className: "sr-only" }, "Send message"))),
-        message.length > 1800 && (React.createElement("div", { className: "mt-1 text-xs text-gray-500 text-right" },
-            message.length,
-            "/2000"))));
+    return (_jsxs("div", { className: "border-t bg-white p-4", children: [_jsxs("form", { onSubmit: handleSubmit, className: "flex items-end gap-2", children: [_jsxs("div", { className: "flex-1 relative", children: [_jsx("textarea", { ref: textareaRef, value: message, onChange: handleInputChange, onKeyDown: handleKeyDown, placeholder: placeholder, disabled: disabled, className: "w-full resize-none rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed", style: { minHeight: '40px', maxHeight: '120px' }, rows: 1 }), _jsx("button", { type: "button", className: "absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors", disabled: disabled, children: _jsx(Smile, { className: "w-4 h-4" }) })] }), _jsxs(Button, { type: "submit", size: "sm", disabled: !message.trim() || disabled, className: "h-10 px-3", children: [_jsx(Send, { className: "w-4 h-4" }), _jsx("span", { className: "sr-only", children: "Send message" })] })] }), message.length > 1800 && (_jsxs("div", { className: "mt-1 text-xs text-gray-500 text-right", children: [message.length, "/2000"] }))] }));
 }

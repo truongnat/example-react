@@ -7,7 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import React, { useState, useEffect } from 'react';
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
@@ -53,13 +54,13 @@ export const ApiStatus = ({ className }) => {
     const getStatusIcon = () => {
         switch (status) {
             case 'checking':
-                return React.createElement(RefreshCw, { className: "w-5 h-5 animate-spin text-blue-500" });
+                return _jsx(RefreshCw, { className: "w-5 h-5 animate-spin text-blue-500" });
             case 'connected':
-                return React.createElement(CheckCircle, { className: "w-5 h-5 text-green-500" });
+                return _jsx(CheckCircle, { className: "w-5 h-5 text-green-500" });
             case 'disconnected':
-                return React.createElement(XCircle, { className: "w-5 h-5 text-red-500" });
+                return _jsx(XCircle, { className: "w-5 h-5 text-red-500" });
             case 'error':
-                return React.createElement(AlertCircle, { className: "w-5 h-5 text-orange-500" });
+                return _jsx(AlertCircle, { className: "w-5 h-5 text-orange-500" });
         }
     };
     const getStatusText = () => {
@@ -86,40 +87,5 @@ export const ApiStatus = ({ className }) => {
                 return 'border-orange-200 bg-orange-50';
         }
     };
-    return (React.createElement(Card, { className: `${className} ${getStatusColor()}` },
-        React.createElement(CardHeader, { className: "pb-3" },
-            React.createElement(CardTitle, { className: "text-sm font-medium flex items-center gap-2" },
-                getStatusIcon(),
-                "API Status")),
-        React.createElement(CardContent, { className: "pt-0" },
-            React.createElement("div", { className: "space-y-2" },
-                React.createElement("div", { className: "flex items-center justify-between" },
-                    React.createElement("span", { className: "text-sm" }, getStatusText()),
-                    React.createElement(Button, { variant: "outline", size: "sm", onClick: checkApiStatus, disabled: status === 'checking' },
-                        React.createElement(RefreshCw, { className: `w-3 h-3 ${status === 'checking' ? 'animate-spin' : ''}` }))),
-                React.createElement("div", { className: "text-xs text-gray-600 space-y-1" },
-                    React.createElement("div", null,
-                        "Endpoint: ",
-                        config.apiBaseUrl),
-                    lastChecked && (React.createElement("div", null,
-                        "Last checked: ",
-                        lastChecked.toLocaleTimeString())),
-                    serverInfo && (React.createElement("div", { className: "mt-2 p-2 bg-white rounded border" },
-                        React.createElement("div", { className: "font-medium" }, "Server Info:"),
-                        React.createElement("div", null,
-                            "Status: ",
-                            serverInfo.status || 'OK'),
-                        serverInfo.version && React.createElement("div", null,
-                            "Version: ",
-                            serverInfo.version),
-                        serverInfo.timestamp && (React.createElement("div", null,
-                            "Server Time: ",
-                            new Date(serverInfo.timestamp).toLocaleString()))))),
-                status === 'disconnected' || status === 'error' ? (React.createElement("div", { className: "mt-3 p-2 bg-white rounded border text-xs" },
-                    React.createElement("div", { className: "font-medium text-red-600 mb-1" }, "Troubleshooting:"),
-                    React.createElement("ul", { className: "list-disc list-inside space-y-1 text-gray-600" },
-                        React.createElement("li", null, "Check if backend server is running"),
-                        React.createElement("li", null, "Verify API URL in environment variables"),
-                        React.createElement("li", null, "Check network connection"),
-                        React.createElement("li", null, "Look for CORS issues in browser console")))) : null))));
+    return (_jsxs(Card, { className: `${className} ${getStatusColor()}`, children: [_jsx(CardHeader, { className: "pb-3", children: _jsxs(CardTitle, { className: "text-sm font-medium flex items-center gap-2", children: [getStatusIcon(), "API Status"] }) }), _jsx(CardContent, { className: "pt-0", children: _jsxs("div", { className: "space-y-2", children: [_jsxs("div", { className: "flex items-center justify-between", children: [_jsx("span", { className: "text-sm", children: getStatusText() }), _jsx(Button, { variant: "outline", size: "sm", onClick: checkApiStatus, disabled: status === 'checking', children: _jsx(RefreshCw, { className: `w-3 h-3 ${status === 'checking' ? 'animate-spin' : ''}` }) })] }), _jsxs("div", { className: "text-xs text-gray-600 space-y-1", children: [_jsxs("div", { children: ["Endpoint: ", config.apiBaseUrl] }), lastChecked && (_jsxs("div", { children: ["Last checked: ", lastChecked.toLocaleTimeString()] })), serverInfo && (_jsxs("div", { className: "mt-2 p-2 bg-white rounded border", children: [_jsx("div", { className: "font-medium", children: "Server Info:" }), _jsxs("div", { children: ["Status: ", serverInfo.status || 'OK'] }), serverInfo.version && _jsxs("div", { children: ["Version: ", serverInfo.version] }), serverInfo.timestamp && (_jsxs("div", { children: ["Server Time: ", new Date(serverInfo.timestamp).toLocaleString()] }))] }))] }), status === 'disconnected' || status === 'error' ? (_jsxs("div", { className: "mt-3 p-2 bg-white rounded border text-xs", children: [_jsx("div", { className: "font-medium text-red-600 mb-1", children: "Troubleshooting:" }), _jsxs("ul", { className: "list-disc list-inside space-y-1 text-gray-600", children: [_jsx("li", { children: "Check if backend server is running" }), _jsx("li", { children: "Verify API URL in environment variables" }), _jsx("li", { children: "Check network connection" }), _jsx("li", { children: "Look for CORS issues in browser console" })] })] })) : null] }) })] }));
 };

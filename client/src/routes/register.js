@@ -7,8 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,38 +50,9 @@ function RegisterPage() {
             },
         });
     });
-    return (React.createElement("div", { className: "min-h-screen flex items-center justify-center bg-gray-50 relative" },
-        React.createElement(Link, { to: "/", className: "absolute top-4 left-4" },
-            React.createElement(Button, { variant: "ghost", size: "sm" },
-                React.createElement(ArrowLeft, { className: "w-4 h-4 mr-2" }),
-                "Back to Home")),
-        React.createElement(Card, { className: "w-full max-w-md" },
-            React.createElement(CardHeader, { className: "text-center" },
-                React.createElement(CardTitle, { className: "text-2xl" }, "Sign Up"),
-                React.createElement(CardDescription, null, "Create a new account to get started")),
-            React.createElement(CardContent, null,
-                React.createElement("form", { onSubmit: handleSubmit, className: "space-y-4" },
-                    (error || registerMutation.error) && (React.createElement("div", { className: "p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md" }, error ||
-                        ((_a = registerMutation.error) === null || _a === void 0 ? void 0 : _a.message) ||
-                        "Registration failed. Please try again.")),
-                    React.createElement("div", { className: "space-y-2" },
-                        React.createElement(Label, { htmlFor: "username" }, "Username"),
-                        React.createElement(Input, { id: "username", type: "text", placeholder: "Enter your username", value: formData.username, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { username: e.target.value })), required: true })),
-                    React.createElement("div", { className: "space-y-2" },
-                        React.createElement(Label, { htmlFor: "email" }, "Email"),
-                        React.createElement(Input, { id: "email", type: "email", placeholder: "Enter your email", value: formData.email, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { email: e.target.value })), required: true })),
-                    React.createElement("div", { className: "space-y-2" },
-                        React.createElement(Label, { htmlFor: "password" }, "Password"),
-                        React.createElement(Input, { id: "password", type: "password", placeholder: "Enter your password", value: formData.password, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { password: e.target.value })), required: true })),
-                    React.createElement("div", { className: "space-y-2" },
-                        React.createElement(Label, { htmlFor: "confirmPassword" }, "Confirm Password"),
-                        React.createElement(Input, { id: "confirmPassword", type: "password", placeholder: "Confirm your password", value: formData.confirmPassword, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { confirmPassword: e.target.value })), required: true })),
-                    React.createElement(Button, { type: "submit", className: "w-full", disabled: registerMutation.isPending }, registerMutation.isPending ? "Creating Account..." : "Sign Up")),
-                React.createElement("div", { className: "text-center" },
-                    React.createElement("div", { className: "text-sm text-gray-600" },
-                        "Already have an account?",
-                        " ",
-                        React.createElement(Link, { to: "/login", className: "text-blue-600 hover:underline", search: {
-                                redirect: "/",
-                            } }, "Sign in")))))));
+    return (_jsxs("div", { className: "min-h-screen flex items-center justify-center bg-gray-50 relative", children: [_jsx(Link, { to: "/", className: "absolute top-4 left-4", children: _jsxs(Button, { variant: "ghost", size: "sm", children: [_jsx(ArrowLeft, { className: "w-4 h-4 mr-2" }), "Back to Home"] }) }), _jsxs(Card, { className: "w-full max-w-md", children: [_jsxs(CardHeader, { className: "text-center", children: [_jsx(CardTitle, { className: "text-2xl", children: "Sign Up" }), _jsx(CardDescription, { children: "Create a new account to get started" })] }), _jsxs(CardContent, { children: [_jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [(error || registerMutation.error) && (_jsx("div", { className: "p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md", children: error ||
+                                            ((_a = registerMutation.error) === null || _a === void 0 ? void 0 : _a.message) ||
+                                            "Registration failed. Please try again." })), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "username", children: "Username" }), _jsx(Input, { id: "username", type: "text", placeholder: "Enter your username", value: formData.username, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { username: e.target.value })), required: true })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "email", children: "Email" }), _jsx(Input, { id: "email", type: "email", placeholder: "Enter your email", value: formData.email, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { email: e.target.value })), required: true })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "password", children: "Password" }), _jsx(Input, { id: "password", type: "password", placeholder: "Enter your password", value: formData.password, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { password: e.target.value })), required: true })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "confirmPassword", children: "Confirm Password" }), _jsx(Input, { id: "confirmPassword", type: "password", placeholder: "Confirm your password", value: formData.confirmPassword, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { confirmPassword: e.target.value })), required: true })] }), _jsx(Button, { type: "submit", className: "w-full", disabled: registerMutation.isPending, children: registerMutation.isPending ? "Creating Account..." : "Sign Up" })] }), _jsx("div", { className: "text-center", children: _jsxs("div", { className: "text-sm text-gray-600", children: ["Already have an account?", " ", _jsx(Link, { to: "/login", className: "text-blue-600 hover:underline", search: {
+                                                redirect: "/",
+                                            }, children: "Sign in" })] }) })] })] })] }));
 }

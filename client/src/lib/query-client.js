@@ -1,5 +1,4 @@
 import { QueryClient } from '@tanstack/react-query';
-import { ErrorHandler } from './error-handler';
 export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
@@ -13,9 +12,8 @@ export const queryClient = new QueryClient({
                 return failureCount < 3;
             },
             refetchOnWindowFocus: false,
-            onError: (error) => {
-                ErrorHandler.handle(error);
-            },
+            // onError is deprecated in newer versions of TanStack Query
+            // Use global error boundary or individual query error handling instead
         },
         mutations: {
             retry: (failureCount, error) => {
@@ -25,9 +23,7 @@ export const queryClient = new QueryClient({
                 }
                 return failureCount < 2;
             },
-            onError: (error) => {
-                ErrorHandler.handle(error);
-            },
+            // onError is deprecated in newer versions of TanStack Query
         },
     },
 });

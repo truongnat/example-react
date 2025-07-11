@@ -9,6 +9,7 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+import { jsx as _jsx } from "react/jsx-runtime";
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
@@ -38,7 +39,7 @@ const buttonVariants = cva("inline-flex items-center justify-center gap-2 whites
 const Button = React.forwardRef((_a, ref) => {
     var { className, variant, size, asChild = false } = _a, props = __rest(_a, ["className", "variant", "size", "asChild"]);
     const Comp = asChild ? Slot : "button";
-    return (React.createElement(Comp, Object.assign({ className: cn(buttonVariants({ variant, size, className })), ref: ref }, props)));
+    return (_jsx(Comp, Object.assign({ className: cn(buttonVariants({ variant, size, className })), ref: ref }, props)));
 });
 Button.displayName = "Button";
 export { Button, buttonVariants };

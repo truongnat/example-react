@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -57,26 +58,5 @@ export function CreateRoomDialog({ open, onOpenChange }) {
             form.reset();
         }
     };
-    return (React.createElement(Dialog, { open: open, onOpenChange: handleClose },
-        React.createElement(DialogContent, { className: "sm:max-w-[425px]" },
-            React.createElement(DialogHeader, null,
-                React.createElement(DialogTitle, null, "Create New Room"),
-                React.createElement(DialogDescription, null, "Create a new chat room to start conversations with your team.")),
-            React.createElement(Form, Object.assign({}, form),
-                React.createElement("form", { onSubmit: form.handleSubmit(onSubmit), className: "space-y-4" },
-                    React.createElement(FormField, { control: form.control, name: "name", render: ({ field }) => (React.createElement(FormItem, null,
-                            React.createElement(FormLabel, null, "Room Name"),
-                            React.createElement(FormControl, null,
-                                React.createElement(Input, Object.assign({ placeholder: "Enter room name..." }, field, { disabled: createRoomMutation.isPending }))),
-                            React.createElement(FormDescription, null, "Choose a descriptive name for your room."),
-                            React.createElement(FormMessage, null))) }),
-                    React.createElement(FormField, { control: form.control, name: "avatarUrl", render: ({ field }) => (React.createElement(FormItem, null,
-                            React.createElement(FormLabel, null, "Avatar URL (Optional)"),
-                            React.createElement(FormControl, null,
-                                React.createElement(Input, Object.assign({ placeholder: "https://example.com/avatar.jpg" }, field, { disabled: createRoomMutation.isPending }))),
-                            React.createElement(FormDescription, null, "Provide a URL for the room's avatar image."),
-                            React.createElement(FormMessage, null))) }),
-                    React.createElement(DialogFooter, null,
-                        React.createElement(Button, { type: "button", variant: "outline", onClick: handleClose, disabled: createRoomMutation.isPending }, "Cancel"),
-                        React.createElement(Button, { type: "submit", disabled: createRoomMutation.isPending }, createRoomMutation.isPending ? 'Creating...' : 'Create Room')))))));
+    return (_jsx(Dialog, { open: open, onOpenChange: handleClose, children: _jsxs(DialogContent, { className: "sm:max-w-[425px]", children: [_jsxs(DialogHeader, { children: [_jsx(DialogTitle, { children: "Create New Room" }), _jsx(DialogDescription, { children: "Create a new chat room to start conversations with your team." })] }), _jsx(Form, Object.assign({}, form, { children: _jsxs("form", { onSubmit: form.handleSubmit(onSubmit), className: "space-y-4", children: [_jsx(FormField, { control: form.control, name: "name", render: ({ field }) => (_jsxs(FormItem, { children: [_jsx(FormLabel, { children: "Room Name" }), _jsx(FormControl, { children: _jsx(Input, Object.assign({ placeholder: "Enter room name..." }, field, { disabled: createRoomMutation.isPending })) }), _jsx(FormDescription, { children: "Choose a descriptive name for your room." }), _jsx(FormMessage, {})] })) }), _jsx(FormField, { control: form.control, name: "avatarUrl", render: ({ field }) => (_jsxs(FormItem, { children: [_jsx(FormLabel, { children: "Avatar URL (Optional)" }), _jsx(FormControl, { children: _jsx(Input, Object.assign({ placeholder: "https://example.com/avatar.jpg" }, field, { disabled: createRoomMutation.isPending })) }), _jsx(FormDescription, { children: "Provide a URL for the room's avatar image." }), _jsx(FormMessage, {})] })) }), _jsxs(DialogFooter, { children: [_jsx(Button, { type: "button", variant: "outline", onClick: handleClose, disabled: createRoomMutation.isPending, children: "Cancel" }), _jsx(Button, { type: "submit", disabled: createRoomMutation.isPending, children: createRoomMutation.isPending ? 'Creating...' : 'Create Room' })] })] }) }))] }) }));
 }

@@ -7,8 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { createFileRoute, Link, useNavigate, useSearch } from '@tanstack/react-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -40,42 +41,5 @@ function LoginPage() {
             }
         });
     });
-    return (React.createElement("div", { className: "min-h-screen flex items-center justify-center bg-gray-50 relative" },
-        React.createElement(Link, { to: "/", className: "absolute top-4 left-4" },
-            React.createElement(Button, { variant: "ghost", size: "sm" },
-                React.createElement(ArrowLeft, { className: "w-4 h-4 mr-2" }),
-                "Back to Home")),
-        React.createElement("div", { className: "space-y-6" },
-            React.createElement(Card, { className: "w-full max-w-md bg-blue-50 border-blue-200" },
-                React.createElement(CardContent, { className: "p-4" },
-                    React.createElement("div", { className: "text-center" },
-                        React.createElement("h3", { className: "font-semibold text-blue-900 mb-2" }, "Demo Account"),
-                        React.createElement("p", { className: "text-sm text-blue-700 mb-3" }, "Use these credentials to test the application:"),
-                        React.createElement("div", { className: "bg-white p-3 rounded border text-left" },
-                            React.createElement("p", { className: "text-sm" },
-                                React.createElement("strong", null, "Email:"),
-                                " demo@example.com"),
-                            React.createElement("p", { className: "text-sm" },
-                                React.createElement("strong", null, "Password:"),
-                                " password"))))),
-            React.createElement(Card, { className: "w-full max-w-md" },
-                React.createElement(CardHeader, { className: "text-center" },
-                    React.createElement(CardTitle, { className: "text-2xl" }, "Sign In"),
-                    React.createElement(CardDescription, null, "Sign in to your account to continue")),
-                React.createElement(CardContent, null,
-                    React.createElement("form", { onSubmit: handleSubmit, className: "space-y-4" },
-                        loginMutation.error && (React.createElement("div", { className: "p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md" }, loginMutation.error.message || 'Login failed. Please try again.')),
-                        React.createElement("div", { className: "space-y-2" },
-                            React.createElement(Label, { htmlFor: "email" }, "Email"),
-                            React.createElement(Input, { id: "email", type: "email", placeholder: "demo@example.com", value: formData.email, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { email: e.target.value })), required: true })),
-                        React.createElement("div", { className: "space-y-2" },
-                            React.createElement(Label, { htmlFor: "password" }, "Password"),
-                            React.createElement(Input, { id: "password", type: "password", placeholder: "password", value: formData.password, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { password: e.target.value })), required: true })),
-                        React.createElement(Button, { type: "submit", className: "w-full", disabled: loginMutation.isPending }, loginMutation.isPending ? 'Signing In...' : 'Sign In')),
-                    React.createElement("div", { className: "text-center space-y-2" },
-                        React.createElement(Link, { to: "/forgot-password", className: "text-sm text-blue-600 hover:underline" }, "Forgot password?"),
-                        React.createElement("div", { className: "text-sm text-gray-600" },
-                            "Don't have an account?",
-                            ' ',
-                            React.createElement(Link, { to: "/register", className: "text-blue-600 hover:underline" }, "Sign up"))))))));
+    return (_jsxs("div", { className: "min-h-screen flex items-center justify-center bg-gray-50 relative", children: [_jsx(Link, { to: "/", className: "absolute top-4 left-4", children: _jsxs(Button, { variant: "ghost", size: "sm", children: [_jsx(ArrowLeft, { className: "w-4 h-4 mr-2" }), "Back to Home"] }) }), _jsxs("div", { className: "space-y-6", children: [_jsx(Card, { className: "w-full max-w-md bg-blue-50 border-blue-200", children: _jsx(CardContent, { className: "p-4", children: _jsxs("div", { className: "text-center", children: [_jsx("h3", { className: "font-semibold text-blue-900 mb-2", children: "Demo Account" }), _jsx("p", { className: "text-sm text-blue-700 mb-3", children: "Use these credentials to test the application:" }), _jsxs("div", { className: "bg-white p-3 rounded border text-left", children: [_jsxs("p", { className: "text-sm", children: [_jsx("strong", { children: "Email:" }), " demo@example.com"] }), _jsxs("p", { className: "text-sm", children: [_jsx("strong", { children: "Password:" }), " password"] })] })] }) }) }), _jsxs(Card, { className: "w-full max-w-md", children: [_jsxs(CardHeader, { className: "text-center", children: [_jsx(CardTitle, { className: "text-2xl", children: "Sign In" }), _jsx(CardDescription, { children: "Sign in to your account to continue" })] }), _jsxs(CardContent, { children: [_jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [loginMutation.error && (_jsx("div", { className: "p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md", children: loginMutation.error.message || 'Login failed. Please try again.' })), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "email", children: "Email" }), _jsx(Input, { id: "email", type: "email", placeholder: "demo@example.com", value: formData.email, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { email: e.target.value })), required: true })] }), _jsxs("div", { className: "space-y-2", children: [_jsx(Label, { htmlFor: "password", children: "Password" }), _jsx(Input, { id: "password", type: "password", placeholder: "password", value: formData.password, onChange: (e) => setFormData(Object.assign(Object.assign({}, formData), { password: e.target.value })), required: true })] }), _jsx(Button, { type: "submit", className: "w-full", disabled: loginMutation.isPending, children: loginMutation.isPending ? 'Signing In...' : 'Sign In' })] }), _jsxs("div", { className: "text-center space-y-2", children: [_jsx(Link, { to: "/forgot-password", className: "text-sm text-blue-600 hover:underline", children: "Forgot password?" }), _jsxs("div", { className: "text-sm text-gray-600", children: ["Don't have an account?", ' ', _jsx(Link, { to: "/register", className: "text-blue-600 hover:underline", children: "Sign up" })] })] })] })] })] })] }));
 }

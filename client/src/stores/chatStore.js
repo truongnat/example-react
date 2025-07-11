@@ -199,7 +199,7 @@ export const useChatStore = create()(devtools((set, get) => ({
     cleanup: () => {
         const state = get();
         // Clear all timeouts
-        Object.values(state.typingTimeouts).forEach(timeout => {
+        Object.values(state.typingTimeouts).forEach((timeout) => {
             clearTimeout(timeout);
         });
         set({

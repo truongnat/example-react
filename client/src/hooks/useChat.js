@@ -108,6 +108,7 @@ export function useInfiniteMessages(roomId, limit = 50) {
         queryKey: [...chatKeys.messages(roomId), 'infinite'],
         queryFn: ({ pageParam = 1 }) => chatService.getMessages(roomId, pageParam, limit),
         enabled: !!roomId,
+        initialPageParam: 1,
         getNextPageParam: (lastPage) => {
             if (lastPage.page < lastPage.totalPages) {
                 return lastPage.page + 1;

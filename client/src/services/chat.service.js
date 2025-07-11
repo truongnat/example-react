@@ -15,26 +15,30 @@ class ChatService {
     // Room operations
     getRooms() {
         return __awaiter(this, arguments, void 0, function* (page = 1, limit = 10) {
+            var _a;
             const response = yield httpClient.get(`${this.baseUrl}/rooms?page=${page}&limit=${limit}`);
-            return response.data.data;
+            return ((_a = response.data) === null || _a === void 0 ? void 0 : _a.data) || { rooms: [], total: 0, page: 1, limit: 10, totalPages: 0 };
         });
     }
     getRoom(roomId) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             const response = yield httpClient.get(`${this.baseUrl}/rooms/${roomId}`);
-            return response.data.data.room;
+            return ((_b = (_a = response.data) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.room) || {};
         });
     }
     createRoom(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             const response = yield httpClient.post(`${this.baseUrl}/rooms`, data);
-            return response.data.data.room;
+            return ((_b = (_a = response.data) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.room) || {};
         });
     }
     updateRoom(roomId, data) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             const response = yield httpClient.put(`${this.baseUrl}/rooms/${roomId}`, data);
-            return response.data.data.room;
+            return ((_b = (_a = response.data) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.room) || {};
         });
     }
     deleteRoom(roomId) {
@@ -44,8 +48,9 @@ class ChatService {
     }
     joinRoom(roomId) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             const response = yield httpClient.post(`${this.baseUrl}/rooms/${roomId}/join`);
-            return response.data.data.room;
+            return ((_b = (_a = response.data) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.room) || {};
         });
     }
     leaveRoom(roomId) {
@@ -56,14 +61,16 @@ class ChatService {
     // Message operations
     getMessages(roomId_1) {
         return __awaiter(this, arguments, void 0, function* (roomId, page = 1, limit = 50) {
+            var _a;
             const response = yield httpClient.get(`${this.baseUrl}/rooms/${roomId}/messages?page=${page}&limit=${limit}`);
-            return response.data.data;
+            return ((_a = response.data) === null || _a === void 0 ? void 0 : _a.data) || { messages: [], total: 0, page: 1, limit: 50, totalPages: 0 };
         });
     }
     updateMessage(roomId, messageId, data) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             const response = yield httpClient.put(`${this.baseUrl}/rooms/${roomId}/messages/${messageId}`, data);
-            return response.data.data.message;
+            return ((_b = (_a = response.data) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.message) || {};
         });
     }
     deleteMessage(roomId, messageId) {

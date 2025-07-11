@@ -1,3 +1,4 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useEffect } from 'react';
 import { Users, Settings, Phone, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -34,48 +35,16 @@ export function ChatRoom({ roomId }) {
         };
     }, [roomId, connected, setCurrentRoom, joinRoom]);
     if (roomError) {
-        return (React.createElement("div", { className: "h-full flex items-center justify-center" },
-            React.createElement("div", { className: "text-center" },
-                React.createElement("p", { className: "text-red-600 mb-2" }, "Failed to load room"),
-                React.createElement(Button, { variant: "outline", onClick: () => window.location.reload() }, "Retry"))));
+        return (_jsx("div", { className: "h-full flex items-center justify-center", children: _jsxs("div", { className: "text-center", children: [_jsx("p", { className: "text-red-600 mb-2", children: "Failed to load room" }), _jsx(Button, { variant: "outline", onClick: () => window.location.reload(), children: "Retry" })] }) }));
     }
     if (roomLoading) {
-        return (React.createElement("div", { className: "h-full flex items-center justify-center" },
-            React.createElement("div", { className: "text-gray-500" }, "Loading room...")));
+        return (_jsx("div", { className: "h-full flex items-center justify-center", children: _jsx("div", { className: "text-gray-500", children: "Loading room..." }) }));
     }
     if (!room) {
-        return (React.createElement("div", { className: "h-full flex items-center justify-center" },
-            React.createElement("div", { className: "text-gray-500" }, "Room not found")));
+        return (_jsx("div", { className: "h-full flex items-center justify-center", children: _jsx("div", { className: "text-gray-500", children: "Room not found" }) }));
     }
     const typingUsers = typingUsersByRoom[roomId] || [];
-    return (React.createElement("div", { className: "h-full flex flex-col bg-white" },
-        React.createElement("div", { className: "flex items-center justify-between p-4 border-b bg-gray-50" },
-            React.createElement("div", { className: "flex items-center gap-3" },
-                React.createElement(Avatar, { className: "w-10 h-10" },
-                    React.createElement(AvatarImage, { src: room.avatarUrl }),
-                    React.createElement(AvatarFallback, null, room.name.charAt(0).toUpperCase())),
-                React.createElement("div", null,
-                    React.createElement("h1", { className: "font-semibold text-gray-900" }, room.name),
-                    React.createElement("div", { className: "flex items-center gap-2 text-sm text-gray-500" },
-                        React.createElement(Users, { className: "w-4 h-4" }),
-                        React.createElement("span", null,
-                            room.participants.length,
-                            " members"),
-                        !connected && (React.createElement(Badge, { variant: "destructive", className: "text-xs" }, "Disconnected")),
-                        connected && (React.createElement(Badge, { variant: "secondary", className: "text-xs" }, "Online"))))),
-            React.createElement("div", { className: "flex items-center gap-2" },
-                React.createElement(Button, { size: "sm", variant: "ghost", className: "h-8 w-8 p-0" },
-                    React.createElement(Phone, { className: "w-4 h-4" })),
-                React.createElement(Button, { size: "sm", variant: "ghost", className: "h-8 w-8 p-0" },
-                    React.createElement(Video, { className: "w-4 h-4" })),
-                React.createElement(Button, { size: "sm", variant: "ghost", className: "h-8 w-8 p-0" },
-                    React.createElement(Settings, { className: "w-4 h-4" })))),
-        !connected && (React.createElement("div", { className: "bg-yellow-50 border-b border-yellow-200 px-4 py-2" },
-            React.createElement("div", { className: "flex items-center gap-2 text-sm text-yellow-800" },
-                React.createElement("div", { className: "w-2 h-2 bg-yellow-500 rounded-full animate-pulse" }),
-                React.createElement("span", null, "Reconnecting to chat...")))),
-        React.createElement(MessageList, { roomId: roomId, messages: combinedMessages, isLoading: messagesLoading || isFetchingNextPage, hasNextPage: hasNextPage, onLoadMore: () => fetchNextPage() }),
-        React.createElement(MessageInput, { roomId: roomId, disabled: !connected, placeholder: connected
-                ? "Type a message..."
-                : "Connecting to chat..." })));
+    return (_jsxs("div", { className: "h-full flex flex-col bg-white", children: [_jsxs("div", { className: "flex items-center justify-between p-4 border-b bg-gray-50", children: [_jsxs("div", { className: "flex items-center gap-3", children: [_jsxs(Avatar, { className: "w-10 h-10", children: [_jsx(AvatarImage, { src: room.avatarUrl }), _jsx(AvatarFallback, { children: room.name.charAt(0).toUpperCase() })] }), _jsxs("div", { children: [_jsx("h1", { className: "font-semibold text-gray-900", children: room.name }), _jsxs("div", { className: "flex items-center gap-2 text-sm text-gray-500", children: [_jsx(Users, { className: "w-4 h-4" }), _jsxs("span", { children: [room.participants.length, " members"] }), !connected && (_jsx(Badge, { variant: "destructive", className: "text-xs", children: "Disconnected" })), connected && (_jsx(Badge, { variant: "secondary", className: "text-xs", children: "Online" }))] })] })] }), _jsxs("div", { className: "flex items-center gap-2", children: [_jsx(Button, { size: "sm", variant: "ghost", className: "h-8 w-8 p-0", children: _jsx(Phone, { className: "w-4 h-4" }) }), _jsx(Button, { size: "sm", variant: "ghost", className: "h-8 w-8 p-0", children: _jsx(Video, { className: "w-4 h-4" }) }), _jsx(Button, { size: "sm", variant: "ghost", className: "h-8 w-8 p-0", children: _jsx(Settings, { className: "w-4 h-4" }) })] })] }), !connected && (_jsx("div", { className: "bg-yellow-50 border-b border-yellow-200 px-4 py-2", children: _jsxs("div", { className: "flex items-center gap-2 text-sm text-yellow-800", children: [_jsx("div", { className: "w-2 h-2 bg-yellow-500 rounded-full animate-pulse" }), _jsx("span", { children: "Reconnecting to chat..." })] }) })), _jsx(MessageList, { roomId: roomId, messages: combinedMessages, isLoading: messagesLoading || isFetchingNextPage, hasNextPage: hasNextPage, onLoadMore: () => fetchNextPage() }), _jsx(MessageInput, { roomId: roomId, disabled: !connected, placeholder: connected
+                    ? "Type a message..."
+                    : "Connecting to chat..." })] }));
 }
