@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import path from "path"
+import { fileURLToPath } from 'node:url'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import tailwindcss from '@tailwindcss/vite'
 
@@ -57,11 +58,25 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "./src"),
+      "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "./src"),
     }
   },
   server: {
     open: false,
-    port: 5173
+    port: parseInt(process.env.VITE_CLIENT_PORT || '5173'),
+    proxy: {
+      '/api': {
+        target: `http://localhost:${process.env.VITE_SERVER_PORT || '8080'}`,
+        changeOrigin: true,
+        secure: false,
+        ws: true, // Enable WebSocket proxying for Socket.IO
+      },
+      '/socket.io': {
+        target: `http://localhost:${process.env.VITE_SERVER_PORT || '8080'}`,
+        changeOrigin: true,
+        secure: false,
+        ws: true, // WebSocket support for Socket.IO
+      }
+    }
   }
 })

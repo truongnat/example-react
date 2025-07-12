@@ -2,11 +2,11 @@
   "name": "example-server-ts",
   "version": "1.0.0",
   "description": "Clean Architecture Backend with TypeScript",
-  "main": "dist/main.js",
+  "main": "dist/src/main.js",
   "scripts": {
     "build": "tsc && tsc-alias",
     "dev": "nodemon --exec ts-node src/main.ts",
-    "start": "node dist/main.js",
+    "start": "node dist/src/main.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -76,5 +76,8 @@
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-darwin-x64": "^4.45.0"
   }
 }

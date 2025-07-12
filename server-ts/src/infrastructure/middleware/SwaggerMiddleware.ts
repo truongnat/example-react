@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, RequestHandler } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from '@infrastructure/config/swagger.config';
 
 export class SwaggerMiddleware {
-  static serve = swaggerUi.serve;
+  static serve: RequestHandler[] = swaggerUi.serve;
 
-  static setup = swaggerUi.setup(swaggerSpec, {
+  static setup: RequestHandler = swaggerUi.setup(swaggerSpec, {
     explorer: true,
     customCss: `
       .swagger-ui .topbar { display: none }
@@ -24,16 +24,16 @@ export class SwaggerMiddleware {
     },
   });
 
-  static redirectToDocs = (req: Request, res: Response): void => {
+  static redirectToDocs = (_req: Request, res: Response): void => {
     res.redirect('/api-docs');
   };
 
-  static serveSpec = (req: Request, res: Response): void => {
+  static serveSpec = (_req: Request, res: Response): void => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   };
 
-  static healthCheck = (req: Request, res: Response): void => {
+  static healthCheck = (_req: Request, res: Response): void => {
     res.json({
       success: true,
       data: {

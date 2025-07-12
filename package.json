@@ -1,10 +1,7 @@
 {
   "name": "example-react-monorepo",
   "version": "1.0.0",
-  "author": "",
-  "devDependencies": {
-    "concurrently": "latest"
-  },
+  "author": "truongdq.dev",
   "description": "MERN Stack monorepo with Bun package management",
   "engines": {
     "bun": ">=1.0.0"
@@ -21,23 +18,17 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "update-to-latest": "bun update-to-latest.js",
-    "setup:monorepo": "bun setup-structure.js monorepo",
-    "setup:separate": "bun setup-structure.js separate",
-    "dev": "concurrently \"cd client && bun run dev\" \"cd server-ts && bun run dev\"",
-    "dev:client": "bun --prefix client run dev",
-    "dev:server": "bun --prefix server-ts run dev",
-    "build": "bun --prefix client run build",
-    "start": "bun --prefix server-ts run start",
-    "test": "bun --prefix client run test",
-    "clean": "rm -rf client/node_modules server-ts/node_modules node_modules client/bun.lock server-ts/bun.lock bun.lock"
+    "setup": "node scripts/install.js",
+    "dev": "node scripts/dev.js",
+    "test": "node scripts/test.js",
+    "build": "node scripts/build.js",
+    "start": "node scripts/start.js",
+    "deploy": "node scripts/deploy.js",
+    "clean": "node scripts/clean.js",
+    "pm": "node scripts/package-manager.js",
+    "pm:list": "node scripts/package-manager.js list",
+    "pm:switch": "node scripts/package-manager.js switch",
+    "pm:clean": "node scripts/package-manager.js clean"
   },
-  "type": "module",
-  "workspaces": [
-    "client",
-    "server-ts"
-  ],
-  "dependencies": {
-    "@rollup/rollup-darwin-x64": "^4.44.2"
-  }
+  "type": "module"
 }

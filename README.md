@@ -1,350 +1,228 @@
 
-<p  align="center">
+# MERN Stack Monorepo
 
-<a>
-
-<img  src="./client/public/logo-mern.png"  width="320"  alt="Server API Logo" />
-
-</a>
-
+<p align="center">
+  <img src="./client/public/logo-mern.png" width="320" alt="MERN Stack Logo" />
 </p>
 
-<p  align="center">Mern Stack.</p>
-
+<p align="center">Modern MERN Stack application with TypeScript</p>
 
 ## Description
 
-- Learning concept [ReactJS](https://reactjs.org/docs/getting-started.html) framework development by Facebook.
+A full-stack MERN application featuring a React frontend and Express.js backend with clean architecture.
 
-- Learning ecosystem for ReactJS, example : [react-router-dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/), [Chakra UI](https://chakra-ui.com/).
-
-- Implement project example with [CRA](https://create-react-app.dev/).
-
-- Build project and implement with SPA or SSR.
-
-- Deploy source to hosting.
-
-
+**Tech Stack:**
+- **Frontend**: React 19 + TypeScript + Vite + TanStack Router + TailwindCSS
+- **Backend**: Node.js + Express + TypeScript + SQLite + TypeORM
+- **Package Manager**: Bun for fast dependency management
+- **Testing**: Jest + Vitest
+- **Deployment**: Docker + Docker Compose
 
 ## Features
 
 ### Authentication System
-- ✅ **Sign in/Sign up** - Complete user authentication
-- ✅ **Auto remember login** - Persistent sessions with JWT tokens
-- ✅ **Forgot password** - Password recovery via email
-- ✅ **Email verification** - OTP verification system
-- ✅ **Profile management** - Update username, avatar, and profile information
-- ✅ **Password management** - Change password functionality
+- ✅ User registration and login
+- ✅ JWT-based authentication with refresh tokens
+- ✅ Password recovery and email verification
+- ✅ Profile management (username, avatar updates)
 
 ### Todo Management
-- ✅ **CRUD operations** - Create, read, update, delete todos
-- ✅ **Quick status updates** - Dropdown select for todo status (Initial, In Progress, Completed, Cancelled)
-- ✅ **Inline editing** - Click-to-edit todo titles with validation
-- ✅ **Real-time updates** - Instant UI updates with optimistic updates
-- ✅ **Filtering & sorting** - Filter by status and sort by various criteria
-
-### User Interface
-- ✅ **Modern UI** - Built with Tailwind CSS and shadcn/ui components
-- ✅ **Responsive design** - Mobile-friendly interface
-- ✅ **Loading states** - Proper loading indicators and error handling
-- ✅ **Form validation** - Client-side and server-side validation
+- ✅ Full CRUD operations for todos
+- ✅ Status management (Initial, In Progress, Completed, Cancelled)
+- ✅ Inline editing with validation
+- ✅ Real-time updates with optimistic UI
 
 ### Technical Features
-- ✅ **Server-Side Rendering (SSR)** - Full SSR implementation with Express.js
-- ✅ **Real-time chat** - WebSocket-based chat system
-- ✅ **API documentation** - Swagger/OpenAPI documentation
-- ✅ **Type safety** - Full TypeScript implementation
-- ✅ **Testing** - Unit tests for both frontend and backend
-
-### Coming Soon
-- 🔄 **Search friends** - Find and connect with other users
-- 🔄 **Friend requests** - Send and manage friend requests
-- 🔄 **Advanced chat features** - File sharing, message reactions
+- ✅ Server-Side Rendering (SSR)
+- ✅ Real-time chat with WebSocket
+- ✅ API documentation with Swagger
+- ✅ Full TypeScript implementation
+- ✅ Comprehensive test coverage
 
 ## Prerequisites
 
-- **Node.js** >= 18.0.0 ([Download Node.js](https://nodejs.org/en/))
+- **Node.js** >= 18.0.0
 - **Bun** package manager ([Install Bun](https://bun.sh/))
 - **Git** for version control
-- **IDE**: [Visual Studio Code](https://code.visualstudio.com/) (recommended) or [WebStorm](https://www.jetbrains.com/webstorm/)
+
+## 🚀 Quick Setup
+
+```bash
+# 1. Clone repository
+git clone <repository-url>
+cd example-react
+
+# 2. Install dependencies
+bun run setup
+
+# 3. Create environment file
+cat > server-ts/.env << EOF
+NODE_ENV=development
+PORT=3000
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production
+DATABASE_URL=sqlite:./data/database.sqlite
+EOF
+
+# 4. Start development
+bun run dev
+```
 
 ## Project Structure
 
 ```
 example-react/
-├── client/                 # React frontend application
+├── client/                 # React frontend
 │   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── routes/         # Page components and routing
-│   │   ├── hooks/          # Custom React hooks
-│   │   ├── services/       # API service layer
-│   │   ├── stores/         # State management (Zustand)
-│   │   └── types/          # TypeScript type definitions
+│   │   ├── components/     # UI components
+│   │   ├── routes/         # Page routing
+│   │   ├── hooks/          # Custom hooks
+│   │   ├── services/       # API services
+│   │   └── stores/         # State management
 │   └── package.json
-├── server-ts/              # Node.js backend API
+├── server-ts/              # Express backend
 │   ├── src/
-│   │   ├── application/    # Use cases and DTOs
-│   │   ├── domain/         # Domain entities and repositories
-│   │   ├── infrastructure/ # Database and external services
-│   │   ├── presentation/   # Controllers and routes
-│   │   └── shared/         # Shared utilities and types
+│   │   ├── application/    # Use cases
+│   │   ├── domain/         # Entities
+│   │   ├── infrastructure/ # Database
+│   │   └── presentation/   # Controllers
 │   └── package.json
-└── package.json           # Root package.json for workspace
+├── scripts/                # Build scripts
+└── package.json           # Root workspace
 ```
 
+## Development
 
-
-## Quick Start
-
-### 1. Clone the repository
+### Start Development Servers
 ```bash
-git clone <repository-url>
-cd example-react
-```
-
-### 2. Install dependencies
-```bash
-# Install all dependencies (root, client, and server)
-bun install
-```
-
-### 3. Environment Setup
-
-**Server Environment:**
-```bash
-cd server-ts
-cp .env.example .env
-# Edit .env file with your configuration
-```
-
-**Client Environment:**
-```bash
-cd client
-cp .env.example .env
-# Edit .env file with your API URL
-```
-
-### 4. Development Mode
-
-**Option A: Run both client and server concurrently**
-```bash
-# From root directory
 bun run dev
 ```
+- Client: http://localhost:5173
+- Server: http://localhost:3000
 
-**Option B: Run separately**
-
-*Run client only:*
+### Run Tests
 ```bash
-cd client
-bun run dev
-# Client runs on http://localhost:5173
+bun run test
 ```
 
-*Run server only:*
+### Build for Production
 ```bash
-cd server-ts
-bun run dev
-# Server runs on http://localhost:3000
-```
-
-### 5. Production Build
-
-**Build client:**
-```bash
-cd client
 bun run build
 ```
 
-**Build server:**
+### Start Production Server
 ```bash
-cd server-ts
-bun run build
-```
-
-### 6. Server-Side Rendering (SSR)
-
-To run the application with SSR:
-```bash
-# Build and setup SSR
-./ssr.sh
-
-# Start SSR server
-cd server-ts
 bun run start
-# Application runs on http://localhost:8080
 ```
+
+## Available Scripts
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| **Setup** | `bun run setup` | Install all dependencies |
+| **Development** | `bun run dev` | Start development servers |
+| **Test** | `bun run test` | Run all tests |
+| **Build** | `bun run build` | Build for production |
+| **Start** | `bun run start` | Start production server |
+| **Deploy** | `bun run deploy` | Build and test for deployment |
+| **Clean** | `bun run clean` | Clean build artifacts |
 
 ## API Documentation
 
-When the server is running, you can access:
-
-- **API Documentation**: http://localhost:3000/api-docs (Swagger UI)
+When the server is running:
+- **API Docs**: http://localhost:3000/api-docs
 - **Health Check**: http://localhost:3000/health
-- **API Base URL**: http://localhost:3000/api
 
-### Key API Endpoints
+### Key Endpoints
 
 **Authentication:**
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
 - `GET /api/auth/me` - Get current user
-- `PUT /api/auth/profile` - Update user profile
-- `POST /api/auth/refresh` - Refresh JWT token
+- `PUT /api/auth/profile` - Update profile
 
 **Todos:**
-- `GET /api/todos` - Get user todos (with filtering and pagination)
-- `POST /api/todos` - Create new todo
+- `GET /api/todos` - Get todos
+- `POST /api/todos` - Create todo
 - `PUT /api/todos/:id` - Update todo
-- `PUT /api/todos/:id/status` - Update todo status
 - `DELETE /api/todos/:id` - Delete todo
 
 **Chat:**
 - `GET /api/chat/rooms` - Get chat rooms
-- `POST /api/chat/rooms` - Create chat room
-- `GET /api/chat/rooms/:id/messages` - Get room messages
-- WebSocket connection for real-time messaging
+- `POST /api/chat/rooms` - Create room
+- WebSocket for real-time messaging
 
 ## Testing
 
-**Run client tests:**
 ```bash
-cd client
+# Run all tests
 bun run test
-```
 
-**Run server tests:**
-```bash
-cd server-ts
-bun run test
+# Individual package tests
+cd client && bun run test
+cd server-ts && bun run test
+
+# Watch mode
+cd client && bun run test --watch
+cd server-ts && bun run test:watch
 ```
 
 ## Technology Stack
 
-### Frontend
-- **React 19** - UI library
-- **TypeScript** - Type safety
-- **TanStack Router** - File-based routing
-- **TanStack Query** - Data fetching and caching
-- **Zustand** - State management
-- **Tailwind CSS** - Styling
-- **shadcn/ui** - UI components
-- **Vite** - Build tool
+**Frontend:**
+- React 19 + TypeScript
+- TanStack Router + Query
+- Zustand (state management)
+- Tailwind CSS + shadcn/ui
+- Vite (build tool)
 
-### Backend
-- **Node.js** - Runtime
-- **Express.js** - Web framework
-- **TypeScript** - Type safety
-- **SQLite** - Database
-- **TypeORM** - ORM
-- **JWT** - Authentication
-- **Socket.io** - Real-time communication
-- **Swagger** - API documentation
-- **Jest/Vitest** - Testing
-
-## Recent Updates
-
-### Todo Management Improvements
-- ✅ **Status dropdown**: Replaced checkbox with select dropdown for better status management
-- ✅ **Inline editing**: Click-to-edit todo titles with validation
-- ✅ **Real-time updates**: Optimistic updates for better UX
-
-### Profile Management
-- ✅ **Username updates**: Change username with validation
-- ✅ **Avatar management**: Update profile avatar via URL
-- ✅ **Form validation**: Client and server-side validation
-
-### Server-Side Rendering
-- ✅ **Full SSR support**: Complete SSR implementation
-- ✅ **Build automation**: Automated build and deployment script
-- ✅ **Production ready**: Optimized for production deployment
-
-### Code Quality
-- ✅ **Test coverage**: Unit tests for critical functionality
-- ✅ **Code cleanup**: Removed unused development files
-- ✅ **Documentation**: Updated README and API docs
+**Backend:**
+- Node.js + Express + TypeScript
+- SQLite + TypeORM
+- JWT authentication
+- Socket.io (real-time)
+- Swagger (API docs)
 
 ## Deployment
 
-### Frontend Deployment (Vercel)
-
-1. **Login to Vercel**: [https://vercel.com/login](https://vercel.com/login)
-2. **Create new project**: Import repository from GitHub
-3. **Configure build settings**:
-   - Root Directory: `./client`
-   - Build Command: `bun run build`
-   - Output Directory: `dist`
-4. **Environment Variables**: Set the following:
-   ```
-   VITE_API_BASE_URL=https://your-backend-url.com/api
-   VITE_WS_URL=https://your-backend-url.com
-   ```
-5. **Deploy**: Vercel will automatically build and deploy
-
-### Backend Deployment (Railway/Heroku)
-
-**Using Railway (Recommended):**
-1. **Login to Railway**: [https://railway.app](https://railway.app)
-2. **Create new project**: Connect GitHub repository
-3. **Configure settings**:
-   - Root Directory: `./server-ts`
-   - Build Command: `bun run build`
-   - Start Command: `bun run start`
-4. **Environment Variables**: Set production environment variables
-5. **Deploy**: Railway will handle the deployment
-
-**Using Heroku:**
+### Using Docker
 ```bash
-# Install Heroku CLI
-npm install -g heroku
+# Build and run with Docker Compose
+docker-compose up --build
 
-# Login to Heroku
-heroku login
-
-# Create new app
-heroku create your-app-name
-
-# Set buildpack for monorepo
-heroku buildpacks:set https://github.com/timanovsky/subdir-heroku-buildpack
-heroku config:set PROJECT_PATH=server-ts
-
-# Deploy
-git push heroku main
+# Production deployment
+docker-compose -f docker-compose.prod.yml up --build
 ```
 
-### SSR Deployment
-
-For SSR deployment, use the provided script:
+### Manual Deployment
 ```bash
-# Build and setup SSR
-./ssr.sh
+# Build for production
+bun run build
 
-# Deploy the server-ts directory with build files included
+# Start production server
+bun run start
 ```
 
 ## Contributing
 
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Commit your changes**: `git commit -m 'Add amazing feature'`
-4. **Push to the branch**: `git push origin feature/amazing-feature`
-5. **Open a Pull Request**
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
 ### Development Guidelines
-
 - Follow TypeScript best practices
 - Write tests for new features
 - Update documentation as needed
-- Follow the existing code style
 - Use conventional commits
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Support
 
-If you find this project helpful, please consider giving it a ⭐ on GitHub!
+If you find this project helpful, please give it a ⭐ on GitHub!
 
-For questions or support, please open an issue on GitHub.
+For questions or support, please open an issue.

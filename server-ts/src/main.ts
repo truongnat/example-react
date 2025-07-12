@@ -63,8 +63,11 @@ class AppServer {
       // Setup Socket.IO
       this.setupSocket();
 
-      // Setup SSR if enabled
-      if (process.env.IS_SSR === 'true') {
+      // Setup SSR if enabled (only in production or explicitly enabled)
+      const shouldEnableSSR = process.env.IS_SSR === 'true' ||
+                              (process.env.NODE_ENV === 'production' && process.env.IS_SSR !== 'false');
+
+      if (shouldEnableSSR) {
         this.setupSSR();
       }
 
@@ -187,13 +190,17 @@ class AppServer {
     try {
       await this.initialize();
 
+      // Check if SSR should be enabled
+      const shouldEnableSSR = process.env.IS_SSR === 'true' ||
+                              (process.env.NODE_ENV === 'production' && process.env.IS_SSR !== 'false');
+
       const server = this.server.listen(this.port, () => {
         console.log(`🚀 Server started on port ${this.port}`);
         console.log(`📊 Health check: http://localhost:${this.port}/health`);
         console.log(`🔗 API: http://localhost:${this.port}/api`);
         console.log(`📚 API Documentation: http://localhost:${this.port}/api-docs`);
 
-        if (process.env.IS_SSR === 'true') {
+        if (shouldEnableSSR) {
           console.log(`🌐 SSR: http://localhost:${this.port}`);
         }
       });

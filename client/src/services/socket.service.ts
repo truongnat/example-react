@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '@/stores/authStore';
+import { config } from '@/lib/config';
 
 export interface MessageData {
   id: string;
@@ -107,7 +108,7 @@ class SocketService {
         }
 
         // Create socket connection
-        this.socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
+        this.socket = io(config.socketUrl, {
           auth: {
             token: token
           },
@@ -298,7 +299,7 @@ class SocketService {
 
       // Use httpClient's built-in refresh mechanism
       // This will automatically update tokens in storage
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/refresh`, {
+      const response = await fetch(`${config.socketUrl}/api/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
