@@ -19,10 +19,14 @@ import { RegisterUseCase } from '@application/use-cases/auth/RegisterUseCase';
 import { LoginUseCase } from '@application/use-cases/auth/LoginUseCase';
 import { LogoutUseCase } from '@application/use-cases/auth/LogoutUseCase';
 import { GetUserUseCase } from '@application/use-cases/auth/GetUserUseCase';
+import { UpdateUserUseCase } from '@application/use-cases/auth/UpdateUserUseCase';
 import { RefreshTokenUseCase } from '@application/use-cases/auth/RefreshTokenUseCase';
 import { SearchUsersUseCase } from '@application/use-cases/user/SearchUsersUseCase';
 import { CreateTodoUseCase } from '@application/use-cases/todo/CreateTodoUseCase';
 import { GetTodosUseCase } from '@application/use-cases/todo/GetTodosUseCase';
+import { UpdateTodoUseCase } from '@application/use-cases/todo/UpdateTodoUseCase';
+import { UpdateTodoStatusUseCase } from '@application/use-cases/todo/UpdateTodoStatusUseCase';
+import { DeleteTodoUseCase } from '@application/use-cases/todo/DeleteTodoUseCase';
 
 // Presentation
 import { AuthController } from '@presentation/controllers/AuthController';
@@ -79,10 +83,14 @@ export class DependencyContainer {
   private _loginUseCase!: LoginUseCase;
   private _logoutUseCase!: LogoutUseCase;
   private _getUserUseCase!: GetUserUseCase;
+  private _updateUserUseCase!: UpdateUserUseCase;
   private _refreshTokenUseCase!: RefreshTokenUseCase;
   private _searchUsersUseCase!: SearchUsersUseCase;
   private _createTodoUseCase!: CreateTodoUseCase;
   private _getTodosUseCase!: GetTodosUseCase;
+  private _updateTodoUseCase!: UpdateTodoUseCase;
+  private _updateTodoStatusUseCase!: UpdateTodoStatusUseCase;
+  private _deleteTodoUseCase!: DeleteTodoUseCase;
 
   // Chat use cases
   private _createRoomUseCase!: CreateRoomUseCase;
@@ -160,10 +168,14 @@ export class DependencyContainer {
       this._socketService
     );
     this._getUserUseCase = new GetUserUseCase(this._userRepository);
+    this._updateUserUseCase = new UpdateUserUseCase(this._userRepository);
     this._refreshTokenUseCase = new RefreshTokenUseCase(this._tokenService, this._userRepository);
     this._searchUsersUseCase = new SearchUsersUseCase(this._userRepository);
     this._createTodoUseCase = new CreateTodoUseCase(this._todoRepository);
     this._getTodosUseCase = new GetTodosUseCase(this._todoRepository);
+    this._updateTodoUseCase = new UpdateTodoUseCase(this._todoRepository);
+    this._updateTodoStatusUseCase = new UpdateTodoStatusUseCase(this._todoRepository);
+    this._deleteTodoUseCase = new DeleteTodoUseCase(this._todoRepository);
 
     // Initialize chat use cases
     this._createRoomUseCase = new CreateRoomUseCase(this._roomRepository);
@@ -187,11 +199,16 @@ export class DependencyContainer {
       this._loginUseCase,
       this._logoutUseCase,
       this._getUserUseCase,
+      this._updateUserUseCase,
       this._refreshTokenUseCase
     );
     this._todoController = new TodoController(
       this._createTodoUseCase,
-      this._getTodosUseCase
+      this._getTodosUseCase,
+      this._updateTodoUseCase,
+      this._updateTodoStatusUseCase,
+      this._deleteTodoUseCase,
+      this._todoRepository
     );
 
     this._userController = new UserController(

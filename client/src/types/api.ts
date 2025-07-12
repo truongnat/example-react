@@ -45,6 +45,15 @@ export interface ChangePasswordRequestDto {
   newPassword: string
 }
 
+export interface UpdateProfileRequestDto {
+  username?: string
+  avatarUrl?: string
+}
+
+export interface UpdateProfileResponseDto {
+  user: UserProfileDto
+}
+
 export interface AuthTokensDto {
   accessToken: string
   refreshToken: string

@@ -113,7 +113,7 @@ export class TodoRoutes {
     this.router.get(
       '/:id',
       [
-        param('id').isUUID().withMessage('Invalid todo ID'),
+        param('id').notEmpty().withMessage('Todo ID is required'),
       ],
       ValidationMiddleware.handleValidationErrors,
       this.todoController.getById
@@ -195,7 +195,7 @@ export class TodoRoutes {
     this.router.put(
       '/:id',
       [
-        param('id').isUUID().withMessage('Invalid todo ID'),
+        param('id').notEmpty().withMessage('Todo ID is required'),
         body('title').optional().trim().isLength({ min: 1, max: 200 }).withMessage('Title must be between 1 and 200 characters'),
         body('content').optional().trim().isLength({ min: 1, max: 2000 }).withMessage('Content must be between 1 and 2000 characters'),
       ],
@@ -207,7 +207,7 @@ export class TodoRoutes {
     this.router.put(
       '/:id/status',
       [
-        param('id').isUUID().withMessage('Invalid todo ID'),
+        param('id').notEmpty().withMessage('Todo ID is required'),
         body('status').isIn(TODO_STATUS_ARRAY).withMessage('Invalid status'),
       ],
       ValidationMiddleware.handleValidationErrors,
@@ -218,7 +218,7 @@ export class TodoRoutes {
     this.router.delete(
       '/:id',
       [
-        param('id').isUUID().withMessage('Invalid todo ID'),
+        param('id').notEmpty().withMessage('Todo ID is required'),
       ],
       ValidationMiddleware.handleValidationErrors,
       this.todoController.delete

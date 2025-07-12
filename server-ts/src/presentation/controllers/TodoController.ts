@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateTodoUseCase } from '@application/use-cases/todo/CreateTodoUseCase';
 import { GetTodosUseCase } from '@application/use-cases/todo/GetTodosUseCase';
+import { UpdateTodoUseCase } from '@application/use-cases/todo/UpdateTodoUseCase';
+import { UpdateTodoStatusUseCase } from '@application/use-cases/todo/UpdateTodoStatusUseCase';
+import { DeleteTodoUseCase } from '@application/use-cases/todo/DeleteTodoUseCase';
+import { ITodoRepository } from '@domain/repositories/ITodoRepository';
+import { ForbiddenException } from '@shared/exceptions';
 import { CreateTodoRequestDto, GetTodosRequestDto, UpdateTodoRequestDto, UpdateTodoStatusRequestDto } from '@application/dtos/todo.dto';
 import { ApiResponse } from '@shared/types/common.types';
 import { HTTP_STATUS } from '@shared/constants';
@@ -9,7 +14,11 @@ import { NotFoundException } from '@shared/exceptions';
 export class TodoController {
   constructor(
     private readonly createTodoUseCase: CreateTodoUseCase,
-    private readonly getTodosUseCase: GetTodosUseCase
+    private readonly getTodosUseCase: GetTodosUseCase,
+    private readonly updateTodoUseCase: UpdateTodoUseCase,
+    private readonly updateTodoStatusUseCase: UpdateTodoStatusUseCase,
+    private readonly deleteTodoUseCase: DeleteTodoUseCase,
+    private readonly todoRepository: ITodoRepository
   ) {}
 
   create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -61,12 +70,24 @@ export class TodoController {
       const todoId = req.params.id;
       const userId = req.user!.id;
 
-      // This would need a GetTodoByIdUseCase implementation
-      // For now, we'll return a placeholder response
-      
+      if (!todoId) {
+        throw new NotFoundException('Todo ID is required');
+      }
+
+      // Find todo
+      const todo = await this.todoRepository.findById(todoId);
+      if (!todo) {
+        throw new NotFoundException('Todo not found');
+      }
+
+      // Check if user owns this todo
+      if (!todo.isOwnedBy(userId)) {
+        throw new ForbiddenException('You can only access your own todos');
+      }
+
       const response: ApiResponse = {
         success: true,
-        data: { id: todoId, userId },
+        data: { todo: todo.toJSON() },
         message: 'Todo retrieved successfully',
       };
 
@@ -82,12 +103,15 @@ export class TodoController {
       const requestDto: UpdateTodoRequestDto = req.body;
       const userId = req.user!.id;
 
-      // This would need an UpdateTodoUseCase implementation
-      // For now, we'll return a placeholder response
+      if (!todoId) {
+        throw new NotFoundException('Todo ID is required');
+      }
+
+      const result = await this.updateTodoUseCase.execute(todoId, requestDto, userId);
 
       const response: ApiResponse = {
         success: true,
-        data: { id: todoId, ...requestDto, userId },
+        data: result,
         message: 'Todo updated successfully',
       };
 
@@ -100,15 +124,18 @@ export class TodoController {
   updateStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const todoId = req.params.id;
-      const { status } = req.body;
+      const requestDto: UpdateTodoStatusRequestDto = req.body;
       const userId = req.user!.id;
 
-      // This would need an UpdateTodoStatusUseCase implementation
-      // For now, we'll return a placeholder response
+      if (!todoId) {
+        throw new NotFoundException('Todo ID is required');
+      }
+
+      const result = await this.updateTodoStatusUseCase.execute(todoId, requestDto, userId);
 
       const response: ApiResponse = {
         success: true,
-        data: { id: todoId, status, userId },
+        data: result,
         message: 'Todo status updated successfully',
       };
 
@@ -123,9 +150,12 @@ export class TodoController {
       const todoId = req.params.id;
       const userId = req.user!.id;
 
-      // This would need a DeleteTodoUseCase implementation
-      // For now, we'll return a placeholder response
-      
+      if (!todoId) {
+        throw new NotFoundException('Todo ID is required');
+      }
+
+      await this.deleteTodoUseCase.execute(todoId, userId);
+
       const response: ApiResponse = {
         success: true,
         message: 'Todo deleted successfully',

@@ -3,12 +3,11 @@ import React, { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Navigation } from '@/components/Navigation'
 import { useAuthStore } from '@/stores/authStore'
-import { useTodos, useCreateTodo, useUpdateTodoStatus, useDeleteTodo } from '@/hooks/useTodos'
+import { useTodos, useCreateTodo, useUpdateTodo, useUpdateTodoStatus, useDeleteTodo } from '@/hooks/useTodos'
 import { TodoStatus } from '@/types/api'
-import { Loader2, Trash2, Edit, Plus, CheckCircle } from 'lucide-react'
+import { Loader2, Trash2, Edit, Plus, CheckCircle, Check, X } from 'lucide-react'
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading'
 
 export const Route = createFileRoute('/todo')({
@@ -35,6 +34,8 @@ function TodoPage() {
   const [statusFilter, setStatusFilter] = useState<TodoStatus | undefined>(undefined)
   const [sortBy, setSortBy] = useState<'createdAt' | 'title' | 'status'>('createdAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [editingTodo, setEditingTodo] = useState<string | null>(null)
+  const [editingTitle, setEditingTitle] = useState('')
 
   // Memoize params to prevent unnecessary refetches
   const todosParams = useMemo(() => ({
@@ -47,6 +48,7 @@ function TodoPage() {
   // React Query hooks
   const { data: todosData, isLoading, error, refetch } = useTodos(todosParams)
   const createTodoMutation = useCreateTodo()
+  const updateTodoMutation = useUpdateTodo()
   const updateStatusMutation = useUpdateTodoStatus()
   const deleteTodoMutation = useDeleteTodo()
 
@@ -91,9 +93,35 @@ function TodoPage() {
     })
   }
 
-  const handleToggleStatus = (todoId: string, currentStatus: string) => {
-    const newStatus = currentStatus === TodoStatus.COMPLETED ? TodoStatus.INITIAL : TodoStatus.COMPLETED
+  const handleStatusChange = (todoId: string, newStatus: TodoStatus) => {
     updateStatusMutation.mutate({ id: todoId, data: { status: newStatus } })
+  }
+
+  const handleStartEdit = (todoId: string, currentTitle: string) => {
+    setEditingTodo(todoId)
+    setEditingTitle(currentTitle)
+  }
+
+  const handleSaveEdit = (todoId: string) => {
+    if (editingTitle.trim() && editingTitle.trim() !== '') {
+      updateTodoMutation.mutate({
+        id: todoId,
+        data: { title: editingTitle.trim() }
+      }, {
+        onSuccess: () => {
+          setEditingTodo(null)
+          setEditingTitle('')
+        },
+        onError: (error: any) => {
+          console.error('Failed to update todo title:', error)
+        }
+      })
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingTodo(null)
+    setEditingTitle('')
   }
 
   const handleDeleteTodo = (todoId: string) => {
@@ -214,23 +242,65 @@ function TodoPage() {
               <div className="space-y-3">
                 {todosData.todos.map((todo) => (
                   <div key={todo.id} className="flex items-center space-x-3 p-3 border rounded-lg">
-                    <Checkbox
-                      id={`task-${todo.id}`}
-                      checked={todo.status === TodoStatus.COMPLETED}
-                      onCheckedChange={() => handleToggleStatus(todo.id, todo.status)}
+                    {/* Status Select */}
+                    <select
+                      value={todo.status}
+                      onChange={(e) => handleStatusChange(todo.id, e.target.value as TodoStatus)}
                       disabled={updateStatusMutation.isPending}
-                    />
+                      className="px-2 py-1 border rounded text-xs min-w-[100px]"
+                    >
+                      <option value={TodoStatus.INITIAL}>Initial</option>
+                      <option value={TodoStatus.IN_PROGRESS}>In Progress</option>
+                      <option value={TodoStatus.COMPLETED}>Completed</option>
+                      <option value={TodoStatus.CANCELLED}>Cancelled</option>
+                    </select>
+
                     <div className="flex-1">
-                      <label
-                        htmlFor={`task-${todo.id}`}
-                        className={`block text-sm font-medium ${
-                          todo.status === TodoStatus.COMPLETED
-                            ? 'line-through text-gray-500'
-                            : 'text-gray-900'
-                        }`}
-                      >
-                        {todo.title}
-                      </label>
+                      {/* Editable Title */}
+                      {editingTodo === todo.id ? (
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            value={editingTitle}
+                            onChange={(e) => setEditingTitle(e.target.value)}
+                            className="text-sm"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                handleSaveEdit(todo.id)
+                              } else if (e.key === 'Escape') {
+                                handleCancelEdit()
+                              }
+                            }}
+                            autoFocus
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleSaveEdit(todo.id)}
+                            disabled={updateTodoMutation.isPending}
+                          >
+                            <Check className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleCancelEdit}
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div
+                          className={`text-sm font-medium cursor-pointer ${
+                            todo.status === TodoStatus.COMPLETED
+                              ? 'line-through text-gray-500'
+                              : 'text-gray-900'
+                          }`}
+                          onClick={() => handleStartEdit(todo.id, todo.title)}
+                        >
+                          {todo.title}
+                        </div>
+                      )}
+
                       {todo.content !== todo.title && (
                         <p className="text-xs text-gray-600 mt-1">{todo.content}</p>
                       )}
@@ -238,24 +308,26 @@ function TodoPage() {
                         Created: {new Date(todo.createdAt).toLocaleDateString()}
                       </p>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        // TODO: Implement edit functionality
-                        alert('Edit functionality coming soon!')
-                      }}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDeleteTodo(todo.id)}
-                      disabled={deleteTodoMutation.isPending}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+
+                    {editingTodo !== todo.id && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleStartEdit(todo.id, todo.title)}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteTodo(todo.id)}
+                          disabled={deleteTodoMutation.isPending}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>

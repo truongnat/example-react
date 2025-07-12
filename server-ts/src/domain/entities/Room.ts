@@ -14,7 +14,7 @@ export interface RoomProps {
 export class Room implements BaseEntity {
   private constructor(private props: RoomProps) {}
 
-  public static create(props: Omit<RoomProps, 'id' | 'createdAt' | 'updatedAt' | 'participants'>): Room {
+  public static create(props: Omit<RoomProps, 'id' | 'createdAt' | 'updatedAt' | 'participants' | 'avatarUrl'> & { avatarUrl?: string }): Room {
     const now = new Date();
     return new Room({
       ...props,
@@ -65,13 +65,20 @@ export class Room implements BaseEntity {
 
   // Business methods
   public updateInfo(name?: string, avatarUrl?: string): void {
+    let hasChanges = false;
+
     if (name !== undefined) {
       this.props.name = name;
+      hasChanges = true;
     }
     if (avatarUrl !== undefined) {
       this.props.avatarUrl = avatarUrl;
+      hasChanges = true;
     }
-    this.props.updatedAt = new Date();
+
+    if (hasChanges) {
+      this.props.updatedAt = new Date();
+    }
   }
 
   public addParticipant(userId: UUID): void {

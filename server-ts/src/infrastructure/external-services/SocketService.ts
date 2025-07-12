@@ -366,4 +366,63 @@ export class SocketService {
   public isUserConnected(userId: UUID): boolean {
     return this.connectedUsers.has(userId);
   }
+
+  // Additional methods for testing and general use
+  public emitToRoom(roomId: string, event: string, data?: any): void {
+    this.io.to(roomId).emit(event, data);
+  }
+
+  public emitToUser(userId: UUID, event: string, data?: any): void {
+    try {
+      const userSockets = this.getUserSockets(userId);
+      userSockets.forEach(socket => {
+        try {
+          socket.emit(event, data);
+        } catch (error) {
+          console.error(`Error emitting to socket ${socket.id}:`, error);
+        }
+      });
+    } catch (error) {
+      console.error(`Error in emitToUser for user ${userId}:`, error);
+    }
+  }
+
+  public getUserSocketIds(userId: UUID): string[] {
+    const userSockets = this.getUserSockets(userId);
+    return userSockets.map(socket => socket.id);
+  }
+
+  public joinRoom(userId: UUID, roomId: string): void {
+    try {
+      const userSockets = this.getUserSockets(userId);
+      userSockets.forEach(socket => {
+        try {
+          socket.join(roomId);
+        } catch (error) {
+          console.error(`Error joining socket ${socket.id} to room ${roomId}:`, error);
+        }
+      });
+    } catch (error) {
+      console.error(`Error in joinRoom for user ${userId}:`, error);
+    }
+  }
+
+  public leaveRoom(userId: UUID, roomId: string): void {
+    try {
+      const userSockets = this.getUserSockets(userId);
+      userSockets.forEach(socket => {
+        try {
+          socket.leave(roomId);
+        } catch (error) {
+          console.error(`Error leaving socket ${socket.id} from room ${roomId}:`, error);
+        }
+      });
+    } catch (error) {
+      console.error(`Error in leaveRoom for user ${userId}:`, error);
+    }
+  }
+
+  public broadcast(event: string, data?: any): void {
+    this.io.emit(event, data);
+  }
 }

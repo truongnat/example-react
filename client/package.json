@@ -17,6 +17,7 @@
     "@radix-ui/react-scroll-area": "^1.2.9",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@rollup/rollup-darwin-x64": "^4.44.2",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.82.0",

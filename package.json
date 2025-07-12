@@ -36,5 +36,8 @@
   "workspaces": [
     "client",
     "server-ts"
-  ]
+  ],
+  "dependencies": {
+    "@rollup/rollup-darwin-x64": "^4.44.2"
+  }
 }

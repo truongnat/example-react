@@ -5,6 +5,8 @@ import type {
   RegisterRequestDto,
   RegisterResponseDto,
   UserProfileDto,
+  UpdateProfileRequestDto,
+  UpdateProfileResponseDto,
   ForgotPasswordRequestDto,
   ForgotPasswordResponseDto,
   VerifyOtpRequestDto,
@@ -124,6 +126,16 @@ export class AuthService {
       console.warn('Failed to check authentication status:', error)
     }
     return false
+  }
+
+  async updateProfile(data: UpdateProfileRequestDto): Promise<UserProfileDto> {
+    const response = await httpClient.put<UpdateProfileResponseDto>('/auth/profile', data)
+
+    if (response.success && response.data) {
+      return response.data.user
+    }
+
+    throw new Error(response.message || 'Failed to update profile')
   }
 }
 

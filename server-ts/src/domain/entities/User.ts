@@ -18,7 +18,7 @@ export interface UserProps {
 export class User implements BaseEntity {
   private constructor(private props: UserProps) {}
 
-  public static create(props: Omit<UserProps, 'id' | 'createdAt' | 'updatedAt' | 'isActive' | 'isOnline'>): User {
+  public static create(props: Omit<UserProps, 'id' | 'createdAt' | 'updatedAt' | 'isActive' | 'isOnline' | 'avatarUrl'> & { avatarUrl?: string }): User {
     const now = new Date();
     return new User({
       ...props,

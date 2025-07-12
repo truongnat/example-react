@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/authStore'
 import type {
   LoginRequestDto,
   RegisterRequestDto,
+  UpdateProfileRequestDto,
   ForgotPasswordRequestDto,
   VerifyOtpRequestDto,
   ResetPasswordRequestDto,
@@ -105,6 +106,34 @@ export const useRegister = () => {
   })
 }
 
+// Update profile mutation
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient()
+  const { setUser } = useAuthStore()
+
+  return useMutation({
+    mutationFn: (data: UpdateProfileRequestDto) => authService.updateProfile(data),
+    onSuccess: (updatedUser) => {
+      // Update auth store
+      setUser({
+        id: updatedUser.id,
+        name: updatedUser.username,
+        email: updatedUser.email,
+        avatar: updatedUser.avatarUrl,
+      })
+
+      // Update user data in query cache
+      queryClient.setQueryData(authKeys.me(), updatedUser)
+
+      // Invalidate and refetch user data
+      queryClient.invalidateQueries({ queryKey: authKeys.all })
+    },
+    onError: (error) => {
+      console.error('Profile update failed:', error)
+    },
+  })
+}
+
 // Logout mutation
 export const useLogout = () => {
   const queryClient = useQueryClient()
@@ -115,7 +144,7 @@ export const useLogout = () => {
     onSuccess: () => {
       // Clear auth store
       logoutStore()
-      
+
       // Clear all queries
       queryClient.clear()
     },

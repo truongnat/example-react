@@ -166,7 +166,7 @@ class AppServer {
       if (req.path.startsWith('/api/')) {
         return;
       }
-      
+
       res.sendFile(path.join(buildPath, 'index.html'));
     });
   }
@@ -186,13 +186,13 @@ class AppServer {
   public async start(): Promise<void> {
     try {
       await this.initialize();
-      
+
       const server = this.server.listen(this.port, () => {
         console.log(`🚀 Server started on port ${this.port}`);
         console.log(`📊 Health check: http://localhost:${this.port}/health`);
         console.log(`🔗 API: http://localhost:${this.port}/api`);
         console.log(`📚 API Documentation: http://localhost:${this.port}/api-docs`);
-        
+
         if (process.env.IS_SSR === 'true') {
           console.log(`🌐 SSR: http://localhost:${this.port}`);
         }

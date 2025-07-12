@@ -60,13 +60,20 @@ export class Todo implements BaseEntity {
 
   // Business methods
   public updateContent(title?: string, content?: string): void {
+    let hasChanges = false;
+
     if (title !== undefined) {
       this.props.title = title;
+      hasChanges = true;
     }
     if (content !== undefined) {
       this.props.content = content;
+      hasChanges = true;
     }
-    this.props.updatedAt = new Date();
+
+    if (hasChanges) {
+      this.props.updatedAt = new Date();
+    }
   }
 
   public changeStatus(status: TodoStatus): void {
@@ -91,6 +98,14 @@ export class Todo implements BaseEntity {
     this.changeStatus(TODO_STATUS.KEEPING);
   }
 
+  public markAsDoing(): void {
+    this.changeStatus(TODO_STATUS.DOING);
+  }
+
+  public markAsCancelled(): void {
+    this.changeStatus(TODO_STATUS.CANCELLED);
+  }
+
   public isOwnedBy(userId: UUID): boolean {
     return this.props.userId === userId;
   }
@@ -100,17 +115,25 @@ export class Todo implements BaseEntity {
   }
 
   public isInProgress(): boolean {
-    return this.props.status === TODO_STATUS.TODO || this.props.status === TODO_STATUS.REVIEW;
+    return this.props.status === TODO_STATUS.TODO ||
+           this.props.status === TODO_STATUS.DOING ||
+           this.props.status === TODO_STATUS.REVIEW;
+  }
+
+  public isCancelled(): boolean {
+    return this.props.status === TODO_STATUS.CANCELLED;
   }
 
   private validateStatusTransition(currentStatus: TodoStatus, newStatus: TodoStatus): void {
     // Define valid transitions
     const validTransitions: Record<TodoStatus, TodoStatus[]> = {
-      [TODO_STATUS.INITIAL]: [TODO_STATUS.TODO, TODO_STATUS.KEEPING],
-      [TODO_STATUS.TODO]: [TODO_STATUS.REVIEW, TODO_STATUS.DONE, TODO_STATUS.KEEPING],
-      [TODO_STATUS.REVIEW]: [TODO_STATUS.TODO, TODO_STATUS.DONE, TODO_STATUS.KEEPING],
-      [TODO_STATUS.DONE]: [TODO_STATUS.KEEPING, TODO_STATUS.TODO],
-      [TODO_STATUS.KEEPING]: [TODO_STATUS.TODO, TODO_STATUS.DONE],
+      [TODO_STATUS.INITIAL]: [TODO_STATUS.TODO, TODO_STATUS.DOING, TODO_STATUS.KEEPING, TODO_STATUS.CANCELLED],
+      [TODO_STATUS.TODO]: [TODO_STATUS.DOING, TODO_STATUS.REVIEW, TODO_STATUS.DONE, TODO_STATUS.KEEPING, TODO_STATUS.CANCELLED],
+      [TODO_STATUS.DOING]: [TODO_STATUS.TODO, TODO_STATUS.REVIEW, TODO_STATUS.DONE, TODO_STATUS.KEEPING, TODO_STATUS.CANCELLED],
+      [TODO_STATUS.REVIEW]: [TODO_STATUS.TODO, TODO_STATUS.DOING, TODO_STATUS.DONE, TODO_STATUS.KEEPING, TODO_STATUS.CANCELLED],
+      [TODO_STATUS.DONE]: [TODO_STATUS.KEEPING, TODO_STATUS.TODO, TODO_STATUS.DOING],
+      [TODO_STATUS.KEEPING]: [TODO_STATUS.TODO, TODO_STATUS.DOING, TODO_STATUS.DONE],
+      [TODO_STATUS.CANCELLED]: [TODO_STATUS.TODO, TODO_STATUS.DOING, TODO_STATUS.INITIAL],
     };
 
     if (!validTransitions[currentStatus]?.includes(newStatus)) {

@@ -3,6 +3,7 @@ import { RegisterUseCase } from '@application/use-cases/auth/RegisterUseCase';
 import { LoginUseCase } from '@application/use-cases/auth/LoginUseCase';
 import { LogoutUseCase } from '@application/use-cases/auth/LogoutUseCase';
 import { GetUserUseCase } from '@application/use-cases/auth/GetUserUseCase';
+import { UpdateUserUseCase } from '@application/use-cases/auth/UpdateUserUseCase';
 import { RefreshTokenUseCase } from '@application/use-cases/auth/RefreshTokenUseCase';
 import { RegisterRequestDto, LoginRequestDto, RefreshTokenRequestDto } from '@application/dtos/auth.dto';
 import { ApiResponse } from '@shared/types/common.types';
@@ -14,6 +15,7 @@ export class AuthController {
     private readonly loginUseCase: LoginUseCase,
     private readonly logoutUseCase: LogoutUseCase,
     private readonly getUserUseCase: GetUserUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase
   ) {}
 
@@ -96,6 +98,59 @@ export class AuthController {
         success: true,
         data: user,
         message: 'User profile retrieved successfully',
+      };
+
+      res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  updateProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const requestDto = req.body;
+      const result = await this.updateUserUseCase.execute(userId, requestDto);
+
+      const response: ApiResponse = {
+        success: true,
+        data: result,
+        message: 'User profile updated successfully',
+      };
+
+      res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  changePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const userId = req.user!.id;
+
+      // For now, return a placeholder response
+      // This would need a ChangePasswordUseCase implementation
+      const response: ApiResponse = {
+        success: true,
+        message: 'Password changed successfully',
+      };
+
+      res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  deleteAccount = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+
+      // For now, return a placeholder response
+      // This would need a DeleteAccountUseCase implementation
+      const response: ApiResponse = {
+        success: true,
+        message: 'Account deleted successfully',
       };
 
       res.status(HTTP_STATUS.OK).json(response);

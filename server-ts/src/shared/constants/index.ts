@@ -1,9 +1,11 @@
 export const TODO_STATUS = {
   INITIAL: 'initial',
   TODO: 'todo',
+  DOING: 'doing',
   REVIEW: 'review',
   DONE: 'done',
   KEEPING: 'keeping',
+  CANCELLED: 'cancelled',
 } as const;
 
 export type TodoStatus = typeof TODO_STATUS[keyof typeof TODO_STATUS];

@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Camera, Save, LogOut, Loader2 } from 'lucide-react'
 import { Navigation } from '@/components/Navigation'
 import { useAuthStore } from '@/stores/authStore'
-import { useCurrentUser, useLogout } from '@/hooks/useAuth'
+import { useCurrentUser, useUpdateProfile, useLogout } from '@/hooks/useAuth'
 
 export const Route = createFileRoute('/profile')({
   beforeLoad: ({ context, location }) => {
@@ -30,6 +30,7 @@ export const Route = createFileRoute('/profile')({
 function MyProfilePage() {
   const { user } = useAuthStore()
   const { data: currentUser, isLoading, error } = useCurrentUser()
+  const updateProfileMutation = useUpdateProfile()
   const logoutMutation = useLogout()
 
   const [profile, setProfile] = useState({
@@ -38,6 +39,8 @@ function MyProfilePage() {
     bio: 'Software developer passionate about creating amazing user experiences.',
     avatar: ''
   })
+  const [isEditing, setIsEditing] = useState(false)
+  const [validationError, setValidationError] = useState('')
 
   // Update profile state when user data is loaded
   React.useEffect(() => {
@@ -51,16 +54,75 @@ function MyProfilePage() {
     }
   }, [currentUser])
 
+  const validateProfile = () => {
+    if (!profile.name.trim()) {
+      setValidationError('Name is required')
+      return false
+    }
+    if (profile.name.trim().length < 3) {
+      setValidationError('Name must be at least 3 characters long')
+      return false
+    }
+    if (profile.name.trim().length > 50) {
+      setValidationError('Name must be less than 50 characters')
+      return false
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(profile.name.trim())) {
+      setValidationError('Name can only contain letters, numbers, underscores, and hyphens')
+      return false
+    }
+    if (profile.avatar.trim() && !isValidUrl(profile.avatar.trim())) {
+      setValidationError('Avatar URL must be a valid URL')
+      return false
+    }
+    setValidationError('')
+    return true
+  }
+
+  const isValidUrl = (url: string): boolean => {
+    try {
+      new URL(url)
+      return true
+    } catch {
+      return false
+    }
+  }
+
   const handleSave = () => {
-    console.log('Saving profile:', profile)
-    // TODO: Implement profile update API call
-    alert('Profile update functionality coming soon!')
+    if (!validateProfile()) return
+
+    const updateData: any = {}
+
+    // Only include fields that have changed
+    if (profile.name !== currentUser?.username) {
+      updateData.username = profile.name.trim()
+    }
+    if (profile.avatar !== currentUser?.avatarUrl) {
+      updateData.avatarUrl = profile.avatar.trim() || undefined
+    }
+
+    // If no changes, don't make API call
+    if (Object.keys(updateData).length === 0) {
+      setValidationError('No changes to save')
+      return
+    }
+
+    updateProfileMutation.mutate(updateData, {
+      onSuccess: () => {
+        setIsEditing(false)
+        setValidationError('')
+      },
+      onError: (error: any) => {
+        setValidationError(error.message || 'Failed to update profile')
+      }
+    })
   }
 
   const handleAvatarChange = () => {
-    console.log('Change avatar clicked')
-    // TODO: Implement avatar upload
-    alert('Avatar upload functionality coming soon!')
+    const newAvatarUrl = prompt('Enter new avatar URL:', profile.avatar)
+    if (newAvatarUrl !== null) {
+      setProfile({ ...profile, avatar: newAvatarUrl })
+    }
   }
 
   const handleLogout = () => {
@@ -137,15 +199,30 @@ function MyProfilePage() {
               </Button>
             </div>
 
+            {/* Validation Error */}
+            {validationError && (
+              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                {validationError}
+              </div>
+            )}
+
             {/* Form Fields */}
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">Username</Label>
                 <Input
                   id="name"
                   value={profile.name}
-                  onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                  onChange={(e) => {
+                    setProfile({ ...profile, name: e.target.value })
+                    if (validationError) setValidationError('')
+                  }}
+                  placeholder="Enter your username"
+                  maxLength={50}
                 />
+                <p className="text-xs text-gray-500">
+                  Username can only contain letters, numbers, underscores, and hyphens
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -154,8 +231,28 @@ function MyProfilePage() {
                   id="email"
                   type="email"
                   value={profile.email}
-                  onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                  disabled
+                  className="bg-gray-50"
                 />
+                <p className="text-xs text-gray-500">
+                  Email cannot be changed
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="avatar">Avatar URL</Label>
+                <Input
+                  id="avatar"
+                  value={profile.avatar}
+                  onChange={(e) => {
+                    setProfile({ ...profile, avatar: e.target.value })
+                    if (validationError) setValidationError('')
+                  }}
+                  placeholder="https://example.com/avatar.jpg"
+                />
+                <p className="text-xs text-gray-500">
+                  Enter a valid URL for your avatar image
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -166,15 +263,27 @@ function MyProfilePage() {
                   value={profile.bio}
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   placeholder="Tell us about yourself..."
+                  disabled
                 />
+                <p className="text-xs text-gray-500">
+                  Bio editing coming soon
+                </p>
               </div>
             </div>
 
             {/* Save Button */}
             <div className="flex justify-end pt-4">
-              <Button onClick={handleSave} className="flex items-center gap-2">
-                <Save className="w-4 h-4" />
-                Save Changes
+              <Button
+                onClick={handleSave}
+                disabled={updateProfileMutation.isPending}
+                className="flex items-center gap-2"
+              >
+                {updateProfileMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {updateProfileMutation.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           </CardContent>

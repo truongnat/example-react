@@ -24,8 +24,11 @@ describe('User Entity', () => {
     });
 
     it('should create a user with default avatar if not provided', () => {
-      const userDataWithoutAvatar = { ...mockUserData };
-      delete userDataWithoutAvatar.avatarUrl;
+      const userDataWithoutAvatar = {
+        username: mockUserData.username,
+        email: mockUserData.email,
+        password: mockUserData.password,
+      };
 
       const user = User.create(userDataWithoutAvatar);
 
@@ -41,31 +44,32 @@ describe('User Entity', () => {
       user = User.create(mockUserData);
     });
 
-    it('should update profile correctly', () => {
+    it('should update profile correctly', async () => {
       const newUsername = 'newusername';
       const newAvatarUrl = 'https://example.com/new-avatar.jpg';
       const originalUpdatedAt = user.updatedAt;
 
       // Wait a bit to ensure timestamp difference
-      setTimeout(() => {
-        user.updateProfile(newUsername, newAvatarUrl);
+      await new Promise(resolve => setTimeout(resolve, 10));
 
-        expect(user.username).toBe(newUsername);
-        expect(user.avatarUrl).toBe(newAvatarUrl);
-        expect(user.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
-      }, 1);
+      user.updateProfile(newUsername, newAvatarUrl);
+
+      expect(user.username).toBe(newUsername);
+      expect(user.avatarUrl).toBe(newAvatarUrl);
+      expect(user.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
     });
 
-    it('should change password correctly', () => {
+    it('should change password correctly', async () => {
       const newPassword = 'newhashedpassword123';
       const originalUpdatedAt = user.updatedAt;
 
-      setTimeout(() => {
-        user.changePassword(newPassword);
+      // Wait a bit to ensure timestamp difference
+      await new Promise(resolve => setTimeout(resolve, 1));
 
-        expect(user.password).toBe(newPassword);
-        expect(user.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
-      }, 1);
+      user.changePassword(newPassword);
+
+      expect(user.password).toBe(newPassword);
+      expect(user.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
     });
 
     it('should set online status correctly', () => {

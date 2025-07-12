@@ -10,11 +10,13 @@ import { User } from '@domain/entities/User';
 const mockUserRepository: jest.Mocked<IUserRepository> = {
   create: jest.fn(),
   findById: jest.fn(),
+  findByIds: jest.fn(),
   findByEmail: jest.fn(),
   findByUsername: jest.fn(),
   findAll: jest.fn(),
   findActiveUsers: jest.fn(),
   findOnlineUsers: jest.fn(),
+  searchUsers: jest.fn(),
   update: jest.fn(),
   updateOnlineStatus: jest.fn(),
   delete: jest.fn(),
@@ -64,8 +66,10 @@ describe('RegisterUseCase', () => {
       // Arrange
       const hashedPassword = 'hashedPassword123';
       const mockUser = User.create({
-        ...validRegisterRequest,
+        username: validRegisterRequest.username,
+        email: validRegisterRequest.email,
         password: hashedPassword,
+        avatarUrl: validRegisterRequest.avatarUrl!,
       });
       const mockTokens = {
         accessToken: 'access-token',
@@ -97,27 +101,37 @@ describe('RegisterUseCase', () => {
 
     it('should throw ConflictException if email already exists', async () => {
       // Arrange
-      const existingUser = User.create(validRegisterRequest);
+      const existingUser = User.create({
+        username: validRegisterRequest.username,
+        email: validRegisterRequest.email,
+        password: 'hashedpassword',
+        avatarUrl: validRegisterRequest.avatarUrl!,
+      });
       mockUserRepository.findByEmail.mockResolvedValue(existingUser);
 
       // Act & Assert
       await expect(registerUseCase.execute(validRegisterRequest))
         .rejects.toThrow(ConflictException);
-      
+
       expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(validRegisterRequest.email);
       expect(mockPasswordService.hash).not.toHaveBeenCalled();
     });
 
     it('should throw ConflictException if username already exists', async () => {
       // Arrange
-      const existingUser = User.create(validRegisterRequest);
+      const existingUser = User.create({
+        username: validRegisterRequest.username,
+        email: validRegisterRequest.email,
+        password: 'hashedpassword',
+        avatarUrl: validRegisterRequest.avatarUrl!,
+      });
       mockUserRepository.findByEmail.mockResolvedValue(null);
       mockUserRepository.findByUsername.mockResolvedValue(existingUser);
 
       // Act & Assert
       await expect(registerUseCase.execute(validRegisterRequest))
         .rejects.toThrow(ConflictException);
-      
+
       expect(mockUserRepository.findByUsername).toHaveBeenCalledWith(validRegisterRequest.username);
       expect(mockPasswordService.hash).not.toHaveBeenCalled();
     });
