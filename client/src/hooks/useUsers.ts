@@ -13,7 +13,10 @@ export function useSearchUsers(query?: string, page = 1, limit = 10, roomId?: st
   return useQuery({
     queryKey: userKeys.search(query, page, limit, roomId),
     queryFn: () => userService.searchUsers(query, page, limit, roomId),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes (match test expectation)
     enabled: true, // Always enabled, will return all active users if no query
   });
 }
+
+// Alias for backward compatibility with tests
+export const useUsers = useSearchUsers;

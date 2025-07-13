@@ -46,7 +46,18 @@
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
     "test": "vitest",
-    "test:ci": "vitest run"
+    "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "validate": "npm run type-check && npm run lint && npm run test:ci",
+    "test:summary": "node scripts/test-summary.js",
+    "clean": "rm -rf dist node_modules/.vite",
+    "reinstall": "rm -rf node_modules package-lock.json && npm install"
   },
   "browserslist": {
     "production": [
@@ -63,10 +74,14 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/router-plugin": "^1.125.6",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.0.12",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react-swc": "^3.10.2",
+    "@vitest/coverage-v8": "^3.2.4",
     "autoprefixer": "^10.4.21",
     "happy-dom": "^18.0.1",
     "postcss": "^8.5.6",

@@ -120,7 +120,7 @@ export class AuthService {
       const authData = localStorage.getItem('auth-storage')
       if (authData) {
         const parsed = JSON.parse(authData)
-        return parsed.state?.isAuthenticated === true && parsed.state?.tokens?.accessToken
+        return parsed.state?.isAuthenticated === true && !!parsed.state?.tokens?.accessToken
       }
     } catch (error) {
       console.warn('Failed to check authentication status:', error)

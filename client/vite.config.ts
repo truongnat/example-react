@@ -52,9 +52,22 @@ export default defineConfig({
     target: 'esnext'
   },
   test: {
-    environment: 'happy-dom', // hoặc 'jsdom'
-    globals: true,        // Cho phép dùng các biến global như `describe`, `it`... không cần import
-    setupFiles: ['./src/test/setupTests.ts'], // Nếu bạn có file setup test global (ví dụ mock các module)
+    environment: 'happy-dom',
+    globals: true,
+    setupFiles: ['./src/test/setupTests.ts'],
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/routeTree.gen.ts',
+      ],
+    },
   },
   resolve: {
     alias: {

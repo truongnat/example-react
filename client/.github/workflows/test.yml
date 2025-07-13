@@ -1,0 +1,71 @@
+name: Test Frontend
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: [ 'client/**' ]
+  pull_request:
+    branches: [ main, develop ]
+    paths: [ 'client/**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: client/package-lock.json
+
+    - name: Install dependencies
+      working-directory: ./client
+      run: npm ci
+
+    - name: Type check
+      working-directory: ./client
+      run: npm run type-check
+
+    - name: Lint
+      working-directory: ./client
+      run: npm run lint
+
+    - name: Format check
+      working-directory: ./client
+      run: npm run format:check
+
+    - name: Run tests
+      working-directory: ./client
+      run: npm run test:ci
+
+    - name: Run tests with coverage
+      working-directory: ./client
+      run: npm run test:coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./client/coverage/lcov.info
+        flags: frontend
+        name: frontend-coverage
+        fail_ci_if_error: false
+
+    - name: Build
+      working-directory: ./client
+      run: npm run build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-files-${{ matrix.node-version }}
+        path: client/dist/
+        retention-days: 7

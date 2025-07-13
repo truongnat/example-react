@@ -527,6 +527,12 @@ class SocketService {
     this.connectionListeners.forEach(callback => callback(connected));
   }
 
+  // Reset method for testing
+  reset(): void {
+    this.connectionRefCount = 0;
+    this.forceDisconnect();
+  }
+
   // Getters
   get connected(): boolean {
     return this.isConnected;
