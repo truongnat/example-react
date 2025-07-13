@@ -32,16 +32,21 @@ export function log(message, color = colors.reset) {
  * @param {string} command - The command to run
  * @param {string[]} args - Command arguments
  * @param {string} cwd - Working directory
+ * @param {Object} options - Additional options
+ * @param {boolean} options.nonInteractive - Whether to run in non-interactive mode
  * @returns {Promise<void>}
  */
-export function runCommand(command, args, cwd = process.cwd()) {
+export function runCommand(command, args, cwd = process.cwd(), options = {}) {
   return new Promise((resolve, reject) => {
     log(`${colors.cyan}Running: ${command} ${args.join(' ')}${colors.reset}`, colors.cyan);
     log(`${colors.yellow}Working directory: ${cwd}${colors.reset}`, colors.yellow);
-    
+
+    // Configure stdio based on interactive mode
+    const stdio = options.nonInteractive ? ['ignore', 'inherit', 'inherit'] : 'inherit';
+
     const child = spawn(command, args, {
       cwd,
-      stdio: 'inherit',
+      stdio,
       shell: process.platform === 'win32'
     });
 
@@ -217,7 +222,11 @@ export async function runProjectOperations(projects, operation, stopOnFailure = 
   for (const project of projects) {
     try {
       log(`${colors.bright}${project.icon || '⚙️'} ${operation} ${project.name}...${colors.reset}`, colors.blue);
-      await runCommand(project.command, project.args, project.path);
+
+      // Use non-interactive mode for test operations
+      const options = operation.toLowerCase() === 'test' ? { nonInteractive: true } : {};
+
+      await runCommand(project.command, project.args, project.path, options);
       results.push({ name: project.name, status: 'success' });
       log(`${colors.green}✅ ${project.name} ${operation.toLowerCase()} completed${colors.reset}`, colors.green);
     } catch (error) {
@@ -249,22 +258,26 @@ export async function getAvailableProjects(operation = 'build') {
 
   // Client project
   if (directoryExists(paths.client)) {
+    // Use non-interactive test script for client (vitest run instead of vitest)
+    const clientOperation = operation === 'test' ? 'test:ci' : operation;
     projects.push({
       name: 'Client',
       path: paths.client,
       command: pmConfig.command,
-      args: ['run', operation],
+      args: ['run', clientOperation],
       icon: '🎨'
     });
   }
 
   // Server project
   if (directoryExists(paths.server)) {
+    // Use non-interactive test script for server (jest --passWithNoTests --ci)
+    const serverOperation = operation === 'test' ? 'test:ci' : operation;
     projects.push({
       name: 'Server',
       path: paths.server,
       command: pmConfig.command,
-      args: ['run', operation],
+      args: ['run', serverOperation],
       icon: '⚙️'
     });
   }
