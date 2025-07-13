@@ -29,7 +29,7 @@ interface SocketProviderProps {
 export function SocketProvider({ children }: SocketProviderProps) {
   const { isAuthenticated, tokens } = useAuthStore();
   const [connected, setConnected] = useState(socketService.connected);
-  const [socketId, setSocketId] = useState<string | null>(socketService.socketId);
+  const [socketId, setSocketId] = useState<string | null>(socketService.socketId!);
   const [connectionError, setConnectionError] = useState<string | null>(null);
 
   // Connect when authenticated, disconnect when not
@@ -59,7 +59,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
     const unsubscribe = socketService.onConnectionChange((isConnected) => {
       console.log('SocketProvider: Connection state changed:', isConnected);
       setConnected(isConnected);
-      setSocketId(socketService.socketId);
+      setSocketId(socketService.socketId!);
       
       if (isConnected) {
         setConnectionError(null);

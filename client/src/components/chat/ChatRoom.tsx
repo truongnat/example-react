@@ -27,10 +27,10 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
 
   const { connected } = useSocketStatus();
   const { user } = useAuthStore();
-  
+
   // Fetch room data
   const { data: room, isLoading: roomLoading, error: roomError } = useRoom(roomId);
-  
+
   // Fetch messages with infinite scroll
   const {
     data: messagesData,
@@ -39,7 +39,7 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteMessages(roomId);
-  
+
   // Setup real-time message updates
   useRealTimeMessages(roomId);
 
@@ -60,10 +60,10 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
 
   // Handle member removal notifications
   useRealTimeMemberRemoval();
-  
+
   // Get messages from store (real-time updates)
   const storeMessages = messagesByRoom[roomId] || [];
-  
+
   // Combine server messages with store messages, prioritizing store messages (real-time)
   const allMessages = messagesData?.pages.flatMap(page => page.messages) || [];
 
@@ -86,11 +86,11 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
   // Set current room and join via socket
   useEffect(() => {
     setCurrentRoom(roomId);
-    
+
     if (connected) {
       joinRoom(roomId);
     }
-    
+
     return () => {
       setCurrentRoom(null);
     };
@@ -125,8 +125,6 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
     );
   }
 
-
-
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Room header - Sticky */}
@@ -138,7 +136,7 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
               {room.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          
+
           <div>
             <h1 className="font-semibold text-gray-900">{room.name}</h1>
             <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -149,7 +147,7 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {/* Show invite button only for room author */}
           {user && room.authorId === user.id && (
@@ -178,7 +176,7 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
           />
         </div>
       </div>
-      
+
       {/* Connection status - Also sticky */}
       {!connected && (
         <div className="sticky top-[73px] z-10 bg-yellow-50 border-b border-yellow-200 px-4 py-2">
@@ -188,7 +186,7 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
           </div>
         </div>
       )}
-      
+
       {/* Messages */}
       <MessageList
         roomId={roomId}
@@ -197,7 +195,7 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
         hasNextPage={hasNextPage}
         onLoadMore={() => fetchNextPage()}
       />
-      
+
       {/* Message input */}
       <MessageInput
         roomId={roomId}

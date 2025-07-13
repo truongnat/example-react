@@ -9,6 +9,7 @@ import { useTodos, useCreateTodo, useUpdateTodo, useUpdateTodoStatus, useDeleteT
 import { TodoStatus } from '@/types/api'
 import { Loader2, Trash2, Edit, Plus, CheckCircle, Check, X } from 'lucide-react'
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading'
+import { DeleteDialog } from '@/components/ui/delete-dialog'
 
 export const Route = createFileRoute('/todo')({
   beforeLoad: ({ context, location }) => {
@@ -36,6 +37,8 @@ function TodoPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [editingTodo, setEditingTodo] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState('')
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [todoToDelete, setTodoToDelete] = useState<string | null>(null)
 
   // Memoize params to prevent unnecessary refetches
   const todosParams = useMemo(() => ({
@@ -125,8 +128,21 @@ function TodoPage() {
   }
 
   const handleDeleteTodo = (todoId: string) => {
-    if (confirm('Are you sure you want to delete this todo?')) {
-      deleteTodoMutation.mutate(todoId)
+    setTodoToDelete(todoId)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = () => {
+    if (todoToDelete) {
+      deleteTodoMutation.mutate(todoToDelete, {
+        onSuccess: () => {
+          setDeleteDialogOpen(false)
+          setTodoToDelete(null)
+        },
+        onError: () => {
+          // Dialog will stay open to show error state
+        }
+      })
     }
   }
 
@@ -195,7 +211,7 @@ function TodoPage() {
                 <CardTitle>Your Tasks</CardTitle>
                 {todosData && (
                   <p className="text-sm text-gray-600 mt-1">
-                    {todosData.total} total • {todosData.todos.filter(t => t.status === TodoStatus.COMPLETED).length} completed
+                    {todosData.total} total • {todosData.todos.filter(t => t.status === TodoStatus.DONE).length} completed
                   </p>
                 )}
               </div>
@@ -207,8 +223,11 @@ function TodoPage() {
                 >
                   <option value="">All Status</option>
                   <option value={TodoStatus.INITIAL}>Initial</option>
-                  <option value={TodoStatus.IN_PROGRESS}>In Progress</option>
-                  <option value={TodoStatus.COMPLETED}>Completed</option>
+                  <option value={TodoStatus.TODO}>Todo</option>
+                  <option value={TodoStatus.DOING}>Doing</option>
+                  <option value={TodoStatus.REVIEW}>Review</option>
+                  <option value={TodoStatus.DONE}>Done</option>
+                  <option value={TodoStatus.KEEPING}>Keeping</option>
                   <option value={TodoStatus.CANCELLED}>Cancelled</option>
                 </select>
                 <select
@@ -250,8 +269,11 @@ function TodoPage() {
                       className="px-2 py-1 border rounded text-xs min-w-[100px]"
                     >
                       <option value={TodoStatus.INITIAL}>Initial</option>
-                      <option value={TodoStatus.IN_PROGRESS}>In Progress</option>
-                      <option value={TodoStatus.COMPLETED}>Completed</option>
+                      <option value={TodoStatus.TODO}>Todo</option>
+                      <option value={TodoStatus.DOING}>Doing</option>
+                      <option value={TodoStatus.REVIEW}>Review</option>
+                      <option value={TodoStatus.DONE}>Done</option>
+                      <option value={TodoStatus.KEEPING}>Keeping</option>
                       <option value={TodoStatus.CANCELLED}>Cancelled</option>
                     </select>
 
@@ -291,7 +313,7 @@ function TodoPage() {
                       ) : (
                         <div
                           className={`text-sm font-medium cursor-pointer ${
-                            todo.status === TodoStatus.COMPLETED
+                            todo.status === TodoStatus.DONE
                               ? 'line-through text-gray-500'
                               : 'text-gray-900'
                           }`}
@@ -342,6 +364,21 @@ function TodoPage() {
         </Card>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteDialog
+        open={deleteDialogOpen}
+        onOpenChange={(open) => {
+          setDeleteDialogOpen(open)
+          if (!open) {
+            setTodoToDelete(null)
+          }
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Todo"
+        description="Are you sure you want to delete this todo? This action cannot be undone."
+        isLoading={deleteTodoMutation.isPending}
+      />
     </div>
   )
 }

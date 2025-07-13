@@ -89,6 +89,9 @@ dependencies:
   react-hook-form:
     specifier: ^7.60.0
     version: 7.60.0(react@19.1.0)
+  react-hot-toast:
+    specifier: ^2.5.2
+    version: 2.5.2(react-dom@19.1.0)(react@19.1.0)
   socket.io-client:
     specifier: ^4.8.1
     version: 4.8.1
@@ -3303,6 +3306,19 @@ packages:
       react: ^16.8.0 || ^17 || ^18 || ^19
     dependencies:
       react: 19.1.0
+    dev: false
+
+  /react-hot-toast@2.5.2(react-dom@19.1.0)(react@19.1.0):
+    resolution: {integrity: sha512-Tun3BbCxzmXXM7C+NI4qiv6lT0uwGh4oAfeJyNOjYUejTsm35mK9iCaYLGv8cBz9L5YxZLx/2ii7zsIwPtPUdw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      csstype: 3.1.3
+      goober: 2.1.16(csstype@3.1.3)
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
     dev: false
 
   /react-is@17.0.2:

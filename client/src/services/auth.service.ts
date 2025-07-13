@@ -137,6 +137,14 @@ export class AuthService {
 
     throw new Error(response.message || 'Failed to update profile')
   }
+
+  async changePassword(data: ChangePasswordRequestDto): Promise<void> {
+    const response = await httpClient.put('/auth/password', data)
+
+    if (!response.success) {
+      throw new Error(response.message || 'Failed to change password')
+    }
+  }
 }
 
 // Export singleton instance

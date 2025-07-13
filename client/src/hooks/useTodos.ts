@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { todoService } from '@/services/todo.service'
 import { httpClient } from '@/lib/http-client'
+import { toast } from 'sonner'
 import type {
   CreateTodoRequestDto,
   UpdateTodoRequestDto,
@@ -51,12 +52,16 @@ export const useCreateTodo = () => {
     onSuccess: (newTodo) => {
       // Invalidate and refetch todos list
       queryClient.invalidateQueries({ queryKey: todoKeys.lists() })
-      
+
       // Optionally add the new todo to existing cache
       queryClient.setQueryData(todoKeys.detail(newTodo.id), newTodo)
+
+      // Show success toast
+      toast.success('Todo created successfully!')
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Failed to create todo:', error)
+      toast.error(error.message || 'Failed to create todo')
     },
   })
 }
@@ -71,12 +76,16 @@ export const useUpdateTodo = () => {
     onSuccess: (updatedTodo) => {
       // Update the specific todo in cache
       queryClient.setQueryData(todoKeys.detail(updatedTodo.id), updatedTodo)
-      
+
       // Invalidate todos list to reflect changes
       queryClient.invalidateQueries({ queryKey: todoKeys.lists() })
+
+      // Show success toast
+      toast.success('Todo updated successfully!')
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Failed to update todo:', error)
+      toast.error(error.message || 'Failed to update todo')
     },
   })
 }
@@ -91,12 +100,16 @@ export const useUpdateTodoStatus = () => {
     onSuccess: (updatedTodo) => {
       // Update the specific todo in cache
       queryClient.setQueryData(todoKeys.detail(updatedTodo.id), updatedTodo)
-      
+
       // Invalidate todos list to reflect changes
       queryClient.invalidateQueries({ queryKey: todoKeys.lists() })
+
+      // Show success toast
+      toast.success('Todo status updated successfully!')
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Failed to update todo status:', error)
+      toast.error(error.message || 'Failed to update todo status')
     },
   })
 }
@@ -110,12 +123,16 @@ export const useDeleteTodo = () => {
     onSuccess: (_, deletedId) => {
       // Remove the todo from cache
       queryClient.removeQueries({ queryKey: todoKeys.detail(deletedId) })
-      
+
       // Invalidate todos list to reflect changes
       queryClient.invalidateQueries({ queryKey: todoKeys.lists() })
+
+      // Show success toast
+      toast.success('Todo deleted successfully!')
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Failed to delete todo:', error)
+      toast.error(error.message || 'Failed to delete todo')
     },
   })
 }

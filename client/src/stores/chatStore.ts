@@ -1,9 +1,8 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { socketService, MessageData, RoomData, TypingData } from '@/services/socket.service';
+import { socketService, MessageData, RoomData } from '@/services/socket.service';
 
 export interface ChatMessage extends MessageData {
-  isOptimistic?: boolean; // For optimistic updates
   error?: string; // For failed messages
 }
 
@@ -22,54 +21,54 @@ interface ChatState {
   // Current state
   currentRoomId: string | null;
   isConnected: boolean;
-  
+
   // Rooms
   rooms: ChatRoom[];
-  
+
   // Messages (keyed by roomId)
   messagesByRoom: Record<string, ChatMessage[]>;
-  
+
   // Typing indicators (keyed by roomId)
   typingUsersByRoom: Record<string, TypingUser[]>;
-  
+
   // UI state
   isTyping: Record<string, boolean>; // keyed by roomId
   typingTimeouts: Record<string, number>; // keyed by roomId
-  
+
   // Actions
   setCurrentRoom: (roomId: string | null) => void;
   setConnected: (connected: boolean) => void;
-  
+
   // Room actions
   setRooms: (rooms: ChatRoom[]) => void;
   addRoom: (room: ChatRoom) => void;
   updateRoom: (roomId: string, updates: Partial<ChatRoom>) => void;
   removeRoom: (roomId: string) => void;
-  
+
   // Message actions
   setMessages: (roomId: string, messages: ChatMessage[]) => void;
   addMessage: (message: ChatMessage) => void;
-  addOptimisticMessage: (message: Omit<ChatMessage, 'id' | 'createdAt' | 'updatedAt'>) => void;
+
   updateMessage: (messageId: string, updates: Partial<ChatMessage>) => void;
   removeMessage: (messageId: string) => void;
   markMessageError: (tempId: string, error: string) => void;
-  
+
   // Typing actions
   setTyping: (roomId: string, isTyping: boolean) => void;
   addTypingUser: (user: TypingUser) => void;
   removeTypingUser: (userId: string, roomId: string) => void;
   clearTypingUsers: (roomId: string) => void;
-  
+
   // Utility actions
   incrementUnreadCount: (roomId: string) => void;
   clearUnreadCount: (roomId: string) => void;
   updateLastActivity: (roomId: string) => void;
-  
+
   // Socket actions
   sendMessage: (roomId: string, content: string) => void;
   joinRoom: (roomId: string) => void;
   leaveRoom: (roomId: string) => void;
-  
+
   // Cleanup
   cleanup: () => void;
 }
@@ -89,7 +88,7 @@ export const useChatStore = create<ChatState>()(
       // Basic setters
       setCurrentRoom: (roomId) => {
         set({ currentRoomId: roomId });
-        
+
         // Clear unread count for current room
         if (roomId) {
           get().clearUnreadCount(roomId);
@@ -123,10 +122,10 @@ export const useChatStore = create<ChatState>()(
         set((state) => {
           const newMessagesByRoom = { ...state.messagesByRoom };
           delete newMessagesByRoom[roomId];
-          
+
           const newTypingUsersByRoom = { ...state.typingUsersByRoom };
           delete newTypingUsersByRoom[roomId];
-          
+
           return {
             rooms: state.rooms.filter(room => room.id !== roomId),
             messagesByRoom: newMessagesByRoom,
@@ -150,99 +149,76 @@ export const useChatStore = create<ChatState>()(
         set((state) => {
           const roomMessages = state.messagesByRoom[message.roomId] || [];
 
-          // Check if message already exists (avoid duplicates)
+          // Check if this exact message already exists (by ID)
           const existingMessage = roomMessages.find(msg => msg.id === message.id);
           if (existingMessage) {
             return state; // Message already exists, don't add
           }
 
-          // Remove optimistic message if this is the real message from same author with same content
-          const filteredMessages = roomMessages.filter(msg =>
-            !(msg.isOptimistic &&
-              msg.content === message.content &&
-              msg.authorId === message.authorId &&
-              Math.abs(new Date(msg.createdAt).getTime() - new Date(message.createdAt).getTime()) < 10000) // 10 seconds window
-          );
-
+          // Simple add - no optimistic logic needed for real-time socket
           return {
             messagesByRoom: {
               ...state.messagesByRoom,
-              [message.roomId]: [...filteredMessages, message] // Add new message at the end
+              [message.roomId]: [...roomMessages, message]
             }
           };
         });
-        
+
         // Update room's last activity and increment unread if not current room
         const { currentRoomId, updateLastActivity, incrementUnreadCount } = get();
         updateLastActivity(message.roomId);
-        
+
         if (currentRoomId !== message.roomId) {
           incrementUnreadCount(message.roomId);
         }
       },
 
-      addOptimisticMessage: (messageData) => {
-        const tempId = `temp-${Date.now()}-${Math.random()}`;
-        const optimisticMessage: ChatMessage = {
-          ...messageData,
-          id: tempId,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          isOptimistic: true
-        };
-        
-        set((state) => ({
-          messagesByRoom: {
-            ...state.messagesByRoom,
-            [messageData.roomId]: [...(state.messagesByRoom[messageData.roomId] || []), optimisticMessage] // Add optimistic message at the end
-          }
-        }));
-        
-        return tempId;
-      },
+
 
       updateMessage: (messageId, updates) => {
         set((state) => {
           const newMessagesByRoom = { ...state.messagesByRoom };
-          
+
           Object.keys(newMessagesByRoom).forEach(roomId => {
             newMessagesByRoom[roomId] = newMessagesByRoom[roomId].map(msg =>
               msg.id === messageId ? { ...msg, ...updates } : msg
             );
           });
-          
+
           return { messagesByRoom: newMessagesByRoom };
         });
       },
 
+
+
       removeMessage: (messageId) => {
         set((state) => {
           const newMessagesByRoom = { ...state.messagesByRoom };
-          
+
           Object.keys(newMessagesByRoom).forEach(roomId => {
             newMessagesByRoom[roomId] = newMessagesByRoom[roomId].filter(msg => msg.id !== messageId);
           });
-          
+
           return { messagesByRoom: newMessagesByRoom };
         });
       },
 
       markMessageError: (tempId, error) => {
-        get().updateMessage(tempId, { error, isOptimistic: false });
+        get().updateMessage(tempId, { error });
       },
 
       // Typing actions
       setTyping: (roomId, isTyping) => {
         const state = get();
-        
+
         // Clear existing timeout
         if (state.typingTimeouts[roomId]) {
           clearTimeout(state.typingTimeouts[roomId]);
         }
-        
+
         // Send typing indicator
         socketService.sendTyping(roomId, isTyping);
-        
+
         if (isTyping) {
           // Set timeout to stop typing after 3 seconds
           const timeout = window.setTimeout(() => {
@@ -257,10 +233,10 @@ export const useChatStore = create<ChatState>()(
           set((state) => {
             const newIsTyping = { ...state.isTyping };
             delete newIsTyping[roomId];
-            
+
             const newTimeouts = { ...state.typingTimeouts };
             delete newTimeouts[roomId];
-            
+
             return {
               isTyping: newIsTyping,
               typingTimeouts: newTimeouts
@@ -333,21 +309,22 @@ export const useChatStore = create<ChatState>()(
 
       // Socket actions
       sendMessage: (roomId, content) => {
-        // Add optimistic message
-        const tempId = get().addOptimisticMessage({
-          content,
-          roomId,
-          authorId: '', // Will be filled by socket response
-          author: {
-            id: '',
-            username: '',
-            avatarUrl: ''
-          }
-        });
-        
-        // Send via socket
-        socketService.sendMessage(roomId, content);
-        
+        const trimmedContent = content.trim();
+        if (!trimmedContent) return; // Don't send empty messages
+
+        // Simple spam protection - check last message time
+        const state = get();
+        const roomMessages = state.messagesByRoom[roomId] || [];
+        const lastMessage = roomMessages[roomMessages.length - 1];
+
+        if (lastMessage &&
+            Math.abs(new Date().getTime() - new Date(lastMessage.createdAt).getTime()) < 500) {
+          return; // Don't send if last message was sent less than 500ms ago
+        }
+
+        // Send via socket - backend will broadcast to everyone including sender
+        socketService.sendMessage(roomId, trimmedContent);
+
         // Update last activity
         get().updateLastActivity(roomId);
       },
@@ -363,12 +340,12 @@ export const useChatStore = create<ChatState>()(
       // Cleanup
       cleanup: () => {
         const state = get();
-        
+
         // Clear all timeouts
         Object.values(state.typingTimeouts).forEach((timeout: number) => {
           clearTimeout(timeout);
         });
-        
+
         set({
           currentRoomId: null,
           isConnected: false,

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/stores/chatStore';
@@ -42,44 +42,44 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!message.trim() || disabled) return;
-    
+
     // Send message
     sendMessage(roomId, message.trim());
-    
+
     // Clear input
     setMessage('');
-    
+
     // Stop typing indicator
     if (isTyping) {
       setTyping(roomId, false);
       setIsTyping(false);
     }
-    
+
     // Reset textarea height
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
       e.preventDefault();
       handleSubmit(e);
     }
-  };
+  }, [handleSubmit]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setMessage(value);
-    
+
     // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
     }
-    
+
     // Handle typing indicator with debounce
     const now = Date.now();
 
@@ -132,7 +132,7 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
 
   return (
     <div className="sticky bottom-0 z-10 border-t bg-white p-4 shadow-lg">
-      <form onSubmit={handleSubmit} className="flex items-end gap-2">
+      <div className="flex items-end gap-2">
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
@@ -145,24 +145,25 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
             style={{ minHeight: '40px', maxHeight: '120px' }}
             rows={1}
           />
-          
+
           {/* Emoji picker */}
           <div className="absolute right-2 top-1/2 -translate-y-1/2">
             <EmojiPicker onEmojiSelect={handleEmojiSelect} disabled={disabled} />
           </div>
         </div>
-        
+
         <Button
-          type="submit"
+          type="button"
           size="sm"
           disabled={!message.trim() || disabled}
           className="h-10 px-3"
+          onClick={(e) => handleSubmit(e)}
         >
           <Send className="w-4 h-4" />
           <span className="sr-only">Send message</span>
         </Button>
-      </form>
-      
+      </div>
+
       {/* Character count (optional) */}
       {message.length > 1800 && (
         <div className="mt-1 text-xs text-gray-500 text-right">

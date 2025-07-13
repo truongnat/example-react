@@ -67,10 +67,10 @@ export class TodoService {
   }
 
   async updateTodoStatus(id: string, data: UpdateTodoStatusRequestDto): Promise<TodoDto> {
-    // Use the general update endpoint with status in body
-    const response = await httpClient.put<UpdateTodoResponseDto>(`/todos/${id}`, data)
+    // Use the specific status update endpoint
+    const response = await httpClient.put<{ todo: TodoDto }>(`/todos/${id}/status`, data)
 
-    // HttpClient already returns ApiResponse<UpdateTodoResponseDto>, so response.data is UpdateTodoResponseDto
+    // HttpClient already returns ApiResponse<{ todo: TodoDto }>, so response.data is { todo: TodoDto }
     if (response.success && response.data) {
       return response.data.todo
     }

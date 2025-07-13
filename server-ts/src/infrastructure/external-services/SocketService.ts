@@ -171,6 +171,7 @@ export class SocketService {
   // Public methods for broadcasting messages
   public broadcastNewMessage(data: NewMessageDto): void {
     const roomId = `room-${data.roomId}`;
+    // Broadcast to all users in room including sender (no optimistic updates)
     this.io.to(roomId).emit('new-message', data);
   }
 

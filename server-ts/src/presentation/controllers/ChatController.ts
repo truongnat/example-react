@@ -285,7 +285,7 @@ export class ChatController {
 
       const result = await this.createMessageUseCase.execute(messageData, userId);
 
-      // Broadcast new message via socket
+      // Broadcast new message via socket to all users
       this.socketService.broadcastNewMessage({
         message: {
           ...result.message,
@@ -341,7 +341,7 @@ export class ChatController {
     try {
       const result = await this.createMessageUseCase.execute(data, userId);
 
-      // Broadcast new message via socket
+      // Broadcast new message via socket to all users
       this.socketService.broadcastNewMessage({
         message: {
           ...result.message,

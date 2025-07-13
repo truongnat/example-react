@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { authService } from '@/services/auth.service'
 import { httpClient } from '@/lib/http-client'
 import { useAuthStore } from '@/stores/authStore'
+import { toast } from 'sonner'
 import type {
   LoginRequestDto,
   RegisterRequestDto,
@@ -127,9 +128,27 @@ export const useUpdateProfile = () => {
 
       // Invalidate and refetch user data
       queryClient.invalidateQueries({ queryKey: authKeys.all })
+
+      // Show success toast
+      toast.success('Profile updated successfully!')
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Profile update failed:', error)
+      toast.error(error.message || 'Failed to update profile')
+    },
+  })
+}
+
+// Change password mutation
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: (data: ChangePasswordRequestDto) => authService.changePassword(data),
+    onSuccess: () => {
+      toast.success('Password changed successfully!')
+    },
+    onError: (error: any) => {
+      console.error('Password change failed:', error)
+      toast.error(error.message || 'Failed to change password')
     },
   })
 }
@@ -178,15 +197,4 @@ export const useResetPassword = () => {
   })
 }
 
-// Change password mutation
-export const useChangePassword = () => {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: (data: ChangePasswordRequestDto) => authService.changePassword(data),
-    onSuccess: () => {
-      // Invalidate user data
-      queryClient.invalidateQueries({ queryKey: authKeys.me() })
-    },
-  })
-}
+

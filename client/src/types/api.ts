@@ -93,8 +93,11 @@ export interface ForgotPasswordResponseDto {
 // Todo types
 export enum TodoStatus {
   INITIAL = 'initial',
-  IN_PROGRESS = 'in_progress', 
-  COMPLETED = 'completed',
+  TODO = 'todo',
+  DOING = 'doing',
+  REVIEW = 'review',
+  DONE = 'done',
+  KEEPING = 'keeping',
   CANCELLED = 'cancelled'
 }
 

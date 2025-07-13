@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import { ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useChatStore, ChatMessage } from '@/stores/chatStore';
@@ -62,7 +63,7 @@ function MessageItem({ message, isOwn, showAvatar, onEdit, onDelete }: MessageIt
           </AvatarFallback>
         </Avatar>
       )}
-      
+
       <div className={`flex-1 min-w-0 ${isOwn ? 'text-right' : ''}`}>
         {showAvatar && (
           <div className={`flex items-center gap-2 mb-1 ${isOwn ? 'justify-end' : ''}`}>
@@ -74,7 +75,7 @@ function MessageItem({ message, isOwn, showAvatar, onEdit, onDelete }: MessageIt
             </span>
           </div>
         )}
-        
+
         <div className={`relative ${isOwn ? 'ml-8' : 'mr-8'}`}>
           {isEditing ? (
             <div className="space-y-2">
@@ -95,13 +96,11 @@ function MessageItem({ message, isOwn, showAvatar, onEdit, onDelete }: MessageIt
             </div>
           ) : (
             <div
-              className={`inline-block max-w-full p-3 rounded-lg text-sm break-words ${
-                isOwn
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-900'
-              } ${message.isOptimistic ? 'opacity-70' : ''} ${
-                message.error ? 'bg-red-100 border border-red-300' : ''
-              }`}
+              className={`inline-block max-w-full p-3 rounded-lg text-sm break-words ${isOwn
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-900'
+                } ${message.error ? 'bg-red-100 border border-red-300' : ''
+                }`}
             >
               {message.content}
               {message.error && (
@@ -111,9 +110,9 @@ function MessageItem({ message, isOwn, showAvatar, onEdit, onDelete }: MessageIt
               )}
             </div>
           )}
-          
+
           {/* Message actions */}
-          {!isEditing && !message.isOptimistic && (
+          {!isEditing && (
             <div className={`absolute top-0 ${isOwn ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'}`}>
               <MessageActions
                 message={message}
@@ -133,35 +132,33 @@ export function MessageList({ roomId, messages, isLoading, hasNextPage, onLoadMo
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
-  
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
   const { user } = useAuthStore();
   const { typingUsersByRoom } = useChatStore();
-  
+
   const updateMessageMutation = useUpdateMessage(roomId);
   const deleteMessageMutation = useDeleteMessage(roomId);
-  
+
   const typingUsers = typingUsersByRoom[roomId] || [];
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (shouldAutoScroll && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages, shouldAutoScroll]);
-
-  // Handle scroll to detect if user is at bottom
-  const handleScroll = () => {
+  // Handle scroll to detect if user is at bottom and show scroll to top button
+  const handleScroll = useCallback(() => {
     if (!messagesContainerRef.current) return;
-    
+
     const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
     const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
     setShouldAutoScroll(isAtBottom);
-    
+
+    // Show scroll to top button when scrolled down more than 300px
+    const shouldShow = window.scrollY > 300;
+    setShowScrollToTop(shouldShow);
+
     // Load more messages when scrolled to top
     if (scrollTop === 0 && hasNextPage && onLoadMore) {
       onLoadMore();
     }
-  };
+  }, [hasNextPage, onLoadMore]);
 
   const handleEditMessage = (messageId: string, content: string) => {
     updateMessageMutation.mutate({ messageId, data: { content } });
@@ -170,6 +167,24 @@ export function MessageList({ roomId, messages, isLoading, hasNextPage, onLoadMo
   const handleDeleteMessage = (messageId: string) => {
     deleteMessageMutation.mutate(messageId);
   };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [])
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (shouldAutoScroll && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, shouldAutoScroll]);
 
   if (isLoading && messages.length === 0) {
     return (
@@ -180,7 +195,7 @@ export function MessageList({ roomId, messages, isLoading, hasNextPage, onLoadMo
   }
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col relative">
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
@@ -198,15 +213,15 @@ export function MessageList({ roomId, messages, isLoading, hasNextPage, onLoadMo
             </Button>
           </div>
         )}
-        
+
         <div className="space-y-1">
           {messages.map((message, index) => {
             const prevMessage = messages[index - 1];
             const isOwn = message.author.id === user?.id;
-            const showAvatar = !prevMessage || 
+            const showAvatar = !prevMessage ||
               prevMessage.author.id !== message.author.id ||
               new Date(message.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() > 5 * 60 * 1000; // 5 minutes
-            
+
             return (
               <MessageItem
                 key={message.id}
@@ -219,7 +234,7 @@ export function MessageList({ roomId, messages, isLoading, hasNextPage, onLoadMo
             );
           })}
         </div>
-        
+
         {/* Typing indicators */}
         {typingUsers.length > 0 && (
           <div className="p-3 text-sm text-gray-500">
@@ -230,9 +245,22 @@ export function MessageList({ roomId, messages, isLoading, hasNextPage, onLoadMo
             )}
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
+
+      {showScrollToTop && (
+        <div className="fixed bottom-24 right-6 z-50">
+          <Button
+            onClick={scrollToTop}
+            size="sm"
+            className="rounded-full w-12 h-12 p-0 shadow-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:scale-105 backdrop-blur-sm"
+            title="Scroll to top"
+          >
+            <ChevronUp className="w-5 h-5" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

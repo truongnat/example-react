@@ -201,7 +201,6 @@ describe('chatStore', () => {
   describe('message management', () => {
     const mockChatMessage: ChatMessage = {
       ...mockMessage,
-      isOptimistic: false,
     }
 
     describe('setMessages', () => {

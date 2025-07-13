@@ -5,10 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Camera, Save, LogOut, Loader2 } from 'lucide-react'
+import { Camera, Save, LogOut, Loader2, Upload, Link } from 'lucide-react'
 import { Navigation } from '@/components/Navigation'
 import { useAuthStore } from '@/stores/authStore'
-import { useCurrentUser, useUpdateProfile, useLogout } from '@/hooks/useAuth'
+import { useCurrentUser, useUpdateProfile, useLogout, useChangePassword } from '@/hooks/useAuth'
+import { AvatarUpload } from '@/components/ui/file-upload'
+import { uploadService } from '@/services/upload.service'
+import { toast } from 'sonner'
+import { ChangePasswordDialog } from '@/components/ui/change-password-dialog'
 
 export const Route = createFileRoute('/profile')({
   beforeLoad: ({ context, location }) => {
@@ -32,6 +36,7 @@ function MyProfilePage() {
   const { data: currentUser, isLoading, error } = useCurrentUser()
   const updateProfileMutation = useUpdateProfile()
   const logoutMutation = useLogout()
+  const changePasswordMutation = useChangePassword()
 
   const [profile, setProfile] = useState({
     name: '',
@@ -41,14 +46,21 @@ function MyProfilePage() {
   })
   const [isEditing, setIsEditing] = useState(false)
   const [validationError, setValidationError] = useState('')
+  const [showAvatarUrlInput, setShowAvatarUrlInput] = useState(false)
+  const [avatarUrlInput, setAvatarUrlInput] = useState('')
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 
   // Update profile state when user data is loaded
   React.useEffect(() => {
     if (currentUser) {
+      // Load bio from localStorage or use default
+      const savedBio = localStorage.getItem(`user_bio_${currentUser.id}`) ||
+        'Software developer passionate about creating amazing user experiences.'
+
       setProfile({
         name: currentUser.username || '',
         email: currentUser.email || '',
-        bio: 'Software developer passionate about creating amazing user experiences.',
+        bio: savedBio,
         avatar: currentUser.avatarUrl || '/api/placeholder/120/120'
       })
     }
@@ -92,19 +104,40 @@ function MyProfilePage() {
     if (!validateProfile()) return
 
     const updateData: any = {}
+    let hasChanges = false
 
     // Only include fields that have changed
     if (profile.name !== currentUser?.username) {
       updateData.username = profile.name.trim()
+      hasChanges = true
     }
     if (profile.avatar !== currentUser?.avatarUrl) {
       updateData.avatarUrl = profile.avatar.trim() || undefined
+      hasChanges = true
     }
 
-    // If no changes, don't make API call
+    // Save bio to localStorage (since backend doesn't support it yet)
+    if (currentUser) {
+      const currentBio = localStorage.getItem(`user_bio_${currentUser.id}`) ||
+        'Software developer passionate about creating amazing user experiences.'
+      if (profile.bio !== currentBio) {
+        localStorage.setItem(`user_bio_${currentUser.id}`, profile.bio)
+        hasChanges = true
+        toast.success('Bio updated successfully!')
+      }
+    }
+
+    // If no backend changes but bio changed, still show success
     if (Object.keys(updateData).length === 0) {
-      setValidationError('No changes to save')
-      return
+      if (!hasChanges) {
+        setValidationError('No changes to save')
+        return
+      } else {
+        // Only bio changed, no API call needed
+        setIsEditing(false)
+        setValidationError('')
+        return
+      }
     }
 
     updateProfileMutation.mutate(updateData, {
@@ -118,15 +151,38 @@ function MyProfilePage() {
     })
   }
 
-  const handleAvatarChange = () => {
-    const newAvatarUrl = prompt('Enter new avatar URL:', profile.avatar)
-    if (newAvatarUrl !== null) {
-      setProfile({ ...profile, avatar: newAvatarUrl })
+  const handleAvatarUpload = async (file: File): Promise<string> => {
+    try {
+      const url = await uploadService.uploadAvatar(file)
+      setProfile({ ...profile, avatar: url })
+      toast.success('Avatar uploaded successfully!')
+      return url
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to upload avatar')
+      throw error
     }
+  }
+
+  const handleAvatarUrlSubmit = () => {
+    if (avatarUrlInput.trim()) {
+      setProfile({ ...profile, avatar: avatarUrlInput.trim() })
+      setAvatarUrlInput('')
+      setShowAvatarUrlInput(false)
+      toast.success('Avatar URL updated!')
+    }
+  }
+
+  const handleAvatarUrlCancel = () => {
+    setAvatarUrlInput('')
+    setShowAvatarUrlInput(false)
   }
 
   const handleLogout = () => {
     logoutMutation.mutate()
+  }
+
+  const handleChangePassword = async (data: { currentPassword: string; newPassword: string }) => {
+    await changePasswordMutation.mutateAsync(data)
   }
 
   if (isLoading) {
@@ -185,18 +241,43 @@ function MyProfilePage() {
                     {profile.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
-                  onClick={handleAvatarChange}
-                >
-                  <Camera className="w-4 h-4" />
-                </Button>
+                <AvatarUpload
+                  onUpload={handleAvatarUpload}
+                  disabled={updateProfileMutation.isPending}
+                />
               </div>
-              <Button variant="outline" onClick={handleAvatarChange}>
-                Change Avatar
-              </Button>
+
+              {/* Avatar URL Input */}
+              {showAvatarUrlInput ? (
+                <div className="flex flex-col items-center space-y-2 w-full max-w-sm">
+                  <Input
+                    placeholder="Enter avatar URL..."
+                    value={avatarUrlInput}
+                    onChange={(e) => setAvatarUrlInput(e.target.value)}
+                    className="text-center"
+                  />
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={handleAvatarUrlSubmit}>
+                      <Save className="w-4 h-4 mr-1" />
+                      Save
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={handleAvatarUrlCancel}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowAvatarUrlInput(true)}
+                  >
+                    <Link className="w-4 h-4 mr-2" />
+                    Enter URL
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Validation Error */}
@@ -263,10 +344,10 @@ function MyProfilePage() {
                   value={profile.bio}
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   placeholder="Tell us about yourself..."
-                  disabled
+                  maxLength={500}
                 />
                 <p className="text-xs text-gray-500">
-                  Bio editing coming soon
+                  {profile.bio.length}/500 characters • Bio is saved locally
                 </p>
               </div>
             </div>
@@ -295,7 +376,11 @@ function MyProfilePage() {
             <CardTitle>Account Settings</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setChangePasswordOpen(true)}
+            >
               Change Password
             </Button>
             <Button variant="outline" className="w-full">
@@ -321,6 +406,14 @@ function MyProfilePage() {
         </Card>
         </div>
       </div>
+
+      {/* Change Password Dialog */}
+      <ChangePasswordDialog
+        open={changePasswordOpen}
+        onOpenChange={setChangePasswordOpen}
+        onSubmit={handleChangePassword}
+        isLoading={changePasswordMutation.isPending}
+      />
     </div>
   )
 }
