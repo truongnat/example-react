@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/client/node_modules
+      - /app/server-ts/node_modules
+    command: node scripts/test.js

@@ -160,7 +160,26 @@ class AppServer {
 
   private setupSSR(): void {
     // Serve React build files
-    const buildPath = path.join(__dirname, '../client');
+    // In production/Docker, client files are in 'build' directory
+    // In development, they might be in '../client/dist' or '../client'
+    const possiblePaths = [
+      path.join(__dirname, '../build'),           // Docker production
+      path.join(__dirname, '../client/dist'),     // Local development
+      path.join(__dirname, '../client'),          // Alternative local
+    ];
+
+    let buildPath: string = possiblePaths[0]!; // Default to Docker production path
+
+    // Find the correct path that exists
+    const fs = require('fs');
+    for (const testPath of possiblePaths) {
+      if (fs.existsSync(path.join(testPath, 'index.html'))) {
+        buildPath = testPath;
+        break;
+      }
+    }
+
+    console.log(`SSR serving static files from: ${buildPath}`);
     this.app.use(express.static(buildPath));
 
     // Handle React routing

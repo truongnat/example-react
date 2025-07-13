@@ -185,26 +185,25 @@ export function getPackageManagerConfig() {
  * @returns {string} Package manager name
  */
 export function detectPackageManagerSync() {
-
-  // Check for lock files in order of preference
-  if (existsSync('pnpm-lock.yaml') || existsSync('client/pnpm-lock.yaml')) {
-    return 'pnpm';
-  }
-  if (existsSync('bun.lockb') || existsSync('client/bun.lockb')) {
-    return 'bun';
-  }
-  if (existsSync('yarn.lock') || existsSync('client/yarn.lock')) {
-    return 'yarn';
-  }
-  if (existsSync('package-lock.json') || existsSync('client/package-lock.json')) {
-    return 'npm';
-  }
-
-  // Check for available package managers
-  const managers = ['pnpm', 'bun', 'yarn', 'npm'];
+  // Check for available package managers first (for Docker environments)
+  const managers = ['bun', 'pnpm', 'yarn', 'npm'];
   for (const manager of managers) {
     try {
       execSync(`${manager} --version`, { stdio: 'ignore' });
+      // If we found a working package manager, check if it matches lock files
+      if (manager === 'pnpm' && (existsSync('pnpm-lock.yaml') || existsSync('client/pnpm-lock.yaml'))) {
+        return 'pnpm';
+      }
+      if (manager === 'bun' && (existsSync('bun.lockb') || existsSync('client/bun.lockb'))) {
+        return 'bun';
+      }
+      if (manager === 'yarn' && (existsSync('yarn.lock') || existsSync('client/yarn.lock'))) {
+        return 'yarn';
+      }
+      if (manager === 'npm' && (existsSync('package-lock.json') || existsSync('client/package-lock.json'))) {
+        return 'npm';
+      }
+      // If no lock file matches but manager is available, use it
       return manager;
     } catch {
       continue;

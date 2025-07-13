@@ -12,12 +12,16 @@ services:
       - PORT=3000
       - DATABASE_URL=postgresql://postgres:password@db:5432/example_prod
       - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-super-secret-jwt-key-production-2025
+      - JWT_REFRESH_SECRET=your-super-secret-refresh-key-production-2025
+      - JWT_EXPIRES_IN=1h
+      - JWT_REFRESH_EXPIRES_IN=7d
     depends_on:
       - db
       - redis
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3

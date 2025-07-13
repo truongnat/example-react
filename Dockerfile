@@ -10,8 +10,19 @@ COPY package.json bun.lockb* ./
 COPY client/package.json ./client/
 COPY server-ts/package.json ./server-ts/
 
-# Install dependencies
+# Install dependencies for root
 RUN bun install --frozen-lockfile
+
+# Install dependencies for client
+WORKDIR /app/client
+RUN bun install --frozen-lockfile
+
+# Install dependencies for server
+WORKDIR /app/server-ts
+RUN bun install --frozen-lockfile
+
+# Reset workdir
+WORKDIR /app
 
 # Build the client
 FROM base AS client-builder
@@ -23,6 +34,20 @@ COPY package.json ./
 
 # Build client
 RUN cd client && bun run build
+
+# Test stage
+FROM base AS test
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/client/node_modules ./client/node_modules
+COPY --from=deps /app/server-ts/node_modules ./server-ts/node_modules
+COPY client ./client
+COPY server-ts ./server-ts
+COPY scripts ./scripts
+COPY package.json ./
+
+# Run tests
+RUN node scripts/test.js
 
 # Build the server
 FROM base AS server-builder
