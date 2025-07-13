@@ -160,7 +160,7 @@ class AppServer {
 
   private setupSSR(): void {
     // Serve React build files
-    const buildPath = path.join(__dirname, '../build');
+    const buildPath = path.join(__dirname, '../client');
     this.app.use(express.static(buildPath));
 
     // Handle React routing

@@ -50,7 +50,7 @@ async function buildProjects() {
 async function copyClientBuildToServer() {
   const paths = getProjectPaths();
   const clientDistPath = `${paths.client}/dist`;
-  const serverBuildPath = `${paths.server}/dist/build`;
+  const serverBuildPath = `${paths.server}/client`;
 
   if (existsSync(clientDistPath) && existsSync(paths.server)) {
     log(`${colors.bright}📁 Copying client build to server for SSR...${colors.reset}`, colors.blue);
