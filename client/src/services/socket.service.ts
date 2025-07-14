@@ -404,6 +404,29 @@ class SocketService {
     }
   }
 
+  /**
+   * Check if an error is related to authentication/token issues
+   */
+  private isAuthenticationError(error: any): boolean {
+    if (!error || !error.message) {
+      return false;
+    }
+
+    const message = error.message.toLowerCase();
+    const authErrorKeywords = [
+      'authentication',
+      'token',
+      'unauthorized',
+      'expired',
+      'invalid',
+      'jwt',
+      'auth',
+      'forbidden'
+    ];
+
+    return authErrorKeywords.some(keyword => message.includes(keyword));
+  }
+
   // Room operations
   joinRoom(roomId: string): void {
     if (this.socket && this.isConnected) {
