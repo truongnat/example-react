@@ -16,6 +16,10 @@ services:
     healthCheckPath: /health
     buildCommand: echo "Building with Docker..."
     startCommand: bun run --cwd server-ts start
+    disk:
+      name: sqlite-data
+      mountPath: /app/server-ts/data
+      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
@@ -24,31 +28,9 @@ services:
       - key: IS_SSR
         value: "true"
       - key: DATABASE_TYPE
-        value: postgres
-      - key: DATABASE_URL
-        fromDatabase:
-          name: example-postgres-db
-          property: connectionString
-      - key: POSTGRES_HOST
-        fromDatabase:
-          name: example-postgres-db
-          property: host
-      - key: POSTGRES_PORT
-        fromDatabase:
-          name: example-postgres-db
-          property: port
-      - key: POSTGRES_DATABASE
-        fromDatabase:
-          name: example-postgres-db
-          property: database
-      - key: POSTGRES_USERNAME
-        fromDatabase:
-          name: example-postgres-db
-          property: user
-      - key: POSTGRES_PASSWORD
-        fromDatabase:
-          name: example-postgres-db
-          property: password
+        value: sqlite
+      - key: SQLITE_DATABASE_PATH
+        value: ./server-ts/data/database.sqlite
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -59,14 +41,7 @@ services:
         value: 7d
       - fromGroup: app-config
 
-databases:
-  - name: example-postgres-db
-    databaseName: example_react_db
-    user: postgres
-    plan: starter
-    ipAllowList:
-      - source: 0.0.0.0/0
-        description: allow all connections
+# No external database needed - using SQLite file-based database
 
 envVarGroups:
   - name: app-config
