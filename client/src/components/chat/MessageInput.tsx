@@ -82,53 +82,56 @@ export function MessageInput({
     [handleSubmit]
   );
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setMessage(value);
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value;
+      setMessage(value);
 
-    // Auto-resize textarea
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
-    }
+      // Auto-resize textarea
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+      }
 
-    // Handle typing indicator with debounce
-    const now = Date.now();
+      // Handle typing indicator with debounce
+      const now = Date.now();
 
-    if (value.trim()) {
-      // Start typing indicator if not already typing
-      if (!isTyping) {
-        setIsTyping(true);
-        setTyping(roomId, true);
-        lastTypingTimeRef.current = now;
-      } else {
-        // Debounce: only send typing update if it's been more than 1 second since last update
-        if (now - lastTypingTimeRef.current > 1000) {
+      if (value.trim()) {
+        // Start typing indicator if not already typing
+        if (!isTyping) {
+          setIsTyping(true);
           setTyping(roomId, true);
           lastTypingTimeRef.current = now;
+        } else {
+          // Debounce: only send typing update if it's been more than 1 second since last update
+          if (now - lastTypingTimeRef.current > 1000) {
+            setTyping(roomId, true);
+            lastTypingTimeRef.current = now;
+          }
         }
-      }
 
-      // Clear existing timeout
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
+        // Clear existing timeout
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
 
-      // Set new timeout to stop typing after user stops typing
-      typingTimeoutRef.current = window.setTimeout(() => {
+        // Set new timeout to stop typing after user stops typing
+        typingTimeoutRef.current = window.setTimeout(() => {
+          setIsTyping(false);
+          setTyping(roomId, false);
+        }, 3000); // ✅ Stop typing after 3 seconds of inactivity
+      } else if (isTyping) {
+        // Stop typing immediately if input is empty
         setIsTyping(false);
         setTyping(roomId, false);
-      }, 3000); // ✅ Stop typing after 3 seconds of inactivity
-    } else if (isTyping) {
-      // Stop typing immediately if input is empty
-      setIsTyping(false);
-      setTyping(roomId, false);
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-        typingTimeoutRef.current = null;
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+          typingTimeoutRef.current = null;
+        }
       }
-    }
-  };
+    },
+    [isTyping, roomId, setTyping]
+  );
 
   // Cleanup on unmount
   useEffect(() => {
@@ -142,10 +145,6 @@ export function MessageInput({
     };
   }, [roomId, isTyping, setTyping]);
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  });
 
   return (
     <div className="sticky bottom-0 z-10 border-t bg-white p-4 shadow-lg">
@@ -155,6 +154,7 @@ export function MessageInput({
             ref={textareaRef}
             value={message}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled}
             className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
