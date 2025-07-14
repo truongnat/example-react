@@ -16,6 +16,7 @@ describe('AuthController', () => {
   let mockGetUserUseCase: jest.Mocked<GetUserUseCase>;
   let mockUpdateUserUseCase: jest.Mocked<UpdateUserUseCase>;
   let mockRefreshTokenUseCase: jest.Mocked<RefreshTokenUseCase>;
+  let mockChangePasswordUseCase: any;
 
   beforeEach(() => {
     mockRegisterUseCase = {
@@ -42,13 +43,18 @@ describe('AuthController', () => {
       execute: jest.fn(),
     } as any;
 
+    mockChangePasswordUseCase = {
+      execute: jest.fn(),
+    } as any;
+
     authController = new AuthController(
       mockRegisterUseCase,
       mockLoginUseCase,
       mockLogoutUseCase,
       mockGetUserUseCase,
       mockUpdateUserUseCase,
-      mockRefreshTokenUseCase
+      mockRefreshTokenUseCase,
+      mockChangePasswordUseCase
     );
 
     jest.clearAllMocks();

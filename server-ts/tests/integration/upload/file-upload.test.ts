@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 
 describe('File Upload Integration', () => {
-  let app: Application;
+  let app: any;
   let container: DependencyContainer;
   let passwordService: PasswordService;
   let testUser: User;

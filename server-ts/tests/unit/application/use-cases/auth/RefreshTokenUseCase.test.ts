@@ -54,6 +54,7 @@ describe('RefreshTokenUseCase', () => {
     userId: 'user-123',
     email: 'test@example.com',
     username: 'testuser',
+    tokenVersion: 1,
   };
 
   const mockNewTokens = {

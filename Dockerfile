@@ -75,7 +75,7 @@ COPY --from=server-builder /app/server-ts/package.json ./server-ts/
 COPY --from=deps /app/server-ts/node_modules ./server-ts/node_modules
 
 # Copy static files to server
-COPY --from=client-builder /app/client/dist ./server-ts/build
+COPY --from=client-builder /app/client/dist ./server-ts/client
 
 # Set correct permissions
 RUN chown -R nextjs:nodejs /app

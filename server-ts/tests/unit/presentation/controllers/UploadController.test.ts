@@ -9,7 +9,10 @@ const mockFileUploadService = {
   validateFile: jest.fn(),
   processUploadedFile: jest.fn(),
   deleteFile: jest.fn(),
-} as jest.Mocked<Partial<FileUploadService>>;
+  getMulterConfig: jest.fn(),
+  ensureUploadDir: jest.fn(),
+  generateFileName: jest.fn(),
+} as unknown as jest.Mocked<FileUploadService>;
 
 describe('UploadController', () => {
   let uploadController: UploadController;
@@ -18,7 +21,7 @@ describe('UploadController', () => {
   let mockNext: NextFunction;
 
   beforeEach(() => {
-    uploadController = new UploadController(mockFileUploadService as FileUploadService);
+    uploadController = new UploadController(mockFileUploadService);
     
     mockRequest = {
       protocol: 'http',

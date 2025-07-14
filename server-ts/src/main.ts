@@ -15,12 +15,10 @@ import { SocketService } from '@infrastructure/external-services/SocketService';
 import { ApiResponse } from '@shared/types/common.types';
 import { HTTP_STATUS } from '@shared/constants';
 
-// Load environment variables from root directory
-dotenv.config({ path: '../.env' });
-// Fallback to local .env if root doesn't exist
+// Load environment variables
 dotenv.config();
 
-class AppServer {
+export class AppServer {
   private app: Application;
   private server: any;
   private io: SocketIOServer;
@@ -31,7 +29,7 @@ class AppServer {
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
-    this.port = parseInt(process.env.PORT || '3000');
+    this.port = parseInt(process.env.PORT || '5000');
     this.container = DependencyContainer.getInstance();
 
     // Initialize Socket.IO
@@ -217,6 +215,10 @@ class AppServer {
 
   private setupSocket(): void {
     this.socketService.initialize();
+  }
+
+  public getApp(): Application {
+    return this.app;
   }
 
   public async start(): Promise<void> {

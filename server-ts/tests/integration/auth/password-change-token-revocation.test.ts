@@ -6,7 +6,7 @@ import { User } from '@domain/entities/User';
 import { PasswordService } from '@infrastructure/external-services/PasswordService';
 
 describe('Password Change and Token Revocation Integration', () => {
-  let app: Application;
+  let app: any;
   let container: DependencyContainer;
   let passwordService: PasswordService;
   let testUser: User;
