@@ -26,3 +26,5 @@ yarn.lock*
 
 # Archived JavaScript files (for reference only)
 client/src/_archived_js/
+
+.qodo
