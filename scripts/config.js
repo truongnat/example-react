@@ -10,7 +10,7 @@ import { existsSync, readFileSync } from 'fs';
 import { execSync } from 'child_process';
 
 /**
- * Load environment variables from .env file
+ * Load environment variables from unified root .env file
  */
 function loadEnvFile() {
   const envPath = '.env';
@@ -19,19 +19,32 @@ function loadEnvFile() {
       const envContent = readFileSync(envPath, 'utf8');
       const lines = envContent.split('\n');
 
+      console.log('📄 Loading unified environment configuration...');
+      let loadedCount = 0;
+
       for (const line of lines) {
         const trimmed = line.trim();
-        if (trimmed && !trimmed.startsWith('#')) {
+        if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
           const [key, ...valueParts] = trimmed.split('=');
           if (key && valueParts.length > 0) {
             const value = valueParts.join('=');
-            process.env[key] = value;
+            // Only set if not already defined (allows override)
+            if (!process.env[key]) {
+              process.env[key] = value;
+              loadedCount++;
+            }
           }
         }
       }
+
+      if (loadedCount > 0) {
+        console.log(`✅ Loaded ${loadedCount} environment variables from unified config`);
+      }
     } catch (error) {
-      // Ignore errors reading .env file
+      console.warn('⚠️ Failed to load .env file:', error.message);
     }
+  } else {
+    console.warn('⚠️ No .env file found. Using default values.');
   }
 }
 

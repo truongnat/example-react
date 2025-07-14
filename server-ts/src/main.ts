@@ -31,7 +31,7 @@ class AppServer {
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
-    this.port = parseInt(process.env.PORT || '5000');
+    this.port = parseInt(process.env.PORT || '3000');
     this.container = DependencyContainer.getInstance();
 
     // Initialize Socket.IO
