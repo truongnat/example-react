@@ -3,6 +3,7 @@
 import { existsSync } from 'fs';
 import { colors, log, runConcurrent, getProjectPaths, handleHelp } from './utils.js';
 import { getPackageManagerConfig } from './config.js';
+import { loadUnifiedEnv, validateEnvironment, displayEnvironmentSummary } from './env-loader.js';
 
 /**
  * Cross-platform development script
