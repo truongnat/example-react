@@ -5,6 +5,7 @@ import { SQLiteTodoRepository } from '@infrastructure/repositories/SQLiteTodoRep
 import { PasswordService } from '@infrastructure/external-services/PasswordService';
 import { TokenService } from '@infrastructure/external-services/TokenService';
 import { EmailService } from '@infrastructure/external-services/EmailService';
+import { FileUploadService } from '@infrastructure/external-services/FileUploadService';
 import { AuthMiddleware } from '@infrastructure/middleware/AuthMiddleware';
 
 // Domain
@@ -21,6 +22,7 @@ import { LogoutUseCase } from '@application/use-cases/auth/LogoutUseCase';
 import { GetUserUseCase } from '@application/use-cases/auth/GetUserUseCase';
 import { UpdateUserUseCase } from '@application/use-cases/auth/UpdateUserUseCase';
 import { RefreshTokenUseCase } from '@application/use-cases/auth/RefreshTokenUseCase';
+import { ChangePasswordUseCase } from '@application/use-cases/auth/ChangePasswordUseCase';
 import { SearchUsersUseCase } from '@application/use-cases/user/SearchUsersUseCase';
 import { CreateTodoUseCase } from '@application/use-cases/todo/CreateTodoUseCase';
 import { GetTodosUseCase } from '@application/use-cases/todo/GetTodosUseCase';
@@ -33,10 +35,12 @@ import { AuthController } from '@presentation/controllers/AuthController';
 import { TodoController } from '@presentation/controllers/TodoController';
 import { ChatController } from '@presentation/controllers/ChatController';
 import { UserController } from '@presentation/controllers/UserController';
+import { UploadController } from '@presentation/controllers/UploadController';
 import { AuthRoutes } from '@presentation/routes/AuthRoutes';
 import { TodoRoutes } from '@presentation/routes/TodoRoutes';
 import { ChatRoutes } from '@presentation/routes/ChatRoutes';
 import { UserRoutes } from '@presentation/routes/UserRoutes';
+import { UploadRoutes } from '@presentation/routes/UploadRoutes';
 
 // Chat imports
 import { IRoomRepository } from '@domain/repositories/IRoomRepository';
@@ -75,6 +79,7 @@ export class DependencyContainer {
   private _passwordService!: IPasswordService;
   private _tokenService!: ITokenService;
   private _emailService!: IEmailService;
+  private _fileUploadService!: FileUploadService;
   private _authMiddleware!: AuthMiddleware;
   private _socketService!: SocketService;
 
@@ -85,6 +90,7 @@ export class DependencyContainer {
   private _getUserUseCase!: GetUserUseCase;
   private _updateUserUseCase!: UpdateUserUseCase;
   private _refreshTokenUseCase!: RefreshTokenUseCase;
+  private _changePasswordUseCase!: ChangePasswordUseCase;
   private _searchUsersUseCase!: SearchUsersUseCase;
   private _createTodoUseCase!: CreateTodoUseCase;
   private _getTodosUseCase!: GetTodosUseCase;
@@ -113,10 +119,12 @@ export class DependencyContainer {
   private _todoController!: TodoController;
   private _chatController!: ChatController;
   private _userController!: UserController;
+  private _uploadController!: UploadController;
   private _authRoutes!: AuthRoutes;
   private _todoRoutes!: TodoRoutes;
   private _chatRoutes!: ChatRoutes;
   private _userRoutes!: UserRoutes;
+  private _uploadRoutes!: UploadRoutes;
 
   private constructor() {}
 
@@ -149,7 +157,13 @@ export class DependencyContainer {
     this._passwordService = new PasswordService();
     this._tokenService = new TokenService();
     this._emailService = new EmailService();
+    this._fileUploadService = new FileUploadService();
     this._authMiddleware = new AuthMiddleware(this._tokenService, this._userRepository);
+
+    // Inject user repository into socket service if available
+    if (this._socketService) {
+      this._socketService.setUserRepository(this._userRepository);
+    }
 
     // Initialize use cases
     this._registerUseCase = new RegisterUseCase(
@@ -170,6 +184,7 @@ export class DependencyContainer {
     this._getUserUseCase = new GetUserUseCase(this._userRepository);
     this._updateUserUseCase = new UpdateUserUseCase(this._userRepository);
     this._refreshTokenUseCase = new RefreshTokenUseCase(this._tokenService, this._userRepository);
+    this._changePasswordUseCase = new ChangePasswordUseCase(this._userRepository, this._passwordService);
     this._searchUsersUseCase = new SearchUsersUseCase(this._userRepository);
     this._createTodoUseCase = new CreateTodoUseCase(this._todoRepository);
     this._getTodosUseCase = new GetTodosUseCase(this._todoRepository);
@@ -200,7 +215,8 @@ export class DependencyContainer {
       this._logoutUseCase,
       this._getUserUseCase,
       this._updateUserUseCase,
-      this._refreshTokenUseCase
+      this._refreshTokenUseCase,
+      this._changePasswordUseCase
     );
     this._todoController = new TodoController(
       this._createTodoUseCase,
@@ -215,6 +231,7 @@ export class DependencyContainer {
       this._searchUsersUseCase,
       this._roomRepository
     );
+    this._uploadController = new UploadController(this._fileUploadService);
 
     // Initialize chat controller (only if socket service is available)
     if (this._socketService) {
@@ -244,6 +261,7 @@ export class DependencyContainer {
     this._authRoutes = new AuthRoutes(this._authController, this._authMiddleware);
     this._todoRoutes = new TodoRoutes(this._todoController, this._authMiddleware);
     this._userRoutes = new UserRoutes(this._userController, this._authMiddleware);
+    this._uploadRoutes = new UploadRoutes(this._uploadController, this._authMiddleware, this._fileUploadService);
 
     if (this._chatController) {
       this._chatRoutes = new ChatRoutes(this._chatController, this._authMiddleware);
@@ -275,6 +293,10 @@ export class DependencyContainer {
 
   public get userRoutes(): UserRoutes {
     return this._userRoutes;
+  }
+
+  public get uploadRoutes(): UploadRoutes {
+    return this._uploadRoutes;
   }
 
   public get authMiddleware(): AuthMiddleware {

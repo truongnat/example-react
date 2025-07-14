@@ -84,6 +84,11 @@ export default defineConfig({
         secure: false,
         ws: true, // Enable WebSocket proxying for Socket.IO
       },
+      '/uploads': {
+        target: `http://localhost:${process.env.VITE_SERVER_PORT || '8080'}`,
+        changeOrigin: true,
+        secure: false,
+      },
       '/socket.io': {
         target: `http://localhost:${process.env.VITE_SERVER_PORT || '8080'}`,
         changeOrigin: true,

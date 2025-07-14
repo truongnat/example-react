@@ -1,21 +1,42 @@
-// Mock upload service - in a real app, this would integrate with a service like Cloudinary, AWS S3, etc.
+import { httpClient } from '@/lib/http-client'
+
+export interface UploadResponse {
+  file: {
+    filename: string
+    originalName: string
+    mimetype: string
+    size: number
+    url: string
+  }
+  avatarUrl?: string
+}
+
 export class UploadService {
   async uploadFile(file: File): Promise<string> {
-    // Simulate upload delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // For demo purposes, create a local object URL
-    // In a real app, this would upload to a cloud service and return the URL
-    const url = URL.createObjectURL(file)
-    
-    // Store in localStorage to persist across page reloads (for demo)
-    const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '{}')
-    const fileId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    uploadedFiles[fileId] = url
-    localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles))
-    
-    // Return a mock URL that would be returned by a real service
-    return `https://example.com/uploads/${fileId}.${file.name.split('.').pop()}`
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Only image files are allowed')
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error('File size must be less than 5MB')
+    }
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const response = await httpClient.post<UploadResponse>('/upload/image', formData)
+
+      if (response.success && response.data) {
+        return response.data.file.url
+      }
+
+      throw new Error(response.message || 'Upload failed')
+    } catch (error: any) {
+      throw new Error(error.message || 'Upload failed')
+    }
   }
 
   async uploadAvatar(file: File): Promise<string> {
@@ -24,12 +45,25 @@ export class UploadService {
       throw new Error('Only image files are allowed for avatars')
     }
 
-    // Validate file size (2MB max)
+    // Validate file size (2MB max for avatars)
     if (file.size > 2 * 1024 * 1024) {
       throw new Error('Avatar file size must be less than 2MB')
     }
 
-    return this.uploadFile(file)
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const response = await httpClient.post<UploadResponse>('/upload/avatar', formData)
+
+      if (response.success && response.data) {
+        return response.data.avatarUrl || response.data.file.url
+      }
+
+      throw new Error(response.message || 'Avatar upload failed')
+    } catch (error: any) {
+      throw new Error(error.message || 'Avatar upload failed')
+    }
   }
 }
 

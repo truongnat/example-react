@@ -12,6 +12,7 @@ interface UserRow {
   avatar_url: string | null;
   is_active: number;
   is_online: number;
+  token_version: number;
   otp: string | null;
   otp_expires_at: string | null;
   created_at: string;
@@ -26,8 +27,8 @@ export class SQLiteUserRepository implements IUserRepository {
     const userData = user.toJSON();
 
     await db.run(`
-      INSERT INTO users (id, username, email, password, avatar_url, is_active, is_online, otp, otp_expires_at, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (id, username, email, password, avatar_url, is_active, is_online, token_version, otp, otp_expires_at, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       userData.id,
       userData.username,
@@ -36,6 +37,7 @@ export class SQLiteUserRepository implements IUserRepository {
       userData.avatarUrl,
       userData.isActive ? 1 : 0,
       userData.isOnline ? 1 : 0,
+      userData.tokenVersion,
       userData.otp || null,
       userData.otpExpiresAt?.toISOString() || null,
       userData.createdAt.toISOString(),
@@ -202,9 +204,9 @@ export class SQLiteUserRepository implements IUserRepository {
     const userData = user.toJSON();
 
     await db.run(`
-      UPDATE users 
-      SET username = ?, email = ?, password = ?, avatar_url = ?, is_active = ?, is_online = ?, 
-          otp = ?, otp_expires_at = ?, updated_at = ?
+      UPDATE users
+      SET username = ?, email = ?, password = ?, avatar_url = ?, is_active = ?, is_online = ?,
+          token_version = ?, otp = ?, otp_expires_at = ?, updated_at = ?
       WHERE id = ?
     `, [
       userData.username,
@@ -213,6 +215,7 @@ export class SQLiteUserRepository implements IUserRepository {
       userData.avatarUrl,
       userData.isActive ? 1 : 0,
       userData.isOnline ? 1 : 0,
+      userData.tokenVersion,
       userData.otp || null,
       userData.otpExpiresAt?.toISOString() || null,
       userData.updatedAt.toISOString(),
@@ -277,6 +280,7 @@ export class SQLiteUserRepository implements IUserRepository {
       avatarUrl: row.avatar_url || DEFAULT_AVATAR,
       isActive: Boolean(row.is_active),
       isOnline: Boolean(row.is_online),
+      tokenVersion: row.token_version || 1,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at)
     };

@@ -327,8 +327,23 @@ export class AuthRoutes {
           .withMessage('Username must be 3-50 characters and contain only letters, numbers, underscores, and hyphens'),
         body('avatarUrl')
           .optional()
-          .isURL()
-          .withMessage('Avatar URL must be a valid URL'),
+          .custom((value) => {
+            if (!value || value.trim() === '') return true;
+            try {
+              // Try to create URL directly first
+              new URL(value);
+              return true;
+            } catch {
+              try {
+                // If that fails, try with URL encoding
+                const encodedUrl = value.replace(/[^a-zA-Z0-9:\/\-._~!$&'()*+,;=?@#[\]]/g, encodeURIComponent);
+                new URL(encodedUrl);
+                return true;
+              } catch {
+                throw new Error('Avatar URL must be a valid URL');
+              }
+            }
+          }),
       ],
       ValidationMiddleware.handleValidationErrors,
       this.authController.updateProfile

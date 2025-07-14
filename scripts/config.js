@@ -6,8 +6,37 @@
  */
 
 import { join } from 'path';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { execSync } from 'child_process';
+
+/**
+ * Load environment variables from .env file
+ */
+function loadEnvFile() {
+  const envPath = '.env';
+  if (existsSync(envPath)) {
+    try {
+      const envContent = readFileSync(envPath, 'utf8');
+      const lines = envContent.split('\n');
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#')) {
+          const [key, ...valueParts] = trimmed.split('=');
+          if (key && valueParts.length > 0) {
+            const value = valueParts.join('=');
+            process.env[key] = value;
+          }
+        }
+      }
+    } catch (error) {
+      // Ignore errors reading .env file
+    }
+  }
+}
+
+// Load environment variables on module import
+loadEnvFile();
 
 /**
  * Get project paths configuration
@@ -159,7 +188,7 @@ export function getPackageManagerConfig() {
     },
     npm: {
       command: 'npm',
-      installArgs: ['install'],
+      installArgs: ['install', '--legacy-peer-deps'],
       devArgs: ['run', 'dev'],
       buildArgs: ['run', 'build'],
       testArgs: ['run', 'test'],

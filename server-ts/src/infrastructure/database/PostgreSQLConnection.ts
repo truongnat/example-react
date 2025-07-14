@@ -85,12 +85,20 @@ export class PostgreSQLConnection extends DatabaseConnection {
           avatar_url TEXT,
           is_active BOOLEAN DEFAULT TRUE,
           is_online BOOLEAN DEFAULT FALSE,
+          token_version INTEGER DEFAULT 1,
           otp VARCHAR(10),
           otp_expires_at TIMESTAMP,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
+
+      // Add token_version column if it doesn't exist (for existing databases)
+      try {
+        await client.query(`ALTER TABLE users ADD COLUMN token_version INTEGER DEFAULT 1`);
+      } catch (error) {
+        // Column already exists, ignore error
+      }
 
       // Todos table
       await client.query(`

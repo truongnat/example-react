@@ -47,6 +47,7 @@ export class RegisterUseCase {
       userId: savedUser.id,
       email: savedUser.email,
       username: savedUser.username,
+      tokenVersion: savedUser.tokenVersion,
     });
 
     return {

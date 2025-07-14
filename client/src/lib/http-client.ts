@@ -155,9 +155,13 @@ export class HttpClient {
     const url = `${this.baseURL}${endpoint}`;
 
     const headers: HeadersInit & { Authorization?: string } = {
-      "Content-Type": "application/json",
       ...options.headers,
     };
+
+    // Only set Content-Type for non-FormData requests
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
 
     // Add authorization header if token exists
     if (this.accessToken) {
@@ -296,14 +300,14 @@ export class HttpClient {
   async post<T>(endpoint: string, body?: any): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: "POST",
-      body: body ? JSON.stringify(body) : undefined,
+      body: body instanceof FormData ? body : (body ? JSON.stringify(body) : undefined),
     });
   }
 
   async put<T>(endpoint: string, body?: any): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: "PUT",
-      body: body ? JSON.stringify(body) : undefined,
+      body: body instanceof FormData ? body : (body ? JSON.stringify(body) : undefined),
     });
   }
 

@@ -42,6 +42,11 @@ export class AuthMiddleware {
         throw new UnauthorizedException('User not found or inactive');
       }
 
+      // Check if token version matches (for token revocation)
+      if (payload.tokenVersion !== user.tokenVersion) {
+        throw new UnauthorizedException('Token has been revoked');
+      }
+
       // Add user info to request
       req.user = {
         id: payload.userId,
@@ -65,8 +70,8 @@ export class AuthMiddleware {
         try {
           const payload: JWTPayload = await this.tokenService.verifyAccessToken(token);
           const user = await this.userRepository.findById(payload.userId);
-          
-          if (user && user.isActive) {
+
+          if (user && user.isActive && payload.tokenVersion === user.tokenVersion) {
             req.user = {
               id: payload.userId,
               email: payload.email,

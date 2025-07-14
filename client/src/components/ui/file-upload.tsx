@@ -34,9 +34,21 @@ export function FileUpload({
     }
 
     // Validate file type
-    if (accept && !file.type.match(accept.replace('*', '.*'))) {
-      toast.error('Invalid file type')
-      return
+    if (accept && accept !== '*/*') {
+      const acceptedTypes = accept.split(',').map(type => type.trim())
+      const isValidType = acceptedTypes.some(type => {
+        if (type.includes('*')) {
+          // Handle wildcard types like 'image/*'
+          const baseType = type.split('/')[0]
+          return file.type.startsWith(baseType + '/')
+        }
+        return file.type === type
+      })
+
+      if (!isValidType) {
+        toast.error('Invalid file type')
+        return
+      }
     }
 
     setIsUploading(true)

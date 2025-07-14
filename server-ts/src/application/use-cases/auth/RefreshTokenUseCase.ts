@@ -22,8 +22,18 @@ export class RefreshTokenUseCase {
         throw new UnauthorizedException('User not found or inactive');
       }
 
-      // Generate new token pair
-      const tokens = await this.tokenService.refreshTokens(request.refreshToken);
+      // Check if token version matches (for token revocation)
+      if (payload.tokenVersion !== user.tokenVersion) {
+        throw new UnauthorizedException('Token has been revoked');
+      }
+
+      // Generate new token pair with current token version
+      const tokens = await this.tokenService.generateTokenPair({
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+        tokenVersion: user.tokenVersion,
+      });
 
       return { tokens };
     } catch (error) {

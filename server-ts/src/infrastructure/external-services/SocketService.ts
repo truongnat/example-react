@@ -1,6 +1,7 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import { UUID } from '@shared/types/common.types';
+import { UUID, JWTPayload } from '@shared/types/common.types';
+import { IUserRepository } from '@domain/repositories/IUserRepository';
 import {
   JoinRoomDto,
   LeaveRoomDto,
@@ -18,9 +19,14 @@ export class SocketService {
   private io: SocketIOServer;
   private connectedUsers: Map<UUID, string> = new Map(); // userId -> socketId
   private chatController: any; // Will be injected later to avoid circular dependency
+  private userRepository?: IUserRepository; // Will be injected later
 
   constructor(io: SocketIOServer) {
     this.io = io;
+  }
+
+  public setUserRepository(userRepository: IUserRepository): void {
+    this.userRepository = userRepository;
   }
 
   public setChatController(chatController: any): void {
@@ -88,7 +94,22 @@ export class SocketService {
         return next(new Error('Authentication token required'));
       }
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
+
+      // Check if user repository is available and verify token version
+      if (this.userRepository) {
+        const user = await this.userRepository.findById(decoded.userId);
+        if (!user || !user.isActive) {
+          console.log('Socket authentication failed: User not found or inactive');
+          return next(new Error('User not found or inactive'));
+        }
+
+        if (decoded.tokenVersion !== user.tokenVersion) {
+          console.log('Socket authentication failed: Token has been revoked');
+          return next(new Error('Token has been revoked'));
+        }
+      }
+
       socket.userId = decoded.userId;
       socket.username = decoded.username;
 

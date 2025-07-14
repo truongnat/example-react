@@ -2,17 +2,13 @@
   "name": "example-react-monorepo",
   "version": "1.0.0",
   "author": "truongdq.dev",
-  "description": "MERN Stack monorepo with Bun package management",
-  "engines": {
-    "bun": ">=1.0.0"
-  },
+  "description": "MERN Stack monorepo with todo, chat, profile",
   "keywords": [
     "react",
     "express",
     "mongodb",
     "nodejs",
     "mern",
-    "bun",
     "monorepo"
   ],
   "license": "MIT",
@@ -28,7 +24,9 @@
     "pm": "node scripts/package-manager.js",
     "pm:list": "node scripts/package-manager.js list",
     "pm:switch": "node scripts/package-manager.js switch",
-    "pm:clean": "node scripts/package-manager.js clean"
+    "pm:clean": "node scripts/package-manager.js clean",
+    "seed": "node scripts/seed.js",
+    "seed:force": "node scripts/seed.js --force"
   },
   "type": "module"
 }

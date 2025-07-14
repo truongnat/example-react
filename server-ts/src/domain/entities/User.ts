@@ -9,6 +9,7 @@ export interface UserProps {
   avatarUrl: string;
   isActive: boolean;
   isOnline: boolean;
+  tokenVersion: number;
   otp?: string;
   otpExpiresAt?: Date;
   createdAt: Date;
@@ -18,7 +19,7 @@ export interface UserProps {
 export class User implements BaseEntity {
   private constructor(private props: UserProps) {}
 
-  public static create(props: Omit<UserProps, 'id' | 'createdAt' | 'updatedAt' | 'isActive' | 'isOnline' | 'avatarUrl'> & { avatarUrl?: string }): User {
+  public static create(props: Omit<UserProps, 'id' | 'createdAt' | 'updatedAt' | 'isActive' | 'isOnline' | 'avatarUrl' | 'tokenVersion'> & { avatarUrl?: string }): User {
     const now = new Date();
     return new User({
       ...props,
@@ -26,6 +27,7 @@ export class User implements BaseEntity {
       avatarUrl: props.avatarUrl || DEFAULT_AVATAR,
       isActive: true,
       isOnline: false,
+      tokenVersion: 1,
       createdAt: now,
       updatedAt: now,
     });
@@ -80,6 +82,10 @@ export class User implements BaseEntity {
     return this.props.updatedAt;
   }
 
+  get tokenVersion(): number {
+    return this.props.tokenVersion;
+  }
+
   // Business methods
   public updateProfile(username?: string, avatarUrl?: string): void {
     if (username) {
@@ -93,6 +99,7 @@ export class User implements BaseEntity {
 
   public changePassword(newPassword: string): void {
     this.props.password = newPassword;
+    this.props.tokenVersion += 1;
     this.props.updatedAt = new Date();
   }
 

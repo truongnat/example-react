@@ -71,12 +71,20 @@ export class SQLiteConnection extends DatabaseConnection {
         avatar_url TEXT,
         is_active BOOLEAN DEFAULT 1,
         is_online BOOLEAN DEFAULT 0,
+        token_version INTEGER DEFAULT 1,
         otp TEXT,
         otp_expires_at DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Add token_version column if it doesn't exist (for existing databases)
+    try {
+      await this.db.exec(`ALTER TABLE users ADD COLUMN token_version INTEGER DEFAULT 1`);
+    } catch (error) {
+      // Column already exists, ignore error
+    }
 
     // Todos table
     await this.db.exec(`

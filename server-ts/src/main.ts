@@ -96,12 +96,23 @@ class AppServer {
     };
     this.app.use(cors(corsOptions));
 
-    // Body parsing
-    this.app.use(express.json({ limit: '10mb' }));
-    this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+    // Body parsing - exclude multipart/form-data for file uploads
+    this.app.use((req, res, next) => {
+      if (req.headers['content-type']?.startsWith('multipart/form-data')) {
+        return next();
+      }
+      express.json({ limit: '10mb' })(req, res, next);
+    });
+    this.app.use((req, res, next) => {
+      if (req.headers['content-type']?.startsWith('multipart/form-data')) {
+        return next();
+      }
+      express.urlencoded({ extended: true, limit: '10mb' })(req, res, next);
+    });
 
     // Static files
     this.app.use('/static', express.static(path.join(__dirname, '../public')));
+    this.app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
   }
 
   private setupRoutes(): void {
@@ -130,6 +141,7 @@ class AppServer {
     this.app.use('/api/auth', this.container.authRoutes.getRouter());
     this.app.use('/api/todos', this.container.todoRoutes.getRouter());
     this.app.use('/api/users', this.container.userRoutes.getRouter());
+    this.app.use('/api/upload', this.container.uploadRoutes.getRouter());
 
     // Chat routes (only if available)
     if (this.container.chatRoutes) {

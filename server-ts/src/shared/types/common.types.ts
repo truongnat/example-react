@@ -35,6 +35,7 @@ export interface JWTPayload {
   userId: UUID;
   email: string;
   username: string;
+  tokenVersion: number;
   iat?: number;
   exp?: number;
 }

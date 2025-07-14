@@ -70,12 +70,13 @@ export class TokenService implements ITokenService {
 
   async refreshTokens(refreshToken: string): Promise<TokenPair> {
     const payload = await this.verifyRefreshToken(refreshToken);
-    
+
     // Create new payload without JWT specific fields
     const newPayload: JWTPayload = {
       userId: payload.userId,
       email: payload.email,
       username: payload.username,
+      tokenVersion: payload.tokenVersion,
     };
 
     return this.generateTokenPair(newPayload);
