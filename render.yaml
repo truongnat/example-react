@@ -3,130 +3,61 @@ previews:
   generation: automatic
 
 services:
+  # Main MERN Stack Application
   - type: web
-    runtime: ruby
-    name: sinatra-app
-    repo: https://github.com/render-examples/sinatra
-    numInstances: 3
-    region: frankfurt
-    plan: standard
-    branch: prod
-    buildCommand: bundle install
-    preDeployCommand: bundle exec ruby migrate.rb
-    startCommand: bundle exec ruby main.rb
-    autoDeploy: false
-    maxShutdownDelaySeconds: 120
-    domains:
-      - example.com
-      - www.example.org
+    runtime: docker
+    name: example-react-app
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    region: oregon
+    numInstances: 1
+    autoDeploy: true
+    healthCheckPath: /health
+    buildCommand: echo "Building with Docker..."
+    startCommand: bun run --cwd server-ts start
     envVars:
-      - key: API_BASE_URL
-        value: https://api.example.com
-      - key: APP_SECRET
-        generateValue: true
-      - key: STRIPE_API_KEY
-        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: IS_SSR
+        value: true
+      - key: DATABASE_TYPE
+        value: postgres
       - key: DATABASE_URL
         fromDatabase:
-          name: mydatabase
+          name: example-postgres-db
           property: connectionString
-      - key: MINIO_PASSWORD
-        fromService:
-          name: minio
-          type: pserv
-          envVarKey: MINIO_ROOT_PASSWORD
-      - fromGroup: my-env-group
-
-  - type: web
-    runtime: docker
-    name: webdis
-    repo: https://github.com/render-examples/webdis.git
-    rootDir: webdis
-    dockerCommand: ./webdis.sh
-    scaling:
-      minInstances: 1
-      maxInstances: 3
-      targetMemoryPercent: 60
-      targetCPUPercent: 60
-    healthCheckPath: /
-    registryCredential:
-      fromRegistryCreds:
-        name: my-credentials
-    envVars:
-      - key: REDIS_HOST
-        fromService:
-          type: keyvalue
-          name: lightning
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: example-postgres-db
           property: host
-      - key: REDIS_PORT
-        fromService:
-          type: keyvalue
-          name: lightning
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: example-postgres-db
           property: port
-      - fromGroup: conc-settings
-
-  - type: pserv
-    runtime: docker
-    name: minio
-    repo: https://github.com/render-examples/minio.git
-    envVars:
-      - key: MINIO_ROOT_PASSWORD
+      - key: POSTGRES_DATABASE
+        fromDatabase:
+          name: example-postgres-db
+          property: database
+      - key: POSTGRES_USERNAME
+        fromDatabase:
+          name: example-postgres-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: example-postgres-db
+          property: password
+      - key: JWT_SECRET
         generateValue: true
-      - key: MINIO_ROOT_USER
-        sync: false
-      - key: PORT
-        value: 10000
-    disk:
-      name: data
-      mountPath: /data
-      sizeGB: 10
-
-  - type: cron
-    name: date
-    runtime: python
-    schedule: '0 * * * *'
-    buildCommand: 'true'
-    startCommand: date
-    repo: https://github.com/render-examples/docker.git
-
-  - type: worker
-    name: queue
-    runtime: docker
-    dockerfilePath: ./sub/Dockerfile
-    dockerContext: ./sub/src
-    branch: queue
-
-  - type: web
-    name: my-blog
-    runtime: static
-    buildCommand: yarn build
-    staticPublishPath: ./build
-    previews:
-      generation: automatic
-    buildFilter:
-      paths:
-        - src*.js
-      ignoredPaths:
-        - src*.test.js
-    headers:
-      - path: /*
-        name: X-Frame-Options
-        value: sameorigin
-    routes:
-      - type: redirect
-        source: /old
-        destination: /new
-      - type: rewrite
-        source: /a/*
-        destination: /a
-
-  - type: keyvalue
-    name: lightning
-    ipAllowList:
-      - source: 0.0.0.0/0
-        description: everywhere
-    plan: free
-    maxmemoryPolicy: noeviction
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 1h
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - fromGroup: app-config
 
 databases:
   - name: elephant
