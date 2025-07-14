@@ -179,14 +179,20 @@ class SocketService {
           this.notifyConnectionListeners(false);
 
           // Check if it's an authentication error
-          if (error.message?.includes('Authentication') || error.message?.includes('token')) {
+          if (this.isAuthenticationError(error)) {
+            console.log('Socket: Authentication error detected, attempting token refresh');
+
             // Try to refresh token and reconnect
-            this.handleTokenRefreshAndReconnect().catch(() => {
+            this.handleTokenRefreshAndReconnect().catch((refreshError) => {
+              console.error('Socket: Token refresh failed:', refreshError);
+
+              // If this is the first attempt, reject the promise
               if (this.reconnectAttempts === 0) {
-                reject(error);
+                reject(new Error(`Authentication failed: ${error.message}`));
               }
             });
           } else {
+            // Non-authentication error
             if (this.reconnectAttempts === 0) {
               reject(error);
             }
@@ -316,7 +322,8 @@ class SocketService {
 
   private async handleTokenRefreshAndReconnect(): Promise<void> {
     try {
-      // Try to refresh the token using httpClient
+      console.log('Socket: Attempting token refresh for reconnection...');
+
       const authStore = useAuthStore.getState();
       const refreshToken = authStore.tokens?.refreshToken;
 
@@ -324,41 +331,73 @@ class SocketService {
         throw new Error('No refresh token available');
       }
 
-      // Use httpClient's built-in refresh mechanism
-      // This will automatically update tokens in storage
-      const response = await fetch(`${config.socketUrl}/api/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Token refresh failed: ${response.status}`);
+      // Validate refresh token before using it
+      if (!isValidTokenStructure(refreshToken)) {
+        throw new Error('Invalid refresh token structure');
       }
 
-      const data = await response.json();
-
-      if (!data.success || !data.data?.tokens) {
-        throw new Error('Invalid refresh token response');
+      if (isTokenExpired(refreshToken)) {
+        throw new Error('Refresh token is expired');
       }
 
-      // Update tokens in auth store
-      authStore.setTokens(data.data.tokens);
+      // Use httpClient's refresh mechanism for consistency
+      try {
+        const { httpClient } = await import('@/lib/http-client');
+        await httpClient.forceRefresh();
+        console.log('Socket: Token refresh successful via httpClient');
+      } catch (httpError) {
+        console.warn('Socket: httpClient refresh failed, trying direct API call:', httpError);
+
+        // Fallback to direct API call
+        const response = await fetch(`${config.socketUrl}/api/auth/refresh`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refreshToken }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(`Token refresh failed: ${response.status} - ${errorData.message || response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success || !data.data?.tokens) {
+          throw new Error('Invalid refresh token response format');
+        }
+
+        // Validate new tokens
+        const { accessToken, refreshToken: newRefreshToken } = data.data.tokens;
+        if (!isValidTokenStructure(accessToken) || !isValidTokenStructure(newRefreshToken)) {
+          throw new Error('Received invalid token structure from server');
+        }
+
+        // Update tokens in auth store
+        authStore.setTokens(data.data.tokens);
+        console.log('Socket: Token refresh successful via direct API');
+      }
 
       // Reset connection state and try to reconnect
       this.connectionPromise = null;
       this.reconnectAttempts = 0;
 
       if (this.connectionRefCount > 0) {
+        console.log('Socket: Attempting reconnection with new token...');
         await this.connect();
       }
+
     } catch (error) {
-      console.error('Token refresh failed:', error);
+      console.error('Socket: Token refresh failed:', error);
+
       // If token refresh fails, logout user
       const authStore = useAuthStore.getState();
       authStore.logout();
+
+      // Clear connection state
+      this.connectionPromise = null;
+      this.isConnected = false;
 
       // Don't try normal reconnect after auth failure
       throw error;
