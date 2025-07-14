@@ -345,85 +345,101 @@ pm2 start ecosystem.config.js
 - Start command: `cd server-ts && npm run start`
 - Environment variables: Configure database and JWT secrets
 
-## Requirements docs:
+## 🎓 Learning Resources
 
-- Docs for concept React JS.
-- What is [JSX](https://reactjs.org/docs/introducing-jsx.html) ?
-- How [rendering](https://reactjs.org/docs/rendering-elements.html)  with React ?
-- How to create [Component React and Props](https://reactjs.org/docs/components-and-props.html) ?
-- [React State ? LifeCycle ?](https://reactjs.org/docs/state-and-lifecycle.html)
-- How to [handle event](https://reactjs.org/docs/handling-events.html) React JS ?
-- [Condition Rendering ?](https://reactjs.org/docs/conditional-rendering.html)
-- [Lists and Keys?](https://reactjs.org/docs/lists-and-keys.html)
-- Difference between Class Component and Functional Components. ( [Link docs](https://reactjs.org/docs/react-component.html#render) | [Link dev](https://dev.to/mehmehmehlol/class-components-vs-functional-components-in-react-4hd3) )
-- State management with [redux](https://redux.js.org/)
-- Middleware for client [redux saga](https://redux-saga.js.org/)
-- Config and structure project - see more [github](#github).
+This project serves as a comprehensive learning resource for modern full-stack development:
 
-## Running the app
-*We are split two folder: client and server*
+### 📚 Frontend Concepts
+- **React 19**: Latest features including concurrent rendering and server components
+- **TypeScript**: Advanced type safety and modern JavaScript features
+- **TanStack Router**: Type-safe routing with search params and loaders
+- **TanStack Query**: Server state management with caching and synchronization
+- **Zustand**: Lightweight state management for client-side state
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development
+- **shadcn/ui**: Modern, accessible component library
 
-`Run only client`
+### 🔧 Backend Architecture
+- **Clean Architecture**: Separation of concerns and dependency inversion
+- **Domain-Driven Design**: Business logic organization and modeling
+- **Repository Pattern**: Data access abstraction
+- **Use Cases**: Application business rules implementation
+- **Dependency Injection**: Loose coupling and testability
 
-```bash
-# Build for production
-bun run build
+### 🛠️ Development Practices
+- **Monorepo Management**: Shared tooling and cross-package dependencies
+- **Testing Strategies**: Unit, integration, and E2E testing approaches
+- **Docker Containerization**: Development and production environments
+- **CI/CD Pipelines**: Automated testing and deployment workflows
 
-# Start production server
-bun run start
-```
+## 🤝 Contributing
 
-## Contributing
+We welcome contributions! Please follow these guidelines:
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+### Getting Started
+1. **Fork** the repository
+2. **Clone** your fork: `git clone <your-fork-url>`
+3. **Install** dependencies: `npm run setup`
+4. **Create** a feature branch: `git checkout -b feature/amazing-feature`
 
-$ npm run start:dev | yarn start:dev
+### Development Process
+1. **Make** your changes following the existing code style
+2. **Add** tests for new functionality
+3. **Run** tests: `npm run test`
+4. **Build** the project: `npm run build`
+5. **Commit** with conventional commits: `git commit -m 'feat: add amazing feature'`
 
-# production mode
+### Submission
+1. **Push** to your branch: `git push origin feature/amazing-feature`
+2. **Open** a Pull Request with a clear description
+3. **Ensure** all CI checks pass
+4. **Respond** to review feedback
 
-$ npm run start | yarn start
+### Code Style
+- Follow TypeScript strict mode
+- Use ESLint and Prettier configurations
+- Write meaningful commit messages
+- Add JSDoc comments for public APIs
+- Maintain test coverage above 80%
 
+## 📄 License
 
-```
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## Run SSR
+### What this means:
+- ✅ **Commercial use** - Use in commercial projects
+- ✅ **Modification** - Modify and adapt the code
+- ✅ **Distribution** - Share and distribute
+- ✅ **Private use** - Use in private projects
+- ❗ **Liability** - No warranty or liability
+- ❗ **Attribution** - Include original license
 
-*Run script in root folder*
+## 🌟 Support & Community
 
-```bash
+### Getting Help
+- 📖 **Documentation**: Check the README files in each package
+- 🐛 **Issues**: [Open an issue](https://github.com/truongnat/example-react/issues) for bugs
+- 💡 **Discussions**: [Start a discussion](https://github.com/truongnat/example-react/discussions) for questions
+- 📧 **Email**: Contact the maintainers directly
 
-# bash script
+### Show Your Support
+If you find this project helpful:
+- ⭐ **Star** the repository on GitHub
+- 🍴 **Fork** it for your own projects
+- 📢 **Share** it with the community
+- 🤝 **Contribute** improvements and features
 
-$ ./ssr.sh
+### Stay Connected
+- 👨‍💻 **Author**: [truongdq.dev](https://github.com/truongnat)
+- 🌐 **Portfolio**: [portfolio-peanut.netlify.app](https://portfolio-peanut.netlify.app/)
+- 🐦 **Twitter**: [@truong20013](https://twitter.com/truong20013)
+- 📱 **Telegram**: [@peanut201](https://t.me/peanut201)
 
-```
+---
 
-## Github
+<p align="center">
+  <strong>Built with ❤️ for the developer community in 2025</strong>
+</p>
 
-
-[GitHub - truongdq2001/example-react](https://github.com/truongnat/example-react)
-
-## Stay in touch
-
-
-- Author - [Peanut201](https://www.facebook.com/truongdq2001/)
-
-- Website - [Portfolio](https://portfolio-peanut.netlify.app/)
-
-- Twitter - [@Peanut201](https://twitter.com/truong20013)
-
-- Telegram - [@Peanut201](https://t.me/peanut201)
-
-## License
-
-This project is licensed under the MIT License.
-
-## Support
-
-If you find this project helpful, please give it a ⭐ on GitHub!
-
-For questions or support, please open an issue.
+<p align="center">
+  <a href="#-overview">Back to Top</a>
+</p>

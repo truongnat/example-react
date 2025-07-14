@@ -1,63 +1,137 @@
-# Todo App Client
+# React Frontend Client 2025
 
-A modern React client application built with TypeScript, TanStack Router, TanStack Query, Zustand, and TailwindCSS.
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-blue?logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-6.0-purple?logo=vite" alt="Vite" />
+  <img src="https://img.shields.io/badge/TailwindCSS-4.1-teal?logo=tailwindcss" alt="Tailwind CSS" />
+</p>
 
-## Features
+A cutting-edge React frontend application showcasing modern development practices with TypeScript, advanced state management, and real-time capabilities. Built for 2025 with the latest React 19 features and best-in-class developer experience.
 
-- 🔐 **Authentication**: Login, register, logout with JWT tokens
-- 📝 **Todo Management**: Create, read, update, delete todos
-- 🔄 **Real-time Updates**: Optimistic updates with TanStack Query
-- 📱 **Responsive Design**: Mobile-first design with TailwindCSS
-- 🎨 **Modern UI**: shadcn/ui components
-- 🚀 **Performance**: Automatic caching and background refetching
-- 🛡️ **Type Safety**: Full TypeScript support
+## ✨ Features
 
-## Tech Stack
+### 🔐 **Authentication & Security**
+- JWT-based authentication with automatic token refresh
+- Secure login, registration, and logout flows
+- Protected routes with authentication guards
+- Profile management with avatar uploads
+- Persistent authentication state
 
-- **React 19** - UI library
-- **TypeScript** - Type safety
-- **TanStack Router** - Type-safe routing
-- **TanStack Query** - Server state management
-- **Zustand** - Client state management
-- **TailwindCSS** - Styling
-- **shadcn/ui** - UI components
-- **Zod** - Schema validation
-- **Vite** - Build tool
-- **Bun** - Package manager
+### 📝 **Todo Management**
+- Full CRUD operations with optimistic updates
+- Advanced filtering (all, initial, in-progress, completed, cancelled)
+- Real-time synchronization across browser tabs
+- Drag-and-drop reordering (coming soon)
+- Bulk operations and batch updates
 
-## Getting Started
+### 💬 **Real-time Chat**
+- WebSocket-based instant messaging
+- Multiple chat rooms support
+- Emoji picker integration
+- File sharing capabilities
+- Message history and notifications
+
+### 🎨 **Modern UI/UX**
+- Responsive design with mobile-first approach
+- Dark/light theme support with system preference detection
+- Accessible components following WCAG guidelines
+- Smooth animations and micro-interactions
+- Loading states and error boundaries
+
+### 🚀 **Performance & Developer Experience**
+- Automatic code splitting and lazy loading
+- Optimistic UI updates for instant feedback
+- Background data synchronization
+- Comprehensive error handling
+- Hot module replacement for fast development
+
+## 🛠️ Technology Stack
+
+### **Core Framework**
+- **React 19** - Latest React with concurrent features
+- **TypeScript 5.8** - Advanced type safety and IntelliSense
+- **Vite 6.0** - Lightning-fast build tool and dev server
+
+### **Routing & State Management**
+- **TanStack Router** - Type-safe routing with search params
+- **TanStack Query** - Powerful server state management
+- **Zustand** - Lightweight client state management
+- **React Hook Form** - Performant form handling
+
+### **Styling & UI**
+- **Tailwind CSS 4.1** - Utility-first CSS framework
+- **shadcn/ui** - High-quality, accessible component library
+- **Lucide React** - Beautiful, customizable icons
+- **next-themes** - Theme switching with system preference
+
+### **Development & Testing**
+- **Vitest** - Fast unit testing framework
+- **Testing Library** - Simple and complete testing utilities
+- **ESLint & Prettier** - Code quality and formatting
+- **TypeScript strict mode** - Maximum type safety
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Bun (latest version)
-- Node.js 18+
-- Backend server running on `http://localhost:5000`
+- **Node.js** 18+ (LTS recommended)
+- **Package Manager**: Bun (recommended), npm, or yarn
+- **Backend Server**: Running on `http://localhost:3000`
 
-### Installation
+### Quick Setup
 
-1. Install dependencies:
+1. **Install dependencies**:
 ```bash
+# Using Bun (recommended)
 bun install
+
+# Using npm
+npm install
+
+# Using yarn
+yarn install
 ```
 
-2. Copy environment variables:
+2. **Environment configuration**:
 ```bash
+# Copy environment template
 cp .env.example .env
 ```
 
-3. Update `.env` with your configuration:
+3. **Configure environment variables**:
 ```env
-VITE_API_BASE_URL=http://localhost:5000/api
-VITE_APP_NAME=Todo App
+# API Configuration
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_WS_URL=http://localhost:3000
+
+# Application Settings
+VITE_APP_NAME=React Todo & Chat App
 VITE_APP_VERSION=1.0.0
+VITE_APP_DESCRIPTION=Modern React application with real-time features
+
+# Feature Flags
+VITE_ENABLE_CHAT=true
+VITE_ENABLE_NOTIFICATIONS=true
+VITE_ENABLE_DARK_MODE=true
 ```
 
-4. Start the development server:
+4. **Start development server**:
 ```bash
+# Using Bun
 bun run dev
+
+# Using npm
+npm run dev
+
+# Using yarn
+yarn dev
 ```
 
-The app will be available at `http://localhost:5173`
+5. **Access the application**:
+- 🌐 **Frontend**: http://localhost:5173
+- 🔧 **Backend API**: http://localhost:3000
+- 📚 **API Docs**: http://localhost:3000/api-docs
 
 ## Project Structure
 
