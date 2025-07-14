@@ -17,7 +17,7 @@ export class FileUploadService {
   private allowedMimeTypes: string[];
 
   constructor() {
-    this.uploadDir = process.env.UPLOAD_DIR || './uploads';
+    this.uploadDir = process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads');
     this.maxFileSize = parseInt(process.env.MAX_FILE_SIZE || '5242880'); // 5MB default
     this.allowedMimeTypes = [
       'image/jpeg',

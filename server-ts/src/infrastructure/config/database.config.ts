@@ -1,3 +1,4 @@
+import path from 'path';
 import { DatabaseConfig } from '@shared/types/common.types';
 
 export interface DatabaseConnectionConfig {
