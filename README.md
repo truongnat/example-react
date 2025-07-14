@@ -1,80 +1,125 @@
 
-# MERN Stack Monorepo
+# MERN Stack Monorepo 2025
 
 <p align="center">
   <img src="./client/public/logo-mern.png" width="320" alt="MERN Stack Logo" />
 </p>
 
-<p align="center">Modern MERN Stack application with TypeScript</p>
+<p align="center">
+  <strong>Modern Full-Stack Application with TypeScript, Clean Architecture & Real-time Features</strong>
+</p>
 
-## Description
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-blue?logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express-4.18-lightgrey?logo=express" alt="Express" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="MIT License" />
+</p>
 
-A full-stack MERN application featuring a React frontend and Express.js backend with clean architecture.
+## 🚀 Overview
 
-- Learning ecosystem for ReactJS, example : [react router dom](https://reactrouter.com/web/guides/quick-start), [redux](https://redux.js.org/) and [Chakra UI](https://chakra-ui.com/).
+A production-ready MERN stack monorepo featuring modern development practices, clean architecture, and comprehensive tooling. Built with TypeScript throughout, this project demonstrates best practices for full-stack development in 2025.
 
-## Features
+### ✨ Key Features
 
-### Authentication System
-- ✅ User registration and login
-- ✅ JWT-based authentication with refresh tokens
-- ✅ Password recovery and email verification
-- ✅ Profile management (username, avatar updates)
+**🔐 Authentication & Security**
+- JWT-based authentication with refresh tokens
+- Password recovery and email verification
+- Profile management with avatar uploads
+- Rate limiting and security middleware
 
-- Deploy source to hosting.
-    + Frontend ReactJS deploy with [vercel](https://vercel.com/).
-    + Backend NodeJs deploy with [heroku](https://dashboard.heroku.com/).
+**📝 Todo Management**
+- Full CRUD operations with real-time updates
+- Advanced filtering and sorting
+- Status management (initial, in-progress, completed, cancelled)
+- Optimistic UI updates
 
-## Prerequisites
+**💬 Real-time Chat**
+- WebSocket-based messaging with Socket.io
+- Multiple chat rooms support
+- Emoji support and file sharing
+- Message history and real-time notifications
+
+**🏗️ Architecture & Development**
+- Clean Architecture principles
+- Monorepo structure with shared tooling
+- Comprehensive testing suite
+- Docker containerization
+- Cross-platform development scripts
+
+## 🛠️ Technology Stack
+
+**Frontend (Client)**
+- **React 19** with TypeScript
+- **TanStack Router** for type-safe routing
+- **TanStack Query** for server state management
+- **Zustand** for client state management
+- **Tailwind CSS** + **shadcn/ui** for styling
+- **Vite** for fast development and building
+
+**Backend (Server)**
+- **Node.js** + **Express** with TypeScript
+- **Clean Architecture** with dependency injection
+- **Multiple Database Support** (SQLite, PostgreSQL, Supabase, MongoDB)
+- **Socket.io** for real-time communication
+- **Swagger/OpenAPI** for API documentation
+- **Jest** for comprehensive testing
+
+**DevOps & Tooling**
+- **Docker** & **Docker Compose** for containerization
+- **Cross-platform JavaScript scripts** for development
+- **ESLint** + **Prettier** for code quality
+- **GitHub Actions** ready CI/CD setup
+
+## 📋 Prerequisites
 
 - **Node.js** >= 18.0.0
-- **Bun** package manager ([Install Bun](https://bun.sh/))
+- **Package Manager**: Bun (recommended), npm, or yarn
 - **Git** for version control
+- **Docker** (optional, for containerized development)
 
-- Authentication :
-    + Sign in.
-    + Sign up.
-    + Auto remember login.
-- Loading all in.
-- Todo page : CRUD todos.
-- UI profile and update profile.
+## 🚀 Quick Start
 
-## Setup
-
-
-
-We are using template Create React App.
-
-
-
-> Note :
-> - Node version have Node >= 10 on your local development machine. You have download [Node JS](https://nodejs.org/en/) or update with command : *npm update*.
-> - Using IDE [Visual Studio Code](https://code.visualstudio.com/) or [WebStorm](https://www.jetbrains.com/webstorm/)
-> *All you need left is to know a little bit of [Javascript](https://www.w3schools.com/js/) .*
-
-
-**NPX :**
-
+### 1. Clone & Setup
 ```bash
-# 1. Clone repository
+# Clone the repository
 git clone <repository-url>
 cd example-react
 
-# 2. Install dependencies
+# Install all dependencies
+npm run setup
+# or with bun
 bun run setup
+```
 
-# 3. Create environment file
+### 2. Environment Configuration
+```bash
+# Create server environment file
 cat > server-ts/.env << EOF
 NODE_ENV=development
 PORT=3000
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production
-DATABASE_URL=sqlite:./data/database.sqlite
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-2025
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production-2025
+DATABASE_TYPE=sqlite
+SQLITE_DATABASE_PATH=./data/database.sqlite
+CORS_ALLOW_ORIGINS=http://localhost:5173,http://localhost:3000
 EOF
+```
 
-# 4. Start development
+### 3. Start Development
+```bash
+# Start both client and server
+npm run dev
+# or with bun
 bun run dev
 ```
+
+**Access Points:**
+- 🌐 **Client**: http://localhost:5173
+- 🔧 **Server**: http://localhost:3000
+- 📚 **API Docs**: http://localhost:3000/api-docs
+- 🏥 **Health Check**: http://localhost:3000/health
 
 ## Project Structure
 
