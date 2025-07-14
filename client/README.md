@@ -133,64 +133,188 @@ yarn dev
 - 🔧 **Backend API**: http://localhost:3000
 - 📚 **API Docs**: http://localhost:3000/api-docs
 
-## Project Structure
+## 📁 Project Architecture
 
 ```
 src/
-├── components/          # Reusable UI components
-│   ├── ui/             # shadcn/ui components
-│   ├── Navigation.tsx  # Main navigation
-│   └── AuthRequired.tsx # Auth guard component
-├── hooks/              # Custom React hooks
-│   ├── useAuth.ts      # Authentication hooks
-│   └── useTodos.ts     # Todo management hooks
-├── lib/                # Utility libraries
-│   ├── config.ts       # App configuration
-│   ├── http-client.ts  # HTTP client with interceptors
-│   ├── query-client.ts # TanStack Query configuration
-│   ├── error-handler.ts # Global error handling
-│   └── utils.ts        # Utility functions
-├── routes/             # Page components
-│   ├── index.tsx       # Home page
-│   ├── login.tsx       # Login page
-│   ├── register.tsx    # Register page
-│   ├── todo.tsx        # Todo management
-│   └── profile.tsx     # User profile
-├── services/           # API services
-│   ├── auth.service.ts # Authentication API
-│   └── todo.service.ts # Todo API
-├── stores/             # Zustand stores
-│   └── authStore.ts    # Authentication state
-├── types/              # TypeScript types
-│   └── api.ts          # API types and DTOs
-└── main.tsx           # App entry point
+├── 🧩 components/              # Reusable UI Components
+│   ├── ui/                    # shadcn/ui base components
+│   │   ├── button.tsx         # Button variants
+│   │   ├── input.tsx          # Form inputs
+│   │   ├── dialog.tsx         # Modal dialogs
+│   │   ├── toast.tsx          # Notification toasts
+│   │   └── ...                # Other UI primitives
+│   ├── layout/                # Layout components
+│   │   ├── Navigation.tsx     # Main navigation bar
+│   │   ├── Sidebar.tsx        # Collapsible sidebar
+│   │   ├── Header.tsx         # Page headers
+│   │   └── Footer.tsx         # Site footer
+│   ├── auth/                  # Authentication components
+│   │   ├── AuthRequired.tsx   # Route protection
+│   │   ├── LoginForm.tsx      # Login form
+│   │   ├── RegisterForm.tsx   # Registration form
+│   │   └── ProfileForm.tsx    # Profile editing
+│   ├── todo/                  # Todo-specific components
+│   │   ├── TodoList.tsx       # Todo list display
+│   │   ├── TodoItem.tsx       # Individual todo item
+│   │   ├── TodoForm.tsx       # Todo creation/editing
+│   │   ├── TodoFilters.tsx    # Filtering controls
+│   │   └── TodoStats.tsx      # Statistics display
+│   └── chat/                  # Chat components
+│       ├── ChatRoom.tsx       # Chat room interface
+│       ├── MessageList.tsx    # Message display
+│       ├── MessageInput.tsx   # Message composition
+│       └── EmojiPicker.tsx    # Emoji selection
+├── 🪝 hooks/                  # Custom React Hooks
+│   ├── useAuth.ts             # Authentication state & actions
+│   ├── useTodos.ts            # Todo CRUD operations
+│   ├── useChat.ts             # Real-time chat functionality
+│   ├── useLocalStorage.ts     # Local storage persistence
+│   ├── useDebounce.ts         # Input debouncing
+│   └── useWebSocket.ts        # WebSocket connection
+├── 📚 lib/                    # Utility Libraries
+│   ├── config.ts              # Application configuration
+│   ├── http-client.ts         # Axios HTTP client setup
+│   ├── query-client.ts        # TanStack Query configuration
+│   ├── router.ts              # TanStack Router setup
+│   ├── auth.ts                # Authentication utilities
+│   ├── validation.ts          # Zod schemas
+│   ├── utils.ts               # General utilities
+│   └── constants.ts           # Application constants
+├── 🛣️ routes/                 # Page Components & Routing
+│   ├── __root.tsx             # Root layout component
+│   ├── index.tsx              # Home/dashboard page
+│   ├── auth/                  # Authentication pages
+│   │   ├── login.tsx          # Login page
+│   │   ├── register.tsx       # Registration page
+│   │   └── profile.tsx        # User profile page
+│   ├── todos/                 # Todo management pages
+│   │   ├── index.tsx          # Todo list page
+│   │   └── $todoId.tsx        # Todo detail page
+│   └── chat/                  # Chat pages
+│       ├── index.tsx          # Chat rooms list
+│       └── $roomId.tsx        # Individual chat room
+├── 🔧 services/               # API Service Layer
+│   ├── api.ts                 # Base API configuration
+│   ├── auth.service.ts        # Authentication endpoints
+│   ├── todo.service.ts        # Todo CRUD endpoints
+│   ├── chat.service.ts        # Chat API endpoints
+│   ├── upload.service.ts      # File upload handling
+│   └── websocket.service.ts   # WebSocket management
+├── 🗄️ stores/                 # State Management
+│   ├── authStore.ts           # Authentication state
+│   ├── todoStore.ts           # Todo client state
+│   ├── chatStore.ts           # Chat state management
+│   ├── themeStore.ts          # Theme preferences
+│   └── notificationStore.ts   # Notification state
+├── 📝 types/                  # TypeScript Definitions
+│   ├── api.ts                 # API response types
+│   ├── auth.ts                # Authentication types
+│   ├── todo.ts                # Todo entity types
+│   ├── chat.ts                # Chat message types
+│   └── common.ts              # Shared type definitions
+├── 🎨 styles/                 # Styling
+│   ├── globals.css            # Global styles & Tailwind
+│   ├── components.css         # Component-specific styles
+│   └── themes.css             # Theme variables
+├── 🧪 __tests__/              # Test Files
+│   ├── components/            # Component tests
+│   ├── hooks/                 # Hook tests
+│   ├── services/              # Service tests
+│   ├── utils/                 # Utility tests
+│   └── setup.ts               # Test configuration
+├── 📄 main.tsx                # Application entry point
+└── 🌍 vite-env.d.ts           # Vite environment types
 ```
 
-## API Integration
+## 🔗 API Integration
 
-The client integrates with a TypeScript backend using clean architecture. Key features:
+### Backend Communication
+The client seamlessly integrates with the TypeScript backend using modern patterns:
 
-- **Automatic Token Refresh**: JWT tokens are automatically refreshed
-- **Error Handling**: Global error handling with user-friendly messages
-- **Optimistic Updates**: UI updates immediately for better UX
-- **Caching**: Smart caching with TanStack Query
-- **Type Safety**: Full type safety with backend DTOs
+- **🔄 Automatic Token Refresh**: JWT tokens refresh transparently
+- **🛡️ Request Interceptors**: Automatic authentication headers
+- **⚡ Optimistic Updates**: Instant UI feedback with rollback on errors
+- **📦 Smart Caching**: Intelligent data caching with TanStack Query
+- **🔒 Type Safety**: End-to-end type safety with shared DTOs
+- **🚨 Error Handling**: Centralized error handling with user-friendly messages
+- **🔄 Retry Logic**: Automatic retry for failed requests
+- **📊 Loading States**: Comprehensive loading and error states
 
-## Available Scripts
+### Real-time Features
+- **WebSocket Connection**: Persistent connection for real-time updates
+- **Auto-reconnection**: Handles connection drops gracefully
+- **Message Queuing**: Queues messages during disconnection
+- **Presence Indicators**: Shows online/offline status
 
-- `bun run dev` - Start development server
-- `bun run build` - Build for production
-- `bun run preview` - Preview production build
-- `bun run test` - Run tests
-- `bun run test:ci` - Run tests in CI mode
+## 📜 Available Scripts
 
-## Environment Variables
+### Development
+```bash
+npm run dev              # Start development server with HMR
+npm run dev:host         # Start dev server accessible on network
+npm run type-check       # Run TypeScript type checking
+```
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `VITE_API_BASE_URL` | Backend API URL | `http://localhost:5000/api` |
-| `VITE_APP_NAME` | Application name | `Todo App` |
-| `VITE_APP_VERSION` | Application version | `1.0.0` |
+### Building & Preview
+```bash
+npm run build            # Build optimized production bundle
+npm run preview          # Preview production build locally
+npm run build:analyze    # Analyze bundle size and dependencies
+```
+
+### Testing
+```bash
+npm run test             # Run tests in watch mode
+npm run test:ci          # Run tests once (CI mode)
+npm run test:coverage    # Generate coverage report
+npm run test:ui          # Run tests with UI interface
+```
+
+### Code Quality
+```bash
+npm run lint             # Run ESLint
+npm run lint:fix         # Fix ESLint issues automatically
+npm run format           # Format code with Prettier
+npm run format:check     # Check code formatting
+npm run validate         # Run type-check, lint, and tests
+```
+
+### Maintenance
+```bash
+npm run clean            # Clean build artifacts
+npm run reinstall        # Clean reinstall dependencies
+```
+
+## ⚙️ Environment Configuration
+
+### Required Variables
+| Variable | Description | Default | Example |
+|----------|-------------|---------|---------|
+| `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:3000/api` | `https://api.example.com/api` |
+| `VITE_WS_URL` | WebSocket server URL | `http://localhost:3000` | `wss://api.example.com` |
+
+### Optional Variables
+| Variable | Description | Default | Options |
+|----------|-------------|---------|---------|
+| `VITE_APP_NAME` | Application display name | `React Todo & Chat App` | Any string |
+| `VITE_APP_VERSION` | Application version | `1.0.0` | Semantic version |
+| `VITE_APP_DESCRIPTION` | App description | `Modern React application...` | Any string |
+| `VITE_ENABLE_CHAT` | Enable chat features | `true` | `true` \| `false` |
+| `VITE_ENABLE_NOTIFICATIONS` | Enable notifications | `true` | `true` \| `false` |
+| `VITE_ENABLE_DARK_MODE` | Enable dark mode | `true` | `true` \| `false` |
+
+### Environment Files
+```bash
+# Development
+.env.development
+
+# Production
+.env.production
+
+# Local overrides (gitignored)
+.env.local
+```
 
 ## Authentication Flow
 

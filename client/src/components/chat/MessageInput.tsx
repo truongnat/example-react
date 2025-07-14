@@ -63,12 +63,12 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
     }
   };
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  }, [handleSubmit]);
+  // const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+  //   if (e.key === 'Enter') {
+  //     e.preventDefault();
+  //     handleSubmit(e);
+  //   }
+  // }, [handleSubmit]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -138,7 +138,7 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
             ref={textareaRef}
             value={message}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
+            // onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled}
             className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
