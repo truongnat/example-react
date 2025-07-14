@@ -15,7 +15,9 @@ import { SocketService } from '@infrastructure/external-services/SocketService';
 import { ApiResponse } from '@shared/types/common.types';
 import { HTTP_STATUS } from '@shared/constants';
 
-// Load environment variables
+// Load environment variables from root directory
+dotenv.config({ path: '../.env' });
+// Fallback to local .env if root doesn't exist
 dotenv.config();
 
 class AppServer {
