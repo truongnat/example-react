@@ -25,24 +25,45 @@ function log(message, color = colors.reset) {
 }
 
 function loadEnvFile() {
-  const envPath = path.join(process.cwd(), '.env');
-  if (fs.existsSync(envPath)) {
-    const envContent = fs.readFileSync(envPath, 'utf8');
-    const envVars = {};
-    
+  // Try to load from root .env first (unified configuration)
+  const rootEnvPath = path.join(process.cwd(), '../.env');
+  const localEnvPath = path.join(process.cwd(), '.env');
+  const envVars = {};
+
+  // Load root .env first
+  if (fs.existsSync(rootEnvPath)) {
+    console.log('📄 Loading unified environment configuration from root...');
+    const envContent = fs.readFileSync(rootEnvPath, 'utf8');
+
     envContent.split('\n').forEach(line => {
       const trimmed = line.trim();
       if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
         const [key, ...valueParts] = trimmed.split('=');
         const value = valueParts.join('=');
         envVars[key] = value;
-        process.env[key] = value;
+        if (!process.env[key]) { // Don't override existing values
+          process.env[key] = value;
+        }
       }
     });
-    
-    return envVars;
   }
-  return {};
+
+  // Load local .env as fallback/override
+  if (fs.existsSync(localEnvPath)) {
+    const envContent = fs.readFileSync(localEnvPath, 'utf8');
+
+    envContent.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+        const [key, ...valueParts] = trimmed.split('=');
+        const value = valueParts.join('=');
+        envVars[key] = value;
+        process.env[key] = value; // Local overrides root
+      }
+    });
+  }
+
+  return envVars;
 }
 
 function checkCommand(command) {
