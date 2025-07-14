@@ -131,90 +131,235 @@ src/
 - **🔄 Flexibility**: Easy to swap implementations (databases, external services)
 - **📈 Scalability**: Modular structure supports team scaling and feature growth
 
-## 🚀 Features
+## ✨ Enterprise Features
 
-- **Clean Architecture**: Separation of concerns with clear dependency rules
-- **TypeScript**: Full type safety and modern JavaScript features
-- **Multiple Databases**: SQLite, PostgreSQL, Supabase, MongoDB support
-- **Authentication**: JWT-based authentication with refresh tokens
-- **Validation**: Request validation with express-validator
-- **Error Handling**: Centralized error handling with custom exceptions
-- **Logging**: Request logging and error tracking
-- **Docker Support**: Containerized deployment with Docker Compose
-- **SSR Support**: Serve React applications with server-side rendering
-- **Health Checks**: Built-in health check endpoints
-- **API Documentation**: Interactive Swagger/OpenAPI documentation
+### 🔐 **Security & Authentication**
+- **JWT Authentication**: Access tokens + refresh token rotation
+- **Password Security**: Bcrypt hashing with configurable rounds
+- **Rate Limiting**: Configurable rate limits per endpoint
+- **CORS Protection**: Flexible CORS configuration
+- **Input Validation**: Comprehensive request validation with express-validator
+- **SQL Injection Prevention**: Parameterized queries and ORM protection
+- **XSS Protection**: Input sanitization and output encoding
 
-## 🗄️ Database Options
+### 🗄️ **Multi-Database Support**
+- **SQLite**: Lightweight development database
+- **PostgreSQL**: Production-ready relational database
+- **Supabase**: Cloud-native PostgreSQL with real-time features
+- **MongoDB**: NoSQL document database support
+- **Database Abstraction**: Repository pattern for database independence
+- **Migration Support**: Database schema versioning and migrations
 
-### 1. SQLite (Development)
+### 🚀 **Performance & Scalability**
+- **Connection Pooling**: Efficient database connection management
+- **Caching Strategy**: Redis integration for session and data caching
+- **Async/Await**: Non-blocking I/O operations throughout
+- **Compression**: Gzip compression for API responses
+- **Static File Serving**: Optimized static asset delivery
+- **Health Monitoring**: Comprehensive health check endpoints
+
+### 🔄 **Real-time Communication**
+- **WebSocket Support**: Socket.io integration for real-time features
+- **Chat System**: Multi-room chat with message persistence
+- **Live Updates**: Real-time todo updates across clients
+- **Presence System**: User online/offline status tracking
+- **Event Broadcasting**: Efficient event distribution
+
+### 📚 **Developer Experience**
+- **API Documentation**: Interactive Swagger/OpenAPI 3.0 documentation
+- **Type Safety**: End-to-end TypeScript with strict mode
+- **Hot Reload**: Development server with automatic restart
+- **Error Handling**: Centralized error handling with detailed logging
+- **Testing Suite**: Comprehensive unit, integration, and E2E tests
+- **Code Quality**: ESLint, Prettier, and pre-commit hooks
+
+### 🐳 **DevOps & Deployment**
+- **Docker Support**: Multi-stage Dockerfile with optimization
+- **Docker Compose**: Development, testing, and production environments
+- **Environment Management**: Flexible configuration for different environments
+- **Process Management**: PM2 integration for production deployment
+- **Logging**: Structured logging with different levels and outputs
+- **Monitoring**: Health checks and application metrics
+
+## 🗄️ Database Configuration
+
+The server supports multiple database backends with seamless switching via environment configuration:
+
+### 1. 🗃️ SQLite (Development & Testing)
+**Perfect for**: Local development, testing, prototyping
 ```bash
 DATABASE_TYPE=sqlite
 SQLITE_DATABASE_PATH=./data/database.sqlite
 ```
+**Features**:
+- Zero configuration setup
+- File-based storage
+- ACID compliance
+- Perfect for development and testing
 
-### 2. PostgreSQL (Production)
+### 2. 🐘 PostgreSQL (Production Recommended)
+**Perfect for**: Production deployments, complex queries, scalability
 ```bash
 DATABASE_TYPE=postgres
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 POSTGRES_DATABASE=example_db
 POSTGRES_USERNAME=postgres
-POSTGRES_PASSWORD=password
+POSTGRES_PASSWORD=your_secure_password
+POSTGRES_SSL=false
+POSTGRES_MAX_CONNECTIONS=20
 ```
+**Features**:
+- ACID compliance with advanced features
+- JSON/JSONB support for flexible schemas
+- Full-text search capabilities
+- Excellent performance and scalability
+- Rich ecosystem and tooling
 
-### 3. Supabase (Cloud)
+### 3. ☁️ Supabase (Cloud-Native)
+**Perfect for**: Rapid deployment, real-time features, managed infrastructure
 ```bash
 DATABASE_TYPE=supabase
-SUPABASE_URL=your-supabase-url
-SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
+**Features**:
+- Managed PostgreSQL with real-time subscriptions
+- Built-in authentication and authorization
+- Auto-generated APIs
+- Edge functions and storage
+- Real-time database changes
 
-### 4. MongoDB (Legacy)
+### 4. 🍃 MongoDB (Document Store)
+**Perfect for**: Flexible schemas, rapid prototyping, document-heavy applications
 ```bash
 DATABASE_TYPE=mongodb
 MONGO_URL=mongodb://localhost:27017/example-db
+MONGO_USERNAME=your_username
+MONGO_PASSWORD=your_password
+MONGO_AUTH_SOURCE=admin
+```
+**Features**:
+- Flexible document schemas
+- Horizontal scaling capabilities
+- Rich query language
+- GridFS for file storage
+- Aggregation pipeline for complex operations
+
+### 🔄 Database Switching
+Switch between databases without code changes:
+```bash
+# Development with SQLite
+npm run dev
+
+# Production with PostgreSQL
+DATABASE_TYPE=postgres npm run start
+
+# Cloud deployment with Supabase
+DATABASE_TYPE=supabase npm run start
 ```
 
-## 🛠️ Setup
+## 🚀 Quick Start Guide
 
 ### Prerequisites
-- Node.js 18+
-- Docker (for PostgreSQL)
-- Git
+- **Node.js** 18+ (LTS recommended)
+- **Package Manager**: npm, yarn, or bun
+- **Docker** (optional, for PostgreSQL)
+- **Git** for version control
 
-### Installation
+### 1. Installation & Setup
 
-1. **Clone and setup**
 ```bash
+# Clone the repository
 git clone <repository-url>
 cd server-ts
+
+# Install dependencies
 npm install
+# or
+yarn install
+# or
+bun install
 ```
 
-2. **Environment configuration**
+### 2. Environment Configuration
+
 ```bash
+# Copy environment template
 cp .env.example .env
+
 # Edit .env with your configuration
+nano .env  # or your preferred editor
 ```
 
-3. **Database setup**
+**Essential Environment Variables:**
+```env
+# Server Configuration
+NODE_ENV=development
+PORT=3000
+IS_SSR=true
+
+# Database (choose one)
+DATABASE_TYPE=sqlite
+SQLITE_DATABASE_PATH=./data/database.sqlite
+
+# JWT Security (CHANGE IN PRODUCTION!)
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-2025
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production-2025
+JWT_EXPIRES_IN=1h
+JWT_REFRESH_EXPIRES_IN=7d
+
+# CORS Configuration
+CORS_ALLOW_ORIGINS=http://localhost:5173,http://localhost:3000
+```
+
+### 3. Database Setup
+
 ```bash
-# For SQLite (default)
+# SQLite (default - no additional setup required)
 npm run setup:db
 
-# For PostgreSQL with Docker
+# PostgreSQL with Docker
+docker-compose -f docker/docker-compose.yml up -d postgres
 DATABASE_TYPE=postgres npm run setup:db
 
-# For Supabase (configure .env first)
+# Supabase (configure .env with Supabase credentials first)
 DATABASE_TYPE=supabase npm run setup:db
+
+# MongoDB (ensure MongoDB is running)
+DATABASE_TYPE=mongodb npm run setup:db
 ```
 
-4. **Start development server**
+### 4. Start Development
+
 ```bash
+# Start development server with hot reload
 npm run dev
+
+# Or use the full development setup script
+npm run dev:full
 ```
+
+**Server will be available at:**
+- 🌐 **API Server**: http://localhost:3000
+- 📚 **API Documentation**: http://localhost:3000/api-docs
+- 🏥 **Health Check**: http://localhost:3000/health
+
+### 5. Seed Demo Data (Optional)
+
+```bash
+# Create demo user and sample todos
+npm run seed:demo
+
+# Force recreate demo data
+npm run seed:demo:force
+```
+
+**Demo Credentials:**
+- **Email**: demo@example.com
+- **Password**: Demo123!
+- **Features**: Pre-populated todos and chat rooms
 
 ## 📜 Scripts
 
