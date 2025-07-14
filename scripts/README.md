@@ -1,80 +1,160 @@
-# Project Scripts
+# Cross-Platform Development Scripts 2025
 
-This directory contains cross-platform JavaScript scripts for managing the monorepo. These scripts replace OS-specific shell commands with Node.js-based solutions that work consistently across Windows, macOS, and Linux.
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Cross_Platform-✅-brightgreen" alt="Cross Platform" />
+  <img src="https://img.shields.io/badge/JavaScript-ES2022-yellow?logo=javascript" alt="JavaScript" />
+</p>
 
-## Available Scripts
+This directory contains **cross-platform JavaScript scripts** for managing the monorepo efficiently. These scripts replace OS-specific shell commands with Node.js-based solutions that work consistently across **Windows**, **macOS**, and **Linux**.
 
-### 🔧 Installation
+## 🎯 Design Philosophy
+
+- **🌍 Universal Compatibility**: Works identically on all operating systems
+- **🔧 Zero Dependencies**: Uses only Node.js built-in modules
+- **🎨 Enhanced UX**: Colored output, progress indicators, and clear feedback
+- **🛡️ Robust Error Handling**: Comprehensive error handling with helpful messages
+- **⚡ Performance Optimized**: Efficient process management and resource usage
+
+## 📜 Available Scripts
+
+### 🔧 **Installation & Setup**
 ```bash
+# Install all dependencies across the monorepo
 node scripts/install.js
-# or via package.json
-npm run install
+npm run setup                    # Alias via package.json
 ```
-- Installs dependencies for all packages in the monorepo
-- Handles frozen lockfiles automatically
-- Works with Bun package manager
+**Features:**
+- 📦 Installs dependencies for all packages (client, server, root)
+- 🔒 Handles frozen lockfiles automatically
+- 🏃‍♂️ Supports multiple package managers (npm, yarn, bun)
+- 🔄 Detects and uses the appropriate package manager
+- 📊 Provides installation progress and summary
 
-### 🚀 Development
+### 🚀 **Development Server**
 ```bash
+# Start both client and server in development mode
 node scripts/dev.js
-# or via package.json
-npm run dev
+npm run dev                      # Alias via package.json
 ```
-- Starts both client and server in development mode concurrently
-- Handles graceful shutdown with Ctrl+C
-- Provides colored output for better visibility
+**Features:**
+- 🔄 Concurrent client and server startup
+- 🎨 Colored output for better visibility (client=blue, server=green)
+- ⚡ Hot reload for both frontend and backend
+- 🛑 Graceful shutdown with Ctrl+C
+- 🔍 Process monitoring and restart on crashes
+- 📱 Network access information display
 
-### 🧪 Testing
+### 🧪 **Testing Suite**
 ```bash
+# Run comprehensive test suite
 node scripts/test.js
-# or via package.json
-npm run test
+npm run test                     # Alias via package.json
 ```
-- Runs tests for all packages in the monorepo
-- Provides detailed test summary
-- Fails fast if any test suite fails
+**Features:**
+- 🧪 Runs tests for all packages in the monorepo
+- 📊 Detailed test summary with pass/fail counts
+- ⚡ Fails fast if any test suite fails
+- 📈 Coverage reporting integration
+- 🔄 Supports watch mode for individual packages
+- 🎯 Parallel test execution for speed
 
-### 🏗️ Building
+### 🏗️ **Production Build**
 ```bash
+# Build all packages for production
 node scripts/build.js
-# or via package.json
-npm run build
+npm run build                    # Alias via package.json
 ```
-- Builds all packages for production
-- Provides build summary and status
-- Optimized for production deployment
+**Features:**
+- 🏗️ Builds all packages for production deployment
+- 📦 Optimized bundles with tree shaking
+- 📊 Build summary with file sizes and timing
+- 🔍 Bundle analysis and optimization suggestions
+- ✅ Build artifact verification
+- 🗜️ Automatic compression and minification
 
-### 🌟 Production Start
+### 🌟 **Production Server**
 ```bash
+# Start production server
 node scripts/start.js
-# or via package.json
-npm run start
+npm run start                    # Alias via package.json
 ```
-- Starts the production server
-- Checks for required build artifacts
-- Handles graceful shutdown signals
+**Features:**
+- 🚀 Starts the production server
+- ✅ Checks for required build artifacts
+- 🛡️ Handles graceful shutdown signals (SIGTERM, SIGINT)
+- 📊 Process monitoring and health checks
+- 🔄 Automatic restart on crashes
+- 📝 Production logging configuration
 
-### 🚀 Deployment
+### 🚀 **Complete Deployment Pipeline**
 ```bash
+# Full deployment workflow
 node scripts/deploy.js
-# or via package.json
-npm run deploy
+npm run deploy                   # Alias via package.json
 ```
-- Complete deployment pipeline
-- Runs build and test in sequence
-- Provides deployment instructions
-- Checks deployment artifacts
+**Features:**
+- 🔄 Complete CI/CD pipeline simulation
+- 🧪 Runs tests before deployment
+- 🏗️ Builds optimized production bundles
+- ✅ Validates deployment artifacts
+- 📋 Provides deployment checklist and instructions
+- 🔍 Pre-deployment health checks
 
-### 🧹 Cleanup
+### 🧹 **Cleanup & Maintenance**
 ```bash
+# Clean build artifacts and dependencies
 node scripts/clean.js
-# or via package.json
-npm run clean
+npm run clean                    # Alias via package.json
+
+# Force cleanup without confirmation
+node scripts/clean.js --force
+npm run clean -- --force
 ```
-- Removes build artifacts and dependencies
-- Cross-platform file/directory removal
-- Interactive confirmation (unless --force flag)
-- Comprehensive cleanup of cache and temporary files
+**Features:**
+- 🗑️ Removes build artifacts and dependencies
+- 🌍 Cross-platform file/directory removal
+- 🤔 Interactive confirmation (unless --force flag)
+- 📊 Shows space freed up after cleanup
+- 🔄 Comprehensive cleanup of caches and temporary files
+- 🛡️ Safe cleanup with backup options
+
+### 📦 **Package Manager Utilities**
+```bash
+# List available package managers
+node scripts/package-manager.js list
+npm run pm:list
+
+# Switch package manager
+node scripts/package-manager.js switch yarn
+npm run pm:switch yarn
+
+# Clean package manager artifacts
+node scripts/package-manager.js clean
+npm run pm:clean
+```
+**Features:**
+- 🔄 Switch between npm, yarn, and bun seamlessly
+- 🧹 Clean package manager specific files
+- 📊 Compare package manager performance
+- 🔍 Detect and validate package manager installations
+
+### 🌱 **Demo Data Seeding**
+```bash
+# Seed demo data for development
+node scripts/seed.js
+npm run seed
+
+# Force reseed with fresh data
+node scripts/seed.js --force
+npm run seed:force
+```
+**Features:**
+- 👤 Creates demo user account
+- 📝 Generates sample todos and chat data
+- 🔄 Idempotent seeding (won't duplicate data)
+- 🗑️ Force option to recreate fresh demo data
+- 📊 Seeding progress and summary
 
 ## Script Features
 

@@ -74,10 +74,12 @@ export function MessageInput({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleSubmit(e);
-      }
+      console.log("eeeee", e);
+
+      // if (e.key === "Enter") {
+      //   e.preventDefault();
+      //   handleSubmit(e);
+      // }
     },
     [handleSubmit]
   );
@@ -142,6 +144,11 @@ export function MessageInput({
     };
   }, [roomId, isTyping, setTyping]);
 
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  });
+
   return (
     <div className="sticky bottom-0 z-10 border-t bg-white p-4 shadow-lg">
       <div className="flex items-end gap-2">
@@ -150,7 +157,6 @@ export function MessageInput({
             ref={textareaRef}
             value={message}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled}
             className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
