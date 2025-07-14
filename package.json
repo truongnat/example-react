@@ -28,7 +28,8 @@
     "seed": "node scripts/seed.js",
     "seed:force": "node scripts/seed.js --force",
     "env:cleanup": "node scripts/cleanup-env.js",
-    "env:cleanup:force": "node scripts/cleanup-env.js --force"
+    "env:cleanup:force": "node scripts/cleanup-env.js --force",
+    "env:test": "node scripts/test-env.js"
   },
   "type": "module"
 }
