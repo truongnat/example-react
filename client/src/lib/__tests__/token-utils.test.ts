@@ -273,4 +273,39 @@ describe('Token Utils', () => {
       expect(TokenExpirationEvent.INVALID).toBe('invalid');
     });
   });
+
+  describe('Edge cases and error handling', () => {
+    it('should handle malformed base64 in token payload', () => {
+      const malformedToken = 'header.malformed-base64-payload.signature';
+      expect(decodeJWT(malformedToken)).toBeNull();
+      expect(isTokenExpired(malformedToken)).toBe(true);
+      expect(getTokenInfo(malformedToken)).toBeNull();
+    });
+
+    it('should handle tokens with non-JSON payload', () => {
+      const nonJsonPayload = btoa('not-json-data');
+      const invalidToken = `header.${nonJsonPayload}.signature`;
+      expect(decodeJWT(invalidToken)).toBeNull();
+    });
+
+    it('should handle very large time differences', () => {
+      const farFuturePayload = {
+        ...validPayload,
+        exp: now + (365 * 24 * 60 * 60), // 1 year in the future
+      };
+      const token = createMockToken(farFuturePayload);
+      const timeLeft = getTimeUntilExpiry(token);
+      expect(timeLeft).toContain('day');
+    });
+
+    it('should handle tokens with zero or negative time differences', () => {
+      const zeroTimePayload = {
+        ...validPayload,
+        iat: now,
+        exp: now, // Expires immediately
+      };
+      const token = createMockToken(zeroTimePayload);
+      expect(isTokenExpired(token)).toBe(true);
+    });
+  });
 });
