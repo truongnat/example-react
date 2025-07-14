@@ -74,12 +74,10 @@ export function MessageInput({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      console.log("eeeee", e);
-
-      // if (e.key === "Enter") {
-      //   e.preventDefault();
-      //   handleSubmit(e);
-      // }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSubmit(e);
+      }
     },
     [handleSubmit]
   );

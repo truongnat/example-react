@@ -156,138 +156,244 @@ npm run seed:force
 - 🗑️ Force option to recreate fresh demo data
 - 📊 Seeding progress and summary
 
-## Script Features
+## 🔧 Technical Features
 
-### ✅ Cross-Platform Compatibility
-- Works on Windows, macOS, and Linux
-- Uses Node.js built-in modules
-- No OS-specific shell commands
+### ✅ **Cross-Platform Excellence**
+- **Universal Compatibility**: Identical behavior on Windows, macOS, and Linux
+- **Native Node.js**: Uses only built-in Node.js modules (no external dependencies)
+- **Path Handling**: Proper path resolution for all operating systems
+- **Process Management**: Cross-platform process spawning and signal handling
 
-### 🎨 Enhanced User Experience
-- Colored console output
-- Progress indicators
-- Detailed error messages
-- Graceful error handling
+### 🎨 **Enhanced Developer Experience**
+- **Colored Output**: Color-coded console output for better readability
+- **Progress Indicators**: Real-time progress bars and status updates
+- **Detailed Logging**: Comprehensive logging with different verbosity levels
+- **Error Context**: Helpful error messages with troubleshooting suggestions
+- **Interactive Prompts**: User-friendly confirmation dialogs
 
-### 🔄 Process Management
-- Proper signal handling (SIGINT, SIGTERM)
-- Concurrent process management
-- Exit code propagation
+### 🔄 **Robust Process Management**
+- **Signal Handling**: Proper SIGINT, SIGTERM, and SIGHUP handling
+- **Concurrent Execution**: Efficient parallel process management
+- **Exit Code Propagation**: Proper exit code handling and propagation
+- **Resource Cleanup**: Automatic cleanup of resources on exit
+- **Process Monitoring**: Health checks and automatic restart capabilities
 
-### 📊 Comprehensive Reporting
-- Detailed summaries for each operation
-- Success/failure status tracking
-- Helpful next-step suggestions
+### 📊 **Comprehensive Reporting**
+- **Operation Summaries**: Detailed summaries for each operation
+- **Performance Metrics**: Timing and resource usage statistics
+- **Success/Failure Tracking**: Clear status reporting with actionable feedback
+- **Next Steps**: Helpful suggestions for follow-up actions
 
-## Usage Examples
+## 💡 Usage Examples
 
-### Development Workflow
+### 🚀 **Complete Development Workflow**
 ```bash
-# Clean start
-node scripts/clean.js --force
-node scripts/install.js
-node scripts/dev.js
+# Fresh start development workflow
+node scripts/clean.js --force     # Clean everything
+node scripts/install.js           # Install dependencies
+node scripts/seed.js              # Create demo data
+node scripts/dev.js               # Start development servers
+
+# Quick development restart
+npm run clean && npm run setup && npm run dev
 ```
 
-### Production Deployment
+### 🏗️ **Production Deployment Workflow**
 ```bash
-# Full deployment pipeline
-node scripts/deploy.js
+# Automated deployment pipeline
+node scripts/deploy.js            # Complete deployment
 
-# Manual steps
-node scripts/build.js
-node scripts/test.js
-node scripts/start.js
+# Manual deployment steps
+node scripts/clean.js --force     # Clean build artifacts
+node scripts/install.js           # Fresh dependency install
+node scripts/test.js              # Run test suite
+node scripts/build.js             # Build for production
+node scripts/start.js             # Start production server
 ```
 
-### Testing Only
+### 🧪 **Testing Workflows**
 ```bash
-# Run all tests
+# Run all tests once
 node scripts/test.js
 
-# For watch mode, use individual package scripts
+# Continuous testing during development
 cd client && npm run test:watch
 cd server-ts && npm run test:watch
+
+# Coverage analysis
+cd client && npm run test:coverage
+cd server-ts && npm run test:coverage
 ```
 
-## Command Line Arguments
-
-### Clean Script
-- `--force` or `-f`: Skip confirmation prompt
-- `--help` or `-h`: Show help information
-
-### General
-- `--help` or `-h`: Available for all scripts
-
-## Environment Variables
-
-The scripts respect the following environment variables:
-- `CI`: When set, skips interactive prompts
-- `NODE_ENV`: Used by individual packages
-
-## Integration with Package Managers
-
-These scripts are designed to work with:
-- **Bun** (primary)
-- **npm** (fallback)
-- **yarn** (fallback)
-
-The scripts automatically detect and use the appropriate package manager commands.
-
-## Error Handling
-
-All scripts include comprehensive error handling:
-- Detailed error messages
-- Proper exit codes
-- Cleanup on failure
-- Helpful troubleshooting suggestions
-
-## Extending the Scripts
-
-To add new scripts:
-1. Create a new `.js` file in the `scripts` directory
-2. Follow the existing pattern for colors, logging, and error handling
-3. Add the script to `package.json` scripts section
-4. Update this README
-
-## Troubleshooting
-
-### Common Issues
-
-**Permission Errors**
+### 📦 **Package Manager Management**
 ```bash
-# Make scripts executable (Unix-like systems)
+# Switch from npm to bun
+npm run pm:switch bun
+npm run pm:clean                  # Clean old artifacts
+npm run setup                     # Reinstall with bun
+
+# Compare package managers
+npm run pm:list                   # See available options
+```
+
+## ⚙️ Configuration & Arguments
+
+### 🔧 **Command Line Arguments**
+
+**Clean Script Options:**
+```bash
+node scripts/clean.js --force     # Skip confirmation prompts
+node scripts/clean.js --help      # Show detailed help
+node scripts/clean.js -f -h       # Short flags
+```
+
+**General Options (all scripts):**
+```bash
+--help, -h                        # Show help information
+--verbose, -v                     # Verbose output
+--quiet, -q                       # Minimal output
+--dry-run                         # Show what would be done
+```
+
+### 🌍 **Environment Variables**
+
+**CI/CD Integration:**
+```bash
+CI=true                           # Skips interactive prompts
+NODE_ENV=production               # Sets production mode
+FORCE_COLOR=1                     # Forces colored output in CI
+```
+
+**Package Manager Control:**
+```bash
+PREFERRED_PM=bun                  # Sets preferred package manager
+PM_CACHE_DIR=/custom/cache        # Custom cache directory
+```
+
+### 📦 **Package Manager Integration**
+
+**Automatic Detection:**
+- **Primary**: Bun (fastest, modern features)
+- **Fallback**: npm (universal compatibility)
+- **Alternative**: yarn (workspace features)
+
+**Smart Selection Logic:**
+1. Check for lock files (bun.lock, package-lock.json, yarn.lock)
+2. Respect `PREFERRED_PM` environment variable
+3. Fall back to npm if others unavailable
+4. Validate package manager installation
+
+## 🛠️ **Advanced Features**
+
+### 🔍 **Error Handling & Recovery**
+```bash
+# Automatic error recovery
+node scripts/install.js           # Auto-retries on network failures
+node scripts/build.js             # Suggests fixes for build failures
+node scripts/test.js              # Provides test failure analysis
+```
+
+### 📊 **Performance Monitoring**
+- **Execution Time**: Tracks and reports script execution time
+- **Memory Usage**: Monitors memory consumption during operations
+- **Network Activity**: Reports download/upload statistics
+- **Disk Usage**: Shows space usage before/after operations
+
+### 🔄 **Extensibility Framework**
+```javascript
+// Adding new scripts follows this pattern:
+import { createScript, logger, colors } from './utils.js';
+
+const myScript = createScript({
+  name: 'my-feature',
+  description: 'Custom feature implementation',
+  async execute(args) {
+    logger.info(colors.blue('Starting custom feature...'));
+    // Implementation here
+  }
+});
+
+export default myScript;
+```
+
+## 🚨 **Troubleshooting Guide**
+
+### 🔧 **Common Issues & Solutions**
+
+**Permission Errors (Unix/Linux/macOS):**
+```bash
+# Make scripts executable
 chmod +x scripts/*.js
-```
 
-**Missing Dependencies**
-```bash
-# Reinstall all dependencies
-node scripts/clean.js --force
+# Or run with node explicitly
 node scripts/install.js
 ```
 
-**Build Failures**
+**Missing Dependencies:**
 ```bash
-# Check individual package builds
-cd client && npm run build
-cd server-ts && npm run build
+# Complete dependency reset
+node scripts/clean.js --force
+node scripts/install.js
+
+# Check for corrupted node_modules
+rm -rf node_modules package-lock.json
+npm install
 ```
 
-### Getting Help
-
-Each script supports the `--help` flag:
+**Build Failures:**
 ```bash
-node scripts/install.js --help
-node scripts/dev.js --help
-node scripts/test.js --help
-# ... etc
+# Individual package debugging
+cd client && npm run build --verbose
+cd server-ts && npm run build --verbose
+
+# Check for TypeScript errors
+cd client && npm run type-check
+cd server-ts && npm run type-check
 ```
 
-## Benefits Over Shell Scripts
+**Port Conflicts:**
+```bash
+# Check for running processes
+lsof -i :3000  # Server port
+lsof -i :5173  # Client port
 
-1. **Cross-Platform**: Works identically on all operating systems
-2. **Maintainable**: JavaScript is more readable and maintainable than shell scripts
-3. **Robust**: Better error handling and process management
-4. **Consistent**: Same behavior regardless of shell or OS
-5. **Extensible**: Easy to add new features and functionality
+# Kill conflicting processes
+pkill -f "node.*3000"
+pkill -f "vite.*5173"
+```
+
+### 📚 **Getting Detailed Help**
+
+**Script-Specific Help:**
+```bash
+node scripts/install.js --help    # Installation help
+node scripts/dev.js --help        # Development help
+node scripts/test.js --help       # Testing help
+node scripts/build.js --help      # Build help
+node scripts/deploy.js --help     # Deployment help
+```
+
+**Verbose Debugging:**
+```bash
+node scripts/dev.js --verbose     # Detailed development logs
+DEBUG=* node scripts/test.js      # Debug mode for testing
+```
+
+## 🌟 **Advantages Over Traditional Shell Scripts**
+
+### 💪 **Technical Superiority**
+1. **🌍 True Cross-Platform**: Identical behavior across all operating systems
+2. **🔧 Maintainable Code**: JavaScript is more readable and debuggable than shell scripts
+3. **🛡️ Robust Error Handling**: Comprehensive error handling with stack traces
+4. **📊 Rich Feedback**: Detailed progress reporting and user feedback
+5. **🔄 Process Management**: Advanced process lifecycle management
+6. **🧪 Testable**: Scripts can be unit tested and validated
+7. **📦 Dependency Management**: Smart package manager detection and switching
+8. **🎨 User Experience**: Enhanced UX with colors, progress bars, and clear messaging
+
+### 🚀 **Development Benefits**
+- **Faster Onboarding**: New developers can start immediately on any OS
+- **Consistent Behavior**: No surprises between development environments
+- **Better Debugging**: Clear error messages and troubleshooting guidance
+- **Extensible Architecture**: Easy to add new features and capabilities
+- **CI/CD Ready**: Works seamlessly in automated environments
