@@ -72,6 +72,15 @@ async function installDependencies() {
   try {
     log(`${colors.bright}🚀 Starting installation process...${colors.reset}`, colors.green);
 
+    // Check if .env file not exits, copy .env.example
+    if (!existsSync('.env')) {
+      log('📝 Creating .env file from template...', colors.yellow);
+      await runCommand('cp', ['.env.example', '.env'], process.cwd());
+      log('⚠️  Please update .env file with your configuration', colors.yellow);
+    }
+
+    // Get project paths and package manager config
+
     const paths = getProjectPaths();
     let pmConfig = getPackageManagerConfig();
 
