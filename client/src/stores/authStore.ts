@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { AuthTokensDto } from '@/types/api'
+import { isTokenExpired, getTokenInfo, isValidTokenStructure } from '@/lib/token-utils'
 
 interface User {
   id: string

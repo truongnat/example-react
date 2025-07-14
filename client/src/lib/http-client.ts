@@ -246,9 +246,102 @@ export class HttpClient {
     }
   }
 
+  /**
+   * Ensures the access token is valid before making a request
+   * Proactively checks for expiration and refreshes if needed
+   */
+  private async ensureValidToken(endpoint: string): Promise<void> {
+    // Skip token validation for auth endpoints
+    if (endpoint.startsWith('/auth/')) {
+      return;
+    }
+
+    // If no access token, try to sync from storage
+    if (!this.accessToken) {
+      this.syncTokensFromAuthStore();
+    }
+
+    // If still no token, user is not authenticated
+    if (!this.accessToken) {
+      return;
+    }
+
+    // Validate token structure
+    if (!isValidTokenStructure(this.accessToken)) {
+      console.warn('Invalid access token structure, clearing tokens');
+      this.handleAuthFailure();
+      throw new ApiError('Invalid token structure', 401);
+    }
+
+    // Check if token is expired
+    if (isTokenExpired(this.accessToken)) {
+      console.log('Access token is expired, attempting refresh...');
+      await this.handleExpiredToken();
+      return;
+    }
+
+    // Check if token should be refreshed proactively (within 2 minutes of expiry)
+    if (shouldRefreshToken(this.accessToken, 2)) {
+      console.log('Access token near expiry, proactively refreshing...');
+      try {
+        await this.proactiveTokenRefresh();
+      } catch (error) {
+        console.warn('Proactive token refresh failed, will retry on 401:', error);
+        // Don't throw error here, let the request proceed and handle 401 if it occurs
+      }
+    }
+  }
+
+  /**
+   * Handle expired token by attempting refresh or logout
+   */
+  private async handleExpiredToken(): Promise<void> {
+    if (!this.refreshToken) {
+      console.log('No refresh token available, logging out');
+      this.handleAuthFailure();
+      throw new ApiError('Session expired', 401);
+    }
+
+    try {
+      await this.refreshAccessToken();
+      console.log('Successfully refreshed expired token');
+    } catch (error) {
+      console.error('Failed to refresh expired token:', error);
+      this.handleAuthFailure();
+      throw new ApiError('Session expired', 401);
+    }
+  }
+
+  /**
+   * Proactively refresh token to prevent expiration during requests
+   */
+  private async proactiveTokenRefresh(): Promise<void> {
+    // Prevent multiple simultaneous refresh attempts
+    if (this.isRefreshing) {
+      if (this.refreshPromise) {
+        await this.refreshPromise;
+      }
+      return;
+    }
+
+    this.isRefreshing = true;
+    this.refreshPromise = this.refreshAccessToken()
+      .finally(() => {
+        this.isRefreshing = false;
+        this.refreshPromise = null;
+      });
+
+    await this.refreshPromise;
+  }
+
   private handleAuthFailure(): void {
     console.log("Authentication failed, clearing tokens and redirecting to login");
     this.clearTokens();
+
+    // Reset refresh state
+    this.isRefreshing = false;
+    this.refreshPromise = null;
+    this.refreshAttempts = 0;
 
     // Clear auth store and trigger logout
     try {
@@ -275,7 +368,21 @@ export class HttpClient {
       throw new Error("No refresh token available");
     }
 
+    // Validate refresh token structure
+    if (!isValidTokenStructure(this.refreshToken)) {
+      console.warn('Invalid refresh token structure');
+      throw new Error("Invalid refresh token structure");
+    }
+
+    // Check if refresh token is expired
+    if (isTokenExpired(this.refreshToken)) {
+      console.warn('Refresh token is expired');
+      throw new Error("Refresh token expired");
+    }
+
     try {
+      console.log('Attempting to refresh access token...');
+
       const response = await fetch(`${this.baseURL}/auth/refresh`, {
         method: "POST",
         headers: {
@@ -285,20 +392,48 @@ export class HttpClient {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to refresh token: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+        throw new Error(`Failed to refresh token: ${errorMessage}`);
       }
 
       const data = await response.json();
 
       if (!data.success || !data.data?.tokens) {
-        throw new Error("Invalid refresh token response");
+        throw new Error("Invalid refresh token response format");
       }
 
-      const { accessToken, refreshToken } = data.data.tokens;
-      this.saveTokensToStorage(accessToken, refreshToken);
+      const { accessToken, refreshToken: newRefreshToken } = data.data.tokens;
+
+      // Validate new tokens
+      if (!isValidTokenStructure(accessToken) || !isValidTokenStructure(newRefreshToken)) {
+        throw new Error("Received invalid token structure from server");
+      }
+
+      // Save new tokens
+      this.saveTokensToStorage(accessToken, newRefreshToken);
+
+      // Reset refresh attempts counter on success
+      this.refreshAttempts = 0;
+
+      console.log('Token refresh successful');
+
+      // Update auth store with new tokens
+      try {
+        const { useAuthStore } = await import('@/stores/authStore');
+        const authStore = useAuthStore.getState();
+        authStore.setTokens({ accessToken, refreshToken: newRefreshToken });
+      } catch (error) {
+        console.warn('Failed to update auth store with new tokens:', error);
+      }
+
     } catch (error) {
+      console.error('Token refresh failed:', error);
+
       // Clear tokens on refresh failure
       this.clearTokens();
+
+      // Re-throw the error for handling by caller
       throw error;
     }
   }
@@ -346,6 +481,45 @@ export class HttpClient {
 
   clearAuth() {
     this.clearTokens();
+  }
+
+  /**
+   * Get current token information for debugging and monitoring
+   */
+  getTokenInfo() {
+    if (!this.accessToken) {
+      return null;
+    }
+
+    const tokenInfo = getTokenInfo(this.accessToken);
+    return tokenInfo ? {
+      ...tokenInfo,
+      hasRefreshToken: !!this.refreshToken,
+      refreshAttempts: this.refreshAttempts,
+      isRefreshing: this.isRefreshing,
+    } : null;
+  }
+
+  /**
+   * Check if the current access token is valid and not expired
+   */
+  isTokenValid(): boolean {
+    if (!this.accessToken) {
+      return false;
+    }
+
+    return isValidTokenStructure(this.accessToken) && !isTokenExpired(this.accessToken);
+  }
+
+  /**
+   * Force a token refresh (useful for testing or manual refresh)
+   */
+  async forceRefresh(): Promise<void> {
+    if (!this.refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    await this.refreshAccessToken();
   }
 }
 
