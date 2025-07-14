@@ -95,16 +95,36 @@ bun run setup
 
 ### 2. Environment Configuration
 ```bash
-# Create server environment file
-cat > server-ts/.env << EOF
+# Create unified environment configuration
+cp .env.example .env
+
+# Edit .env with your configuration
+# The file contains comprehensive documentation for all variables
+```
+
+**Key Environment Variables:**
+```bash
+# Application
 NODE_ENV=development
 PORT=3000
+IS_SSR=true
+
+# Client Configuration (VITE_ prefix for browser access)
+VITE_SERVER_PORT=3000
+VITE_CLIENT_PORT=5173
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_APP_NAME=React Todo & Chat App 2025
+
+# Authentication (CHANGE IN PRODUCTION!)
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-2025
 JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production-2025
+
+# Database
 DATABASE_TYPE=sqlite
-SQLITE_DATABASE_PATH=./data/database.sqlite
+SQLITE_DATABASE_PATH=./server-ts/data/database.sqlite
+
+# CORS
 CORS_ALLOW_ORIGINS=http://localhost:5173,http://localhost:3000
-EOF
 ```
 
 ### 3. Start Development
@@ -296,6 +316,72 @@ cd server-ts && npm run test:coverage
 - **E2E Tests**: Full user workflow testing
 - **Component Tests**: React component testing with Testing Library
 
+## ⚙️ Unified Environment Configuration
+
+### 🎯 **Single Source of Truth**
+All environment variables are now managed from a **single root `.env` file** for simplified deployment and consistency:
+
+```
+example-react/
+├── .env                    # ✅ Unified configuration (ALL variables)
+├── .env.example           # ✅ Template with documentation
+├── client/.env.example    # ⚠️ Deprecated (points to root)
+└── server-ts/.env.example # ⚠️ Deprecated (points to root)
+```
+
+### 🔧 **Variable Categories**
+
+**Client Variables (VITE_ prefix)**
+```bash
+VITE_SERVER_PORT=3000              # Server port for API calls
+VITE_CLIENT_PORT=5173              # Client development port
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_WS_URL=http://localhost:3000  # WebSocket URL
+VITE_APP_NAME=React Todo & Chat App 2025
+VITE_ENABLE_CHAT=true              # Feature flags
+```
+
+**Server Variables**
+```bash
+NODE_ENV=development               # Environment mode
+PORT=3000                         # Server port
+JWT_SECRET=your-secret            # Authentication secrets
+DATABASE_TYPE=sqlite              # Database configuration
+CORS_ALLOW_ORIGINS=http://localhost:5173
+```
+
+### 🚀 **Migration from Individual .env Files**
+
+If you have existing `.env` files in subdirectories:
+
+```bash
+# Analyze existing environment files
+npm run env:cleanup
+
+# Migrate to unified configuration (with backup)
+npm run env:cleanup:force
+```
+
+### 🌍 **Deployment Benefits**
+
+1. **Single Configuration**: One file to manage for all environments
+2. **Consistency**: Same variables available to both client and server
+3. **Simplified CI/CD**: Single environment configuration in deployment platforms
+4. **Version Control**: Easier to track environment changes
+5. **Documentation**: Comprehensive inline documentation
+
+### 📋 **Environment Validation**
+
+The system automatically validates environment configuration:
+
+```bash
+# Development scripts validate required variables
+npm run dev    # Validates and shows environment summary
+
+# Manual validation
+node scripts/env-loader.js
+```
+
 ## 🐳 Deployment Options
 
 ### 1. Docker Deployment (Recommended)
@@ -338,12 +424,56 @@ pm2 start ecosystem.config.js
 **Frontend (Vercel/Netlify)**
 - Build command: `npm run build`
 - Output directory: `client/dist`
-- Environment variables: Set `VITE_API_BASE_URL`
+- Environment variables: Copy all `VITE_*` variables from root `.env`
 
 **Backend (Railway/Render/Heroku)**
-- Build command: `cd server-ts && npm run build`
-- Start command: `cd server-ts && npm run start`
-- Environment variables: Configure database and JWT secrets
+- Build command: `npm run build`
+- Start command: `npm run start`
+- Environment variables: Copy all non-`VITE_*` variables from root `.env`
+
+**Full-Stack (Single Platform)**
+- Build command: `npm run build`
+- Start command: `npm run start`
+- Environment variables: Copy entire root `.env` configuration
+
+### 🔧 **Platform-Specific Environment Setup**
+
+**Vercel**
+```bash
+# Set environment variables in Vercel dashboard or via CLI
+vercel env add VITE_API_BASE_URL production
+vercel env add NODE_ENV production
+vercel env add JWT_SECRET production
+# ... copy all variables from .env
+```
+
+**Netlify**
+```bash
+# Set in Netlify dashboard or netlify.toml
+[build.environment]
+  VITE_API_BASE_URL = "https://your-api.netlify.app/api"
+  NODE_ENV = "production"
+```
+
+**Heroku**
+```bash
+# Set via Heroku CLI
+heroku config:set NODE_ENV=production
+heroku config:set JWT_SECRET=your-production-secret
+heroku config:set DATABASE_TYPE=postgres
+# ... copy all variables from .env
+```
+
+**Railway**
+```bash
+# Set in Railway dashboard or railway.json
+{
+  "deploy": {
+    "startCommand": "npm run start",
+    "healthcheckPath": "/health"
+  }
+}
+```
 
 ## 🎓 Learning Resources
 
