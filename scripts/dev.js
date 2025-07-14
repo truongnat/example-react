@@ -91,7 +91,6 @@ async function startDevelopment() {
     // building both client and server for ssr if enabled
     if (envResult.variables.IS_SSR === 'true') {
       log(`${colors.bright}🔄 Building client and server for SSR...${colors.reset}`, colors.blue);
-      // change run concurent
         commands.unshift({
           command: 'node',
           args: ['scripts/build.js'],
