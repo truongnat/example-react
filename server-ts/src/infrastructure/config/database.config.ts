@@ -47,7 +47,7 @@ export class DatabaseConfigService {
     switch (dbType) {
       case 'sqlite':
         config.sqlite = {
-          path: process.env.SQLITE_DATABASE_PATH || './data/database.sqlite',
+          path: process.env.SQLITE_DATABASE_PATH || path.join(process.cwd(), 'data', 'database.sqlite'),
         };
         break;
 
