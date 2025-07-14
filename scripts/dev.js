@@ -91,8 +91,13 @@ async function startDevelopment() {
     // building both client and server for ssr if enabled
     if (envResult.variables.IS_SSR === 'true') {
       log(`${colors.bright}🔄 Building client and server for SSR...${colors.reset}`, colors.blue);
-      await runCommand(pmConfig.command, ['run', 'build'], paths.client);
-      await runCommand(pmConfig.command, ['run', 'build'], paths.server);
+      // change run concurent
+        commands.unshift({
+          command: 'node',
+          args: ['scripts/build.js'],
+          cwd: paths.root,
+          name: 'Build'
+        });
     }
 
     await runConcurrent(commands);
