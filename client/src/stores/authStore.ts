@@ -18,6 +18,10 @@ interface AuthState {
   setAuthenticated: (authenticated: boolean) => void
   setTokens: (tokens: AuthTokensDto) => void
   logout: () => void
+  // Token validation methods
+  isTokenValid: () => boolean
+  checkTokenExpiration: () => boolean
+  getTokenInfo: () => any
   // Legacy methods for backward compatibility
   login: (email: string, password: string) => Promise<boolean>
   register: (name: string, email: string, password: string) => Promise<boolean>
@@ -39,11 +43,78 @@ export const useAuthStore = create<AuthState>()(
       },
 
       setTokens: (tokens: AuthTokensDto) => {
-        set({ tokens })
+        // Validate tokens before setting
+        if (tokens.accessToken && !isValidTokenStructure(tokens.accessToken)) {
+          console.warn('Invalid access token structure, not setting tokens');
+          return;
+        }
+
+        if (tokens.refreshToken && !isValidTokenStructure(tokens.refreshToken)) {
+          console.warn('Invalid refresh token structure, not setting tokens');
+          return;
+        }
+
+        // Check if access token is expired
+        if (tokens.accessToken && isTokenExpired(tokens.accessToken)) {
+          console.warn('Access token is expired, not setting tokens');
+          return;
+        }
+
+        set({ tokens });
+
+        // Update authentication status based on token validity
+        const isValid = tokens.accessToken && !isTokenExpired(tokens.accessToken);
+        if (isValid !== get().isAuthenticated) {
+          set({ isAuthenticated: isValid });
+        }
       },
 
       logout: () => {
-        set({ user: null, isAuthenticated: false, tokens: null })
+        console.log('Auth store: Logging out user');
+        set({ user: null, isAuthenticated: false, tokens: null });
+
+        // Clear localStorage to ensure clean state
+        try {
+          localStorage.removeItem('auth-storage');
+        } catch (error) {
+          console.warn('Failed to clear auth storage:', error);
+        }
+      },
+
+      // Token validation methods
+      isTokenValid: () => {
+        const { tokens } = get();
+        if (!tokens?.accessToken) {
+          return false;
+        }
+
+        return isValidTokenStructure(tokens.accessToken) && !isTokenExpired(tokens.accessToken);
+      },
+
+      checkTokenExpiration: () => {
+        const { tokens, logout } = get();
+
+        if (!tokens?.accessToken) {
+          return false;
+        }
+
+        // Check if token is expired
+        if (isTokenExpired(tokens.accessToken)) {
+          console.log('Auth store: Access token expired, logging out');
+          logout();
+          return false;
+        }
+
+        return true;
+      },
+
+      getTokenInfo: () => {
+        const { tokens } = get();
+        if (!tokens?.accessToken) {
+          return null;
+        }
+
+        return getTokenInfo(tokens.accessToken);
       },
 
       // Legacy methods for backward compatibility - these will be deprecated
