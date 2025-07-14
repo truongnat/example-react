@@ -88,17 +88,6 @@ async function startDevelopment() {
 
     log(`${colors.bright}🔄 Running ${commands.length} development server(s) concurrently...${colors.reset}`, colors.blue);
     
-    // building both client and server for ssr if enabled
-    if (envResult.variables.IS_SSR === 'true') {
-      log(`${colors.bright}🔄 Building client and server for SSR...${colors.reset}`, colors.blue);
-        commands.unshift({
-          command: 'node',
-          args: ['scripts/build.js'],
-          cwd: paths.root,
-          name: 'Build'
-        });
-    }
-
     await runConcurrent(commands);
 
   } catch (error) {
