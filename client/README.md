@@ -316,34 +316,100 @@ npm run reinstall        # Clean reinstall dependencies
 .env.local
 ```
 
-## Authentication Flow
+## 🔐 Authentication Flow
 
-1. User logs in with email/password
-2. Backend returns JWT access token and refresh token
-3. Tokens are stored in localStorage via Zustand persist
-4. HTTP client automatically adds Authorization header
-5. On 401 errors, client attempts token refresh
-6. If refresh fails, user is redirected to login
+### Secure Authentication Process
+1. **Login**: User submits email/password credentials
+2. **Token Generation**: Backend validates and returns JWT access + refresh tokens
+3. **Secure Storage**: Tokens stored in localStorage with Zustand persistence
+4. **Automatic Headers**: HTTP client adds Authorization header to all requests
+5. **Token Refresh**: On 401 errors, client automatically attempts token refresh
+6. **Graceful Logout**: On refresh failure, user is redirected to login with clear state
 
-## Todo Features
+### Security Features
+- **Token Expiration**: Short-lived access tokens (1 hour)
+- **Refresh Rotation**: Refresh tokens rotate on each use
+- **Automatic Cleanup**: Tokens cleared on logout or expiration
+- **CSRF Protection**: SameSite cookie attributes
+- **XSS Prevention**: Secure token storage practices
 
-- ✅ Create new todos with title and description
-- ✅ Mark todos as complete/incomplete
-- ✅ Delete todos
-- ✅ Filter by status (all, initial, in progress, completed, cancelled)
-- ✅ Sort by date, title, or status
-- ✅ Real-time updates with optimistic UI
-- ✅ Form validation with character limits
-- ✅ Loading states and error handling
+## ✨ Feature Highlights
 
-## Contributing
+### 📝 Todo Management
+- ✅ **CRUD Operations**: Create, read, update, delete todos
+- ✅ **Status Management**: Initial → In Progress → Completed/Cancelled
+- ✅ **Advanced Filtering**: Filter by status, date, priority
+- ✅ **Smart Sorting**: Sort by date, title, status, or priority
+- ✅ **Bulk Operations**: Select and modify multiple todos
+- ✅ **Real-time Sync**: Changes sync across browser tabs
+- ✅ **Optimistic Updates**: Instant UI feedback with error rollback
+- ✅ **Form Validation**: Client-side validation with Zod schemas
+- ✅ **Character Limits**: Title (100 chars), description (500 chars)
+- ✅ **Loading States**: Skeleton loaders and progress indicators
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if needed
-5. Submit a pull request
+### 💬 Chat Features
+- ✅ **Real-time Messaging**: Instant message delivery via WebSocket
+- ✅ **Multiple Rooms**: Create and join different chat rooms
+- ✅ **Emoji Support**: Rich emoji picker with categories
+- ✅ **File Sharing**: Upload and share images/documents
+- ✅ **Message History**: Persistent message storage
+- ✅ **Typing Indicators**: See when others are typing
+- ✅ **Online Presence**: User online/offline status
+- ✅ **Message Reactions**: React to messages with emojis
 
-## License
+### 🎨 UI/UX Features
+- ✅ **Responsive Design**: Works on desktop, tablet, and mobile
+- ✅ **Dark/Light Theme**: System preference detection + manual toggle
+- ✅ **Accessibility**: WCAG 2.1 AA compliant components
+- ✅ **Keyboard Navigation**: Full keyboard accessibility
+- ✅ **Loading States**: Skeleton loaders and progress indicators
+- ✅ **Error Boundaries**: Graceful error handling and recovery
+- ✅ **Toast Notifications**: Success, error, and info messages
+- ✅ **Smooth Animations**: Micro-interactions and transitions
 
-MIT License
+## 🧪 Testing Strategy
+
+### Test Coverage
+- **Unit Tests**: Individual component and hook testing
+- **Integration Tests**: Component interaction testing
+- **E2E Tests**: Full user workflow testing
+- **Visual Tests**: Component visual regression testing
+
+### Testing Tools
+- **Vitest**: Fast unit test runner
+- **Testing Library**: Component testing utilities
+- **MSW**: API mocking for tests
+- **Playwright**: E2E testing framework
+
+## 🤝 Contributing
+
+### Development Setup
+1. **Fork** the repository
+2. **Clone** your fork locally
+3. **Install** dependencies: `npm install`
+4. **Start** development: `npm run dev`
+5. **Create** feature branch: `git checkout -b feature/new-feature`
+
+### Code Standards
+- Follow TypeScript strict mode
+- Use ESLint and Prettier configurations
+- Write tests for new features
+- Follow conventional commit messages
+- Maintain accessibility standards
+
+### Pull Request Process
+1. **Test** your changes thoroughly
+2. **Update** documentation if needed
+3. **Run** `npm run validate` to ensure quality
+4. **Submit** PR with clear description
+5. **Respond** to review feedback
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](../LICENSE) file for details.
+
+---
+
+<p align="center">
+  <strong>Built with modern React practices for 2025 🚀</strong>
+</p>

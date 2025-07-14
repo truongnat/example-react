@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useChatStore } from '@/stores/chatStore';
-import { EmojiPicker } from './EmojiPicker';
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useChatStore } from "@/stores/chatStore";
+import { EmojiPicker } from "./EmojiPicker";
 
 interface MessageInputProps {
   roomId: string;
@@ -10,8 +10,12 @@ interface MessageInputProps {
   placeholder?: string;
 }
 
-export function MessageInput({ roomId, disabled = false, placeholder = "Type a message..." }: MessageInputProps) {
-  const [message, setMessage] = useState('');
+export function MessageInput({
+  roomId,
+  disabled = false,
+  placeholder = "Type a message...",
+}: MessageInputProps) {
+  const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<number | null>(null);
@@ -30,7 +34,9 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
     setMessage(newMessage);
 
     // Trigger input change logic for typing indicator
-    handleInputChange({ target: { value: newMessage } } as React.ChangeEvent<HTMLTextAreaElement>);
+    handleInputChange({
+      target: { value: newMessage },
+    } as React.ChangeEvent<HTMLTextAreaElement>);
 
     // Focus back to textarea and set cursor position
     setTimeout(() => {
@@ -40,35 +46,41 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
     }, 0);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (!message.trim() || disabled) return;
+      if (!message.trim() || disabled) return;
 
-    // Send message
-    sendMessage(roomId, message.trim());
+      // Send message
+      sendMessage(roomId, message.trim());
 
-    // Clear input
-    setMessage('');
+      // Clear input
+      setMessage("");
 
-    // Stop typing indicator
-    if (isTyping) {
-      setTyping(roomId, false);
-      setIsTyping(false);
-    }
+      // Stop typing indicator
+      if (isTyping) {
+        setTyping(roomId, false);
+        setIsTyping(false);
+      }
 
-    // Reset textarea height
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-    }
-  };
+      // Reset textarea height
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+      }
+    },
+    [message, disabled, roomId, sendMessage, setTyping]
+  );
 
-  // const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-  //   if (e.key === 'Enter') {
-  //     e.preventDefault();
-  //     handleSubmit(e);
-  //   }
-  // }, [handleSubmit]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSubmit(e);
+      }
+    },
+    [handleSubmit]
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -76,7 +88,7 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
 
     // Auto-resize textarea
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
     }
 
@@ -138,17 +150,20 @@ export function MessageInput({ roomId, disabled = false, placeholder = "Type a m
             ref={textareaRef}
             value={message}
             onChange={handleInputChange}
-            // onKeyDown={handleKeyDown}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled}
             className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-            style={{ minHeight: '40px', maxHeight: '120px' }}
+            style={{ minHeight: "40px", maxHeight: "120px" }}
             rows={1}
           />
 
           {/* Emoji picker */}
           <div className="absolute right-2 top-1/2 -translate-y-1/2">
-            <EmojiPicker onEmojiSelect={handleEmojiSelect} disabled={disabled} />
+            <EmojiPicker
+              onEmojiSelect={handleEmojiSelect}
+              disabled={disabled}
+            />
           </div>
         </div>
 

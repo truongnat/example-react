@@ -1,39 +1,135 @@
-# Example Server - Clean Architecture TypeScript Backend
+# TypeScript Backend Server 2025
 
-A modern, scalable backend built with Clean Architecture principles using TypeScript, Express.js, and multiple database options.
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js" alt="Node.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Express-4.18-lightgrey?logo=express" alt="Express" />
+  <img src="https://img.shields.io/badge/Clean_Architecture-✅-brightgreen" alt="Clean Architecture" />
+</p>
 
-## 🏗️ Architecture
+A production-ready, scalable backend server built with **Clean Architecture** principles, featuring TypeScript, Express.js, and comprehensive database support. Designed for maintainability, testability, and enterprise-grade applications in 2025.
 
-This project follows Clean Architecture principles with the following layers:
+## 🏗️ Clean Architecture Implementation
+
+This project strictly follows **Clean Architecture** principles with clear separation of concerns and dependency inversion:
 
 ```
 src/
-├── domain/                 # Business Logic & Rules
-│   ├── entities/          # Domain Entities
-│   ├── repositories/      # Repository Interfaces
-│   └── services/          # Domain Services
-├── application/           # Application Business Rules
-│   ├── use-cases/         # Application Use Cases
-│   ├── dtos/              # Data Transfer Objects
-│   ├── interfaces/        # Application Interfaces
-│   └── services/          # Application Services
-├── infrastructure/        # External Concerns
-│   ├── database/          # Database Implementations
-│   ├── repositories/      # Repository Implementations
-│   ├── external-services/ # External Services
-│   ├── middleware/        # Infrastructure Middleware
-│   └── config/            # Configuration
-├── presentation/          # Controllers & Routes
-│   ├── controllers/       # HTTP Controllers
-│   ├── routes/            # Route Definitions
-│   ├── middleware/        # Presentation Middleware
-│   └── validators/        # Request Validators
-└── shared/                # Shared Utilities
-    ├── constants/         # Application Constants
-    ├── exceptions/        # Custom Exceptions
-    ├── utils/             # Utility Functions
-    └── types/             # Shared Types
+├── 🏢 domain/                    # Enterprise Business Rules
+│   ├── entities/                # Core business entities
+│   │   ├── User.ts              # User domain entity
+│   │   ├── Todo.ts              # Todo domain entity
+│   │   ├── ChatRoom.ts          # Chat room entity
+│   │   └── Message.ts           # Message entity
+│   ├── repositories/            # Repository contracts (interfaces)
+│   │   ├── IUserRepository.ts   # User data access contract
+│   │   ├── ITodoRepository.ts   # Todo data access contract
+│   │   └── IChatRepository.ts   # Chat data access contract
+│   ├── services/                # Domain services
+│   │   ├── AuthDomainService.ts # Authentication business logic
+│   │   ├── TodoDomainService.ts # Todo business rules
+│   │   └── ChatDomainService.ts # Chat business logic
+│   └── value-objects/           # Domain value objects
+│       ├── Email.ts             # Email value object
+│       ├── Password.ts          # Password value object
+│       └── TodoStatus.ts        # Todo status enum
+├── 🎯 application/               # Application Business Rules
+│   ├── use-cases/               # Application-specific business rules
+│   │   ├── auth/                # Authentication use cases
+│   │   │   ├── LoginUseCase.ts  # User login logic
+│   │   │   ├── RegisterUseCase.ts # User registration
+│   │   │   └── RefreshTokenUseCase.ts # Token refresh
+│   │   ├── todo/                # Todo management use cases
+│   │   │   ├── CreateTodoUseCase.ts # Create todo
+│   │   │   ├── UpdateTodoUseCase.ts # Update todo
+│   │   │   ├── DeleteTodoUseCase.ts # Delete todo
+│   │   │   └── GetTodosUseCase.ts   # Retrieve todos
+│   │   └── chat/                # Chat use cases
+│   │       ├── CreateRoomUseCase.ts # Create chat room
+│   │       ├── SendMessageUseCase.ts # Send message
+│   │       └── GetMessagesUseCase.ts # Get message history
+│   ├── dtos/                    # Data Transfer Objects
+│   │   ├── auth/                # Authentication DTOs
+│   │   ├── todo/                # Todo DTOs
+│   │   └── chat/                # Chat DTOs
+│   ├── interfaces/              # Application interfaces
+│   │   ├── IAuthService.ts      # Auth service interface
+│   │   ├── IEmailService.ts     # Email service interface
+│   │   └── IFileService.ts      # File service interface
+│   └── services/                # Application services
+│       ├── AuthApplicationService.ts # Auth orchestration
+│       ├── TodoApplicationService.ts # Todo orchestration
+│       └── ChatApplicationService.ts # Chat orchestration
+├── 🔧 infrastructure/           # Frameworks & Drivers
+│   ├── database/                # Database implementations
+│   │   ├── sqlite/              # SQLite implementation
+│   │   ├── postgres/            # PostgreSQL implementation
+│   │   ├── supabase/            # Supabase implementation
+│   │   └── mongodb/             # MongoDB implementation
+│   ├── repositories/            # Repository implementations
+│   │   ├── SqliteUserRepository.ts # SQLite user repo
+│   │   ├── PostgresUserRepository.ts # Postgres user repo
+│   │   └── SupabaseUserRepository.ts # Supabase user repo
+│   ├── external-services/       # External service integrations
+│   │   ├── EmailService.ts      # Email service implementation
+│   │   ├── FileStorageService.ts # File storage service
+│   │   └── WebSocketService.ts  # WebSocket implementation
+│   ├── middleware/              # Infrastructure middleware
+│   │   ├── DatabaseMiddleware.ts # DB connection middleware
+│   │   ├── LoggingMiddleware.ts # Request logging
+│   │   └── SecurityMiddleware.ts # Security headers
+│   └── config/                  # Configuration management
+│       ├── DatabaseConfig.ts    # Database configuration
+│       ├── JwtConfig.ts         # JWT configuration
+│       └── AppConfig.ts         # Application configuration
+├── 🌐 presentation/             # Interface Adapters
+│   ├── controllers/             # HTTP request handlers
+│   │   ├── AuthController.ts    # Authentication endpoints
+│   │   ├── TodoController.ts    # Todo CRUD endpoints
+│   │   ├── ChatController.ts    # Chat endpoints
+│   │   └── HealthController.ts  # Health check endpoints
+│   ├── routes/                  # Route definitions
+│   │   ├── authRoutes.ts        # Auth route mappings
+│   │   ├── todoRoutes.ts        # Todo route mappings
+│   │   ├── chatRoutes.ts        # Chat route mappings
+│   │   └── index.ts             # Route aggregation
+│   ├── middleware/              # Presentation middleware
+│   │   ├── AuthMiddleware.ts    # JWT authentication
+│   │   ├── ValidationMiddleware.ts # Request validation
+│   │   ├── ErrorMiddleware.ts   # Error handling
+│   │   └── CorsMiddleware.ts    # CORS configuration
+│   └── validators/              # Request validation schemas
+│       ├── AuthValidators.ts    # Auth request validation
+│       ├── TodoValidators.ts    # Todo request validation
+│       └── ChatValidators.ts    # Chat request validation
+└── 🔄 shared/                   # Shared Utilities
+    ├── constants/               # Application constants
+    │   ├── HttpStatus.ts        # HTTP status codes
+    │   ├── ErrorCodes.ts        # Application error codes
+    │   └── DatabaseTypes.ts     # Database type constants
+    ├── exceptions/              # Custom exception classes
+    │   ├── BaseException.ts     # Base exception class
+    │   ├── ValidationException.ts # Validation errors
+    │   ├── AuthenticationException.ts # Auth errors
+    │   └── DatabaseException.ts # Database errors
+    ├── utils/                   # Utility functions
+    │   ├── PasswordUtils.ts     # Password hashing utilities
+    │   ├── JwtUtils.ts          # JWT token utilities
+    │   ├── ValidationUtils.ts   # Validation helpers
+    │   └── DateUtils.ts         # Date manipulation
+    └── types/                   # Shared TypeScript types
+        ├── ApiResponse.ts       # API response types
+        ├── DatabaseTypes.ts     # Database-related types
+        └── CommonTypes.ts       # Common type definitions
 ```
+
+### 🎯 Architecture Benefits
+
+- **🔄 Dependency Inversion**: High-level modules don't depend on low-level modules
+- **🧪 Testability**: Easy to unit test business logic in isolation
+- **🔧 Maintainability**: Clear separation of concerns and responsibilities
+- **🔄 Flexibility**: Easy to swap implementations (databases, external services)
+- **📈 Scalability**: Modular structure supports team scaling and feature growth
 
 ## 🚀 Features
 
