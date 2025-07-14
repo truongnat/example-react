@@ -1,6 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '@/stores/authStore';
 import { config } from '@/lib/config';
+import { isTokenExpired, isValidTokenStructure, getTokenInfo } from '@/lib/token-utils';
 
 export interface MessageData {
   id: string;
@@ -99,6 +100,32 @@ class SocketService {
           this.connectionPromise = null;
           reject(new Error('No authentication token available'));
           return;
+        }
+
+        // Validate token before attempting connection
+        if (!isValidTokenStructure(token)) {
+          console.warn('Socket: Invalid token structure, cannot connect');
+          this.connectionPromise = null;
+          reject(new Error('Invalid authentication token structure'));
+          return;
+        }
+
+        // Check if token is expired
+        if (isTokenExpired(token)) {
+          console.warn('Socket: Token is expired, attempting refresh before connection');
+          this.connectionPromise = null;
+
+          // Try to refresh token and reconnect
+          this.handleTokenRefreshAndReconnect()
+            .then(() => resolve())
+            .catch(reject);
+          return;
+        }
+
+        // Check if token is near expiry (within 5 minutes)
+        const tokenInfo = getTokenInfo(token);
+        if (tokenInfo?.isNearExpiry) {
+          console.log('Socket: Token near expiry, will monitor for refresh during connection');
         }
 
         // Disconnect existing socket if any
