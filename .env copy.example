@@ -1,0 +1,169 @@
+# ===================================================================
+# UNIFIED ENVIRONMENT CONFIGURATION FOR MERN STACK MONOREPO 2025
+# ===================================================================
+# Copy this file to .env and update the values for your deployment
+# This single file configures both client and server applications
+
+# ===================================================================
+# 🚀 APPLICATION CONFIGURATION
+# ===================================================================
+NODE_ENV=development
+PORT=3000
+
+# Server-Side Rendering (SSR)
+IS_SSR=true
+
+# ===================================================================
+# 🌐 CLIENT CONFIGURATION (Vite Environment Variables)
+# ===================================================================
+# These variables are prefixed with VITE_ and available in the client
+
+# Port Configuration
+VITE_SERVER_PORT=3000
+VITE_CLIENT_PORT=5173
+
+# API Configuration
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_WS_URL=http://localhost:3000
+
+# Application Metadata
+VITE_APP_NAME=React Todo & Chat App 2025
+VITE_APP_VERSION=1.0.0
+VITE_APP_DESCRIPTION=Modern MERN stack application with real-time features
+
+# Feature Flags
+VITE_ENABLE_CHAT=true
+VITE_ENABLE_NOTIFICATIONS=true
+VITE_ENABLE_DARK_MODE=true
+
+# ===================================================================
+# 🔐 AUTHENTICATION & SECURITY
+# ===================================================================
+# IMPORTANT: Change these secrets in production!
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-2025
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production-2025
+JWT_EXPIRES_IN=1h
+JWT_REFRESH_EXPIRES_IN=7d
+
+# ===================================================================
+# 🗄️ DATABASE CONFIGURATION
+# ===================================================================
+# Choose one database type: sqlite | postgres | supabase | mongodb
+DATABASE_TYPE=sqlite
+
+# SQLite Configuration (Development)
+SQLITE_DATABASE_PATH=./server-ts/data/database.sqlite
+
+# PostgreSQL Configuration (Production)
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DATABASE=example_react_db
+POSTGRES_USERNAME=postgres
+POSTGRES_PASSWORD=your-secure-password
+
+# Supabase Configuration (Cloud)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+
+# MongoDB Configuration (Legacy Support)
+MONGO_URL=mongodb://localhost:27017/example-react-db
+
+# ===================================================================
+# 📧 EMAIL SERVICE CONFIGURATION
+# ===================================================================
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=your-email@gmail.com
+MAIL_PASS=your-app-password
+MAIL_FROM=noreply@yourapp.com
+
+# ===================================================================
+# 📁 FILE UPLOAD CONFIGURATION
+# ===================================================================
+UPLOAD_DIR=./server-ts/uploads
+MAX_FILE_SIZE=5242880
+
+# ===================================================================
+# 🌍 CORS CONFIGURATION
+# ===================================================================
+CORS_ALLOW_ORIGINS=http://localhost:5173,http://localhost:3000
+
+# ===================================================================
+# 🔧 DEVELOPMENT & DEBUGGING
+# ===================================================================
+LOG_LEVEL=info
+
+# ===================================================================
+# 🚀 DEPLOYMENT CONFIGURATION
+# ===================================================================
+# Uncomment and configure for specific deployment platforms
+
+# Vercel
+VERCEL=1
+VERCEL_URL=your-app.vercel.app
+
+# Netlify
+# NETLIFY=1
+# URL=https://your-app.netlify.app
+
+# Heroku
+# HEROKU=1
+# HEROKU_APP_NAME=your-app-name
+
+# Railway
+# RAILWAY=1
+# RAILWAY_STATIC_URL=your-app.railway.app
+
+# Docker
+# DOCKER=1
+
+# ===================================================================
+# 📊 MONITORING & ANALYTICS (Optional)
+# ===================================================================
+# Uncomment and configure if using external services
+
+# Sentry Error Tracking
+# SENTRY_DSN=your-sentry-dsn
+
+# Google Analytics
+# GA_TRACKING_ID=GA-XXXXXXXXX
+
+# PostHog Analytics
+# POSTHOG_KEY=your-posthog-key
+# POSTHOG_HOST=https://app.posthog.com
+
+# ===================================================================
+# 🔑 EXTERNAL API KEYS (Optional)
+# ===================================================================
+# Add your external service API keys here
+
+# OpenAI API
+# OPENAI_API_KEY=your-openai-api-key
+
+# Stripe Payment
+# STRIPE_PUBLISHABLE_KEY=pk_test_...
+# STRIPE_SECRET_KEY=sk_test_...
+
+# AWS S3 (for file storage)
+# AWS_ACCESS_KEY_ID=your-aws-access-key
+# AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+# AWS_REGION=us-east-1
+# AWS_S3_BUCKET=your-bucket-name
+
+# ===================================================================
+# 🧪 TESTING CONFIGURATION
+# ===================================================================
+# Test database (separate from development)
+TEST_DATABASE_TYPE=sqlite
+TEST_SQLITE_DATABASE_PATH=./server-ts/data/test.sqlite
+
+# ===================================================================
+# 📝 NOTES
+# ===================================================================
+# 1. Never commit the actual .env file to version control
+# 2. Use strong, unique secrets for JWT tokens in production
+# 3. Configure CORS_ALLOW_ORIGINS for your production domains
+# 4. Set NODE_ENV=production for production deployments
+# 5. Use environment-specific values for database connections
+# 6. Enable IS_SSR=true for production deployments with SSR
