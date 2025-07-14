@@ -1,5 +1,11 @@
 import { config } from "./config";
 import type { ApiResponse } from "@/types/api";
+import {
+  isTokenExpired,
+  shouldRefreshToken,
+  getTokenInfo,
+  isValidTokenStructure
+} from "./token-utils";
 
 export class HttpClient {
   private baseURL: string;
@@ -7,6 +13,8 @@ export class HttpClient {
   private refreshToken: string | null = null;
   private refreshAttempts: number = 0;
   private maxRefreshAttempts: number = 3;
+  private isRefreshing: boolean = false;
+  private refreshPromise: Promise<void> | null = null;
 
   constructor(baseURL: string = config.apiBaseUrl) {
     this.baseURL = baseURL;
@@ -151,6 +159,9 @@ export class HttpClient {
     if (!this.accessToken) {
       this.syncTokensFromAuthStore();
     }
+
+    // Proactive token validation and refresh
+    await this.ensureValidToken(endpoint);
 
     const url = `${this.baseURL}${endpoint}`;
 
