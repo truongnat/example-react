@@ -10,6 +10,7 @@ export const Route = createRootRoute({
       <React.Fragment>
         <Outlet />
         <Toaster />
+        <TokenMonitor />
         <TanStackRouterDevtools />
       </React.Fragment>
     )
