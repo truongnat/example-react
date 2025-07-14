@@ -16,6 +16,41 @@ async function startDevelopment() {
   try {
     log(`${colors.bright}🚀 Starting development environment...${colors.reset}`, colors.green);
 
+    // Load and validate unified environment configuration
+    const envResult = loadUnifiedEnv({ verbose: true, validate: true, required: ['NODE_ENV', 'PORT'] });
+
+    if (envResult.errors.length > 0) {
+      log('❌ Environment configuration errors:', colors.red);
+      envResult.errors.forEach(error => log(`   ${error}`, colors.red));
+      process.exit(1);
+    }
+
+    // Validate environment for development
+    const clientValidation = validateEnvironment('client');
+    const serverValidation = validateEnvironment('server');
+
+    if (!clientValidation.isValid || !serverValidation.isValid) {
+      log('❌ Environment validation failed:', colors.red);
+      if (!clientValidation.isValid) {
+        log(`   Client missing: ${clientValidation.missing.join(', ')}`, colors.red);
+      }
+      if (!serverValidation.isValid) {
+        log(`   Server missing: ${serverValidation.missing.join(', ')}`, colors.red);
+      }
+      process.exit(1);
+    }
+
+    // Show warnings
+    const allWarnings = [...clientValidation.warnings, ...serverValidation.warnings];
+    if (allWarnings.length > 0) {
+      log('⚠️ Environment warnings:', colors.yellow);
+      allWarnings.forEach(warning => log(`   ${warning}`, colors.yellow));
+      log('');
+    }
+
+    // Display environment summary
+    displayEnvironmentSummary(false);
+
     const paths = getProjectPaths();
     const pmConfig = getPackageManagerConfig();
     const commands = [];
