@@ -121,131 +121,229 @@ bun run dev
 - 📚 **API Docs**: http://localhost:3000/api-docs
 - 🏥 **Health Check**: http://localhost:3000/health
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 example-react/
-├── client/                 # React frontend
+├── 📱 client/                    # React Frontend Application
 │   ├── src/
-│   │   ├── components/     # UI components
-│   │   ├── routes/         # Page routing
-│   │   ├── hooks/          # Custom hooks
-│   │   ├── services/       # API services
-│   │   └── stores/         # State management
+│   │   ├── components/          # Reusable UI components
+│   │   │   ├── ui/              # shadcn/ui components
+│   │   │   ├── Navigation.tsx   # Main navigation
+│   │   │   └── AuthRequired.tsx # Auth guard component
+│   │   ├── routes/              # Page components & routing
+│   │   │   ├── index.tsx        # Home page
+│   │   │   ├── login.tsx        # Authentication pages
+│   │   │   ├── todo.tsx         # Todo management
+│   │   │   ├── chat.tsx         # Real-time chat
+│   │   │   └── profile.tsx      # User profile
+│   │   ├── hooks/               # Custom React hooks
+│   │   ├── services/            # API service layer
+│   │   ├── stores/              # Zustand state stores
+│   │   ├── lib/                 # Utility libraries
+│   │   └── types/               # TypeScript definitions
+│   ├── public/                  # Static assets
+│   ├── tests/                   # Frontend tests
 │   └── package.json
-├── server-ts/              # Express backend
+├── 🔧 server-ts/                # Express Backend (Clean Architecture)
 │   ├── src/
-│   │   ├── application/    # Use cases
-│   │   ├── domain/         # Entities
-│   │   ├── infrastructure/ # Database
-│   │   └── presentation/   # Controllers
+│   │   ├── domain/              # Business Logic & Entities
+│   │   │   ├── entities/        # Domain entities
+│   │   │   ├── repositories/    # Repository interfaces
+│   │   │   └── services/        # Domain services
+│   │   ├── application/         # Application Business Rules
+│   │   │   ├── use-cases/       # Application use cases
+│   │   │   ├── dtos/            # Data transfer objects
+│   │   │   └── interfaces/      # Application interfaces
+│   │   ├── infrastructure/      # External Concerns
+│   │   │   ├── database/        # Database implementations
+│   │   │   ├── repositories/    # Repository implementations
+│   │   │   ├── external-services/ # External services
+│   │   │   └── config/          # Configuration
+│   │   ├── presentation/        # Controllers & Routes
+│   │   │   ├── controllers/     # HTTP controllers
+│   │   │   ├── routes/          # Route definitions
+│   │   │   ├── middleware/      # Presentation middleware
+│   │   │   └── validators/      # Request validators
+│   │   └── shared/              # Shared utilities
+│   ├── tests/                   # Backend tests
+│   │   ├── unit/                # Unit tests
+│   │   ├── integration/         # Integration tests
+│   │   └── e2e/                 # End-to-end tests
+│   ├── data/                    # Database files (SQLite)
+│   ├── uploads/                 # File uploads
 │   └── package.json
-├── scripts/                # Build scripts
-└── package.json           # Root workspace
+├── 🛠️ scripts/                  # Cross-platform build scripts
+│   ├── install.js               # Dependency installation
+│   ├── dev.js                   # Development server
+│   ├── test.js                  # Test runner
+│   ├── build.js                 # Production build
+│   ├── deploy.js                # Deployment pipeline
+│   ├── clean.js                 # Cleanup utilities
+│   └── package-manager.js       # Package manager switching
+├── 🐳 Docker files              # Containerization
+│   ├── Dockerfile               # Multi-stage Docker build
+│   ├── docker-compose.dev.yml   # Development environment
+│   ├── docker-compose.prod.yml  # Production environment
+│   └── docker-compose.test.yml  # Testing environment
+└── 📄 Configuration files
+    ├── package.json             # Root workspace configuration
+    ├── nginx.conf               # Nginx configuration
+    └── Makefile                 # Make commands
 ```
 
-## Development
+## 🚀 Development Workflow
 
-### Start Development Servers
+### Essential Commands
+
 ```bash
-bun run dev
-```
-- Client: http://localhost:5173
-- Server: http://localhost:3000
+# 🔧 Setup & Installation
+npm run setup                    # Install all dependencies
+npm run pm:switch bun           # Switch to Bun package manager
 
-### Run Tests
-```bash
-bun run test
+# 🚀 Development
+npm run dev                     # Start both client & server
+npm run test                    # Run all tests
+npm run test:watch             # Run tests in watch mode
+
+# 🏗️ Production
+npm run build                   # Build for production
+npm run start                   # Start production server
+npm run deploy                  # Full deployment pipeline
+
+# 🧹 Maintenance
+npm run clean                   # Clean build artifacts
+npm run seed                    # Seed demo data
+npm run seed:force             # Force seed with fresh data
 ```
 
-### Build for Production
-```bash
-bun run build
-```
-
-### Start Production Server
-```bash
-bun run start
-```
-
-## Available Scripts
+### Available Scripts
 
 | Script | Command | Description |
 |--------|---------|-------------|
-| **Setup** | `bun run setup` | Install all dependencies |
-| **Development** | `bun run dev` | Start development servers |
-| **Test** | `bun run test` | Run all tests |
-| **Build** | `bun run build` | Build for production |
-| **Start** | `bun run start` | Start production server |
-| **Deploy** | `bun run deploy` | Build and test for deployment |
-| **Clean** | `bun run clean` | Clean build artifacts |
+| **🔧 Setup** | `npm run setup` | Install dependencies for all packages |
+| **🚀 Development** | `npm run dev` | Start development servers concurrently |
+| **🧪 Testing** | `npm run test` | Run comprehensive test suite |
+| **🏗️ Build** | `npm run build` | Build all packages for production |
+| **▶️ Start** | `npm run start` | Start production server |
+| **🚀 Deploy** | `npm run deploy` | Complete deployment pipeline |
+| **🧹 Clean** | `npm run clean` | Remove build artifacts and caches |
+| **📦 Package Manager** | `npm run pm:switch <manager>` | Switch between npm/yarn/bun |
+| **🌱 Seed Data** | `npm run seed` | Create demo data for development |
 
-## API Documentation
+## 📚 API Documentation
 
-When the server is running:
-- **API Docs**: http://localhost:3000/api-docs
-- **Health Check**: http://localhost:3000/health
+### Interactive Documentation
+When the server is running, access comprehensive API documentation:
 
-### Key Endpoints
+- **📖 Swagger UI**: http://localhost:3000/api-docs
+- **🔍 OpenAPI Spec**: http://localhost:3000/api-docs/swagger.json
+- **🏥 Health Check**: http://localhost:3000/health
+- **ℹ️ API Info**: http://localhost:3000/api
 
-**Authentication:**
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-- `PUT /api/auth/profile` - Update profile
+### 🔑 Key API Endpoints
 
-**Todos:**
-- `GET /api/todos` - Get todos
-- `POST /api/todos` - Create todo
-- `PUT /api/todos/:id` - Update todo
-- `DELETE /api/todos/:id` - Delete todo
-
-**Chat:**
-- `GET /api/chat/rooms` - Get chat rooms
-- `POST /api/chat/rooms` - Create room
-- WebSocket for real-time messaging
-
-## Testing
-
-```bash
-# Run all tests
-bun run test
-
-# Individual package tests
-cd client && bun run test
-cd server-ts && bun run test
-
-# Watch mode
-cd client && bun run test --watch
-cd server-ts && bun run test:watch
+**Authentication & User Management**
+```
+POST   /api/auth/register     # User registration
+POST   /api/auth/login        # User login
+POST   /api/auth/logout       # User logout
+GET    /api/auth/me           # Get current user profile
+PUT    /api/auth/profile      # Update user profile
+POST   /api/auth/upload       # Upload profile avatar
 ```
 
-## Technology Stack
-
-**Frontend:**
-- React 19 + TypeScript
-- TanStack Router + Query
-- Zustand (state management)
-- Tailwind CSS + shadcn/ui
-- Vite (build tool)
-
-**Backend:**
-- Node.js + Express + TypeScript
-- SQLite + TypeORM
-- JWT authentication
-- Socket.io (real-time)
-- Swagger (API docs)
-
-## Deployment
-
-### Using Docker
-```bash
-# Build and run with Docker Compose
-docker-compose up --build
-
-# Production deployment
-docker-compose -f docker-compose.prod.yml up --build
+**Todo Management**
 ```
+GET    /api/todos             # Get todos (with filtering & pagination)
+POST   /api/todos             # Create new todo
+GET    /api/todos/:id         # Get specific todo
+PUT    /api/todos/:id         # Update todo
+DELETE /api/todos/:id         # Delete todo
+```
+
+**Real-time Chat**
+```
+GET    /api/chat/rooms        # Get available chat rooms
+POST   /api/chat/rooms        # Create new chat room
+GET    /api/chat/rooms/:id    # Get room details
+WebSocket /socket.io          # Real-time messaging
+```
+
+## 🧪 Testing Strategy
+
+### Comprehensive Test Suite
+```bash
+# Run all tests across the monorepo
+npm run test
+
+# Individual package testing
+cd client && npm run test        # Frontend tests
+cd server-ts && npm run test     # Backend tests
+
+# Watch mode for development
+cd client && npm run test:watch
+cd server-ts && npm run test:watch
+
+# Coverage reports
+cd client && npm run test:coverage
+cd server-ts && npm run test:coverage
+```
+
+### Test Types
+- **Unit Tests**: Individual component/function testing
+- **Integration Tests**: API endpoint and database testing
+- **E2E Tests**: Full user workflow testing
+- **Component Tests**: React component testing with Testing Library
+
+## 🐳 Deployment Options
+
+### 1. Docker Deployment (Recommended)
+
+**Development Environment**
+```bash
+# Start development environment with hot reload
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+**Production Environment**
+```bash
+# Build and deploy production environment
+docker-compose -f docker-compose.prod.yml up --build -d
+
+# View logs
+docker-compose -f docker-compose.prod.yml logs -f
+```
+
+**Testing Environment**
+```bash
+# Run tests in containerized environment
+docker-compose -f docker-compose.test.yml up --build
+```
+
+### 2. Manual Deployment
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm run start
+
+# Or use PM2 for process management
+pm2 start ecosystem.config.js
+```
+
+### 3. Cloud Deployment
+
+**Frontend (Vercel/Netlify)**
+- Build command: `npm run build`
+- Output directory: `client/dist`
+- Environment variables: Set `VITE_API_BASE_URL`
+
+**Backend (Railway/Render/Heroku)**
+- Build command: `cd server-ts && npm run build`
+- Start command: `cd server-ts && npm run start`
+- Environment variables: Configure database and JWT secrets
 
 ## Requirements docs:
 
