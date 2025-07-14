@@ -20,9 +20,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3000
+        value: "3000"
       - key: IS_SSR
-        value: true
+        value: "true"
       - key: DATABASE_TYPE
         value: postgres
       - key: DATABASE_URL
@@ -60,38 +60,36 @@ services:
       - fromGroup: app-config
 
 databases:
-  - name: elephant
-    databaseName: mydb
-    user: adrian
+  - name: example-postgres-db
+    databaseName: example_react_db
+    user: postgres
+    plan: starter
     ipAllowList:
-      - source: 203.0.113.4/30
-        description: office
-      - source: 198.51.100.1
-        description: home
-    readReplicas:
-      - name: elephant-replica
-
-  - name: private database
-    databaseName: private
-    ipAllowList: []
-
-  - name: pachyderm
-    plan: basic-1gb
-    diskSizeGB: 35
-
-  - name: highly available database
-    plan: pro-8gb
-    highAvailability:
-      enabled: true
+      - source: 0.0.0.0/0
+        description: allow all connections
 
 envVarGroups:
-  - name: conc-settings
+  - name: app-config
     envVars:
-      - key: CONCURRENCY
-        value: 2
-      - key: SECRET
-        generateValue: true
-  - name: stripe
-    envVars:
-      - key: STRIPE_API_URL
-        value: https://api.stripe.com/v2
+      - key: VITE_API_BASE_URL
+        value: https://example-react-app.onrender.com/api
+      - key: VITE_WS_URL
+        value: https://example-react-app.onrender.com
+      - key: VITE_APP_NAME
+        value: "React Todo & Chat App 2025"
+      - key: VITE_APP_VERSION
+        value: "1.0.0"
+      - key: VITE_ENABLE_CHAT
+        value: "true"
+      - key: VITE_ENABLE_NOTIFICATIONS
+        value: "true"
+      - key: VITE_ENABLE_DARK_MODE
+        value: "true"
+      - key: CORS_ALLOW_ORIGINS
+        value: https://example-react-app.onrender.com
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_FROM
+        value: noreply@example-react-app.onrender.com
