@@ -560,9 +560,8 @@ If you find this project helpful:
 
 ### Stay Connected
 - 👨‍💻 **Author**: [truongdq.dev](https://github.com/truongnat)
-- 🌐 **Portfolio**: [portfolio-peanut.netlify.app](https://portfolio-peanut.netlify.app/)
-- 🐦 **Twitter**: [@truong20013](https://twitter.com/truong20013)
-- 📱 **Telegram**: [@peanut201](https://t.me/peanut201)
+- 🌐 **Portfolio**: [portfolio-peanut.netlify.app](https://portfolio-truongdq.vercel.app/)
+- 📱 **Telegram**: [@peanut201](https://t.me/truongnat)
 
 ---
 
