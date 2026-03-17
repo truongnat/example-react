@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState, useRef } from 'react'
 
-const API_BASE = 'http://localhost:3001'
+const API_BASE = ''
 
 export interface Todo {
   id: number
@@ -11,13 +11,13 @@ export interface Todo {
 }
 
 async function fetchTodos(): Promise<Todo[]> {
-  const res = await fetch(`${API_BASE}/todos?_sort=createdAt&_order=desc`)
+  const res = await fetch('/api/todos')
   if (!res.ok) throw new Error('Failed to fetch todos')
   return res.json()
 }
 
 async function createTodo(title: string): Promise<Todo> {
-  const res = await fetch(`${API_BASE}/todos`, {
+  const res = await fetch(`/api/todos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -31,7 +31,7 @@ async function createTodo(title: string): Promise<Todo> {
 }
 
 async function toggleTodo(id: number, completed: boolean): Promise<Todo> {
-  const res = await fetch(`${API_BASE}/todos/${id}`, {
+  const res = await fetch(`/api/todos/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ completed }),
@@ -41,7 +41,7 @@ async function toggleTodo(id: number, completed: boolean): Promise<Todo> {
 }
 
 async function deleteTodo(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/todos/${id}`, {
+  const res = await fetch(`/api/todos/${id}`, {
     method: 'DELETE',
   })
   if (!res.ok) throw new Error('Failed to delete todo')
@@ -285,7 +285,7 @@ function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
     }
     setIsSaving(true)
     try {
-      const res = await fetch(`${API_BASE}/todos/${todo.id}`, {
+      const res = await fetch(`/api/todos/${todo.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title }),

@@ -4,10 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"node db-server.js\" \"vinxi dev\"",
+    "dev": "vinxi dev",
     "build": "vinxi build",
-    "start": "vinxi start",
-    "db": "node db-server.js"
+    "start": "vinxi start"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.114.23",

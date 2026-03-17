@@ -12,6 +12,6 @@ export default defineConfig({
     ],
   },
   server: {
-    preset: 'node-server',
+    preset: 'vercel',
   },
 })
