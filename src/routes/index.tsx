@@ -1,21 +1,15 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import * as React from 'react'
-
-export interface Todo {
-  id: number
-  title: string
-  completed: boolean
-  createdAt: string
-}
-
-async function fetchTodos(): Promise<Todo[]> {
-  const res = await fetch('/api/todos')
-  if (!res.ok) throw new Error('Failed to fetch todos')
-  return res.json()
-}
+import { store } from '~/lib/store'
+import type { Todo } from '~/lib/store'
 
 export const Route = createFileRoute('/')({
-  loader: () => fetchTodos(),
+  loader: () => {
+    // Access store directly on server — no HTTP round-trip needed
+    return [...store.todos].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+  },
   component: TodoPage,
 })
 
