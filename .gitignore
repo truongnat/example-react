@@ -1,7 +1,6 @@
 node_modules
 .output
 .vinxi
-.vercel
 dist
-*.local
 .env
+*.local

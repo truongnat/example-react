@@ -1,6 +1,6 @@
-import { json } from '@tanstack/start'
-import { createAPIFileRoute } from '@tanstack/start/api'
-import { store } from '../lib/store'
+import { json } from '@tanstack/react-start'
+import { createAPIFileRoute } from '@tanstack/react-start/api'
+import { store } from '~/lib/store'
 
 export const APIRoute = createAPIFileRoute('/api/todos')({
   GET: async () => {
