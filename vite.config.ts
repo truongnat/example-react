@@ -9,17 +9,22 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  ssr: {
+    noExternal: [
+      '@tanstack/react-query',
+      '@tanstack/react-query-devtools',
+      '@tanstack/react-form',
+      '@tanstack/react-table',
+      '@tanstack/react-virtual',
+      '@tanstack/react-store',
+      '@tanstack/store',
+    ],
+  },
   plugins: [
     tailwindcss(),
-    tsConfigPaths({
-      projects: ['./tsconfig.json'],
-    }),
-    tanstackStart({
-      srcDirectory: 'src',
-    }),
+    tsConfigPaths({ projects: ['./tsconfig.json'] }),
+    tanstackStart({ srcDirectory: 'src' }),
     viteReact(),
-    nitro({
-      preset: 'vercel',
-    }),
+    nitro({ preset: 'vercel' }),
   ],
 })
