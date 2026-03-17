@@ -24,8 +24,6 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "overrides": {
-    "@tanstack/router-generator": "1.120.20",
-    "@tanstack/router-devtools": "1.120.20",
-    "@tanstack/react-router-devtools": "1.120.20"
+    "@tanstack/router-generator": "1.131.50"
   }
 }
