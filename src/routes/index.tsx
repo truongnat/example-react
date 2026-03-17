@@ -1,5 +1,13 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import * as React from 'react'
+import { PlusIcon, Trash2Icon, ListTodoIcon, SunIcon, LoaderIcon } from 'lucide-react'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Card, CardContent, CardHeader, CardFooter } from '~/components/ui/card'
+import { Badge } from '~/components/ui/badge'
+import { Separator } from '~/components/ui/separator'
+import { Checkbox } from '~/components/ui/checkbox'
+import { cn } from '~/lib/utils'
 
 const API = 'https://jsonplaceholder.typicode.com'
 
@@ -19,19 +27,18 @@ export const Route = createFileRoute('/')({
   component: TodoPage,
 })
 
+type FilterType = 'all' | 'active' | 'completed'
+
 function TodoPage() {
   const initialTodos = Route.useLoaderData()
   const router = useRouter()
 
-  // Local state on top of server data for optimistic UI
   const [todos, setTodos] = React.useState<Todo[]>(initialTodos)
   const [newTitle, setNewTitle] = React.useState('')
   const [isAdding, setIsAdding] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
-  const [filter, setFilter] = React.useState<'all' | 'active' | 'completed'>('all')
+  const [filter, setFilter] = React.useState<FilterType>('all')
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  // Sync when loader data refreshes
   React.useEffect(() => { setTodos(initialTodos) }, [initialTodos])
 
   const filteredTodos = todos.filter((todo) => {
@@ -48,7 +55,6 @@ function TodoPage() {
     const title = newTitle.trim()
     if (!title) return
     setIsAdding(true)
-    setError(null)
     try {
       const res = await fetch(`${API}/todos`, {
         method: 'POST',
@@ -56,134 +62,167 @@ function TodoPage() {
         body: JSON.stringify({ title, completed: false, userId: 1 }),
       })
       const created: Todo = await res.json()
-      // Optimistic: prepend with a local id since JSONPlaceholder always returns id=201
       setTodos(prev => [{ ...created, id: Date.now() }, ...prev])
       setNewTitle('')
       inputRef.current?.focus()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add todo')
     } finally {
       setIsAdding(false)
     }
   }
 
   async function handleToggle(todo: Todo) {
-    // Optimistic update
     setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: !t.completed } : t))
-    try {
-      await fetch(`${API}/todos/${todo.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed: !todo.completed }),
-      })
-    } catch {
-      // Revert on error
+    await fetch(`${API}/todos/${todo.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ completed: !todo.completed }),
+    }).catch(() => {
       setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: todo.completed } : t))
-    }
+    })
   }
 
   async function handleDelete(id: number) {
     setTodos(prev => prev.filter(t => t.id !== id))
-    try {
-      await fetch(`${API}/todos/${id}`, { method: 'DELETE' })
-    } catch {
-      // Revert
-      await router.invalidate()
-    }
+    await fetch(`${API}/todos/${id}`, { method: 'DELETE' }).catch(() => router.invalidate())
   }
 
   async function handleClearCompleted() {
-    const completed = todos.filter((t) => t.completed)
+    const completed = todos.filter(t => t.completed)
     setTodos(prev => prev.filter(t => !t.completed))
-    try {
-      await Promise.all(completed.map(t => fetch(`${API}/todos/${t.id}`, { method: 'DELETE' })))
-    } catch {
-      await router.invalidate()
-    }
+    await Promise.all(completed.map(t => fetch(`${API}/todos/${t.id}`, { method: 'DELETE' }))).catch(() => router.invalidate())
   }
 
+  const filters: { value: FilterType; label: string }[] = [
+    { value: 'all', label: 'All' },
+    { value: 'active', label: 'Active' },
+    { value: 'completed', label: 'Done' },
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-indigo-100 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600 mb-2">
-            ✅ Todo App
-          </h1>
-          <p className="text-gray-500 text-sm">Powered by TanStack Start + JSONPlaceholder</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/50 flex items-start justify-center py-16 px-4">
+      <div className="w-full max-w-xl space-y-4">
+
+        {/* Header */}
+        <div className="text-center space-y-1 pb-2">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 mb-3">
+            <ListTodoIcon className="w-6 h-6 text-primary" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">My Todos</h1>
+          <p className="text-sm text-muted-foreground">
+            {activeCount === 0 ? '🎉 All done!' : `${activeCount} task${activeCount !== 1 ? 's' : ''} remaining`}
+          </p>
         </div>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center justify-between">
-            <span>⚠️ {error}</span>
-            <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600 font-bold ml-3">✕</button>
-          </div>
-        )}
+        {/* Add Todo Card */}
+        <Card>
+          <CardContent className="pt-6">
+            <form onSubmit={handleAdd} className="flex gap-2">
+              <Input
+                ref={inputRef}
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Add a new task..."
+                disabled={isAdding}
+                className="flex-1 h-10"
+              />
+              <Button type="submit" disabled={isAdding || !newTitle.trim()} size="default" className="h-10 px-4 shrink-0">
+                {isAdding ? (
+                  <LoaderIcon className="w-4 h-4 animate-spin" />
+                ) : (
+                  <PlusIcon className="w-4 h-4" />
+                )}
+                <span className="hidden sm:inline">{isAdding ? 'Adding...' : 'Add'}</span>
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
-        <form onSubmit={handleAdd} className="mb-6 flex gap-3">
-          <input
-            ref={inputRef}
-            type="text"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            placeholder="What needs to be done?"
-            disabled={isAdding}
-            className="flex-1 px-5 py-3 rounded-xl border border-gray-200 bg-white shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition disabled:opacity-60"
-          />
-          <button
-            type="submit"
-            disabled={isAdding || !newTitle.trim()}
-            className="px-6 py-3 bg-gradient-to-r from-violet-500 to-indigo-500 text-white rounded-xl font-semibold shadow-sm hover:from-violet-600 hover:to-indigo-600 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isAdding ? '...' : 'Add'}
-          </button>
-        </form>
-
-        {todos.length > 0 && (
-          <div className="flex items-center justify-between mb-4 px-1">
-            <span className="text-sm text-gray-500">
-              <span className="font-semibold text-violet-600">{activeCount}</span>{' '}
-              {activeCount === 1 ? 'item' : 'items'} left
-            </span>
-            <div className="flex gap-1 bg-white rounded-lg p-1 shadow-sm border border-gray-100">
-              {(['all', 'active', 'completed'] as const).map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-                    filter === f ? 'bg-violet-500 text-white shadow-sm' : 'text-gray-500 hover:text-violet-600'
-                  }`}
+        {/* Todos Card */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex gap-1">
+                {filters.map(f => (
+                  <Button
+                    key={f.value}
+                    variant={filter === f.value ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setFilter(f.value)}
+                    className="h-7 px-3 text-xs"
+                  >
+                    {f.label}
+                    {f.value === 'all' && (
+                      <Badge variant={filter === 'all' ? 'secondary' : 'outline'} className="ml-1 h-4 px-1 text-[10px]">
+                        {todos.length}
+                      </Badge>
+                    )}
+                  </Button>
+                ))}
+              </div>
+              {completedCount > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearCompleted}
+                  className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
                 >
-                  {f.charAt(0).toUpperCase() + f.slice(1)}
-                </button>
-              ))}
+                  <Trash2Icon className="w-3 h-3 mr-1" />
+                  Clear done
+                </Button>
+              )}
             </div>
-            {completedCount > 0 && (
-              <button onClick={handleClearCompleted} className="text-sm text-gray-400 hover:text-red-500 transition">
-                Clear ({completedCount})
-              </button>
+          </CardHeader>
+
+          <Separator />
+
+          <CardContent className="p-0">
+            {filteredTodos.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+                <SunIcon className="w-10 h-10 mb-3 opacity-30" />
+                <p className="text-sm font-medium">
+                  {filter === 'completed' ? 'No completed tasks yet' : filter === 'active' ? 'No active tasks — all done!' : 'No tasks yet. Add one above!'}
+                </p>
+              </div>
+            ) : (
+              <ul className="divide-y divide-border">
+                {filteredTodos.map((todo, index) => (
+                  <TodoItem
+                    key={todo.id}
+                    todo={todo}
+                    index={index}
+                    onToggle={handleToggle}
+                    onDelete={handleDelete}
+                    onUpdate={(id, title) => setTodos(prev => prev.map(t => t.id === id ? { ...t, title } : t))}
+                  />
+                ))}
+              </ul>
             )}
-          </div>
-        )}
+          </CardContent>
 
-        <div className="space-y-3">
-          {filteredTodos.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="text-5xl mb-4">{filter === 'completed' ? '🎉' : filter === 'active' ? '🌟' : '📝'}</div>
-              <p className="text-gray-400 text-lg">
-                {filter === 'completed' ? 'No completed todos yet' : filter === 'active' ? 'No active todos — great job!' : 'No todos yet. Add one above!'}
-              </p>
-            </div>
-          ) : (
-            filteredTodos.map((todo) => (
-              <TodoItem key={todo.id} todo={todo} onToggle={handleToggle} onDelete={handleDelete} onUpdate={(id, title) => setTodos(prev => prev.map(t => t.id === id ? { ...t, title } : t))} />
-            ))
+          {todos.length > 0 && (
+            <>
+              <Separator />
+              <CardFooter className="py-3 px-4">
+                <p className="text-xs text-muted-foreground">
+                  {completedCount} of {todos.length} completed
+                </p>
+                <div className="ml-auto h-1.5 w-24 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-500"
+                    style={{ width: `${todos.length ? (completedCount / todos.length) * 100 : 0}%` }}
+                  />
+                </div>
+              </CardFooter>
+            </>
           )}
-        </div>
+        </Card>
 
-        <div className="mt-10 text-center text-xs text-gray-400">
-          <p>{todos.length} total • {completedCount} completed</p>
-          <p className="mt-1">Data from <a href="https://jsonplaceholder.typicode.com" target="_blank" rel="noreferrer" className="text-violet-400 hover:underline">JSONPlaceholder</a></p>
-        </div>
+        <p className="text-center text-xs text-muted-foreground/60">
+          Data from{' '}
+          <a href="https://jsonplaceholder.typicode.com" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
+            JSONPlaceholder
+          </a>
+        </p>
       </div>
     </div>
   )
@@ -191,6 +230,7 @@ function TodoPage() {
 
 interface TodoItemProps {
   todo: Todo
+  index: number
   onToggle: (todo: Todo) => void
   onDelete: (id: number) => void
   onUpdate: (id: number, title: string) => void
@@ -222,17 +262,15 @@ function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) {
   }
 
   return (
-    <div className={`group flex items-center gap-4 px-5 py-4 bg-white rounded-2xl shadow-sm border transition-all duration-200 hover:shadow-md ${todo.completed ? 'border-gray-100 opacity-75' : 'border-gray-100'}`}>
-      <button
-        onClick={() => onToggle(todo)}
-        className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${todo.completed ? 'bg-gradient-to-r from-violet-500 to-indigo-500 border-transparent' : 'border-gray-300 hover:border-violet-400'}`}
-      >
-        {todo.completed && (
-          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        )}
-      </button>
+    <li className={cn(
+      'group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/30',
+      todo.completed && 'opacity-60'
+    )}>
+      <Checkbox
+        checked={todo.completed}
+        onCheckedChange={() => onToggle(todo)}
+        className="shrink-0"
+      />
 
       <div className="flex-1 min-w-0">
         {isEditing ? (
@@ -241,29 +279,35 @@ function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) {
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             onBlur={handleEditSave}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleEditSave(); if (e.key === 'Escape') { setEditValue(todo.title); setIsEditing(false) } }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleEditSave()
+              if (e.key === 'Escape') { setEditValue(todo.title); setIsEditing(false) }
+            }}
             disabled={isSaving}
-            className="w-full text-gray-800 font-medium bg-gray-50 border border-violet-300 rounded-lg px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-violet-400"
+            className="w-full text-sm bg-transparent border-b border-primary outline-none pb-px"
           />
         ) : (
           <span
-            className={`text-gray-800 font-medium cursor-pointer truncate block ${todo.completed ? 'line-through text-gray-400' : ''}`}
+            className={cn(
+              'text-sm truncate block cursor-text select-none',
+              todo.completed && 'line-through text-muted-foreground'
+            )}
             onDoubleClick={() => !todo.completed && setIsEditing(true)}
-            title="Double-click to edit"
+            title={todo.completed ? undefined : 'Double-click to edit'}
           >
             {todo.title}
           </span>
         )}
       </div>
 
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => onDelete(todo.id)}
-        className="flex-shrink-0 opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+        className="shrink-0 h-7 w-7 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
       >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-        </svg>
-      </button>
-    </div>
+        <Trash2Icon className="w-3.5 h-3.5" />
+      </Button>
+    </li>
   )
 }
