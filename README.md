@@ -1,131 +1,143 @@
-# TanStack Todo App 🚀
+# TanStack Start + json-server Todo App
 
-> A beginner-friendly Todo App showcasing the full **TanStack** ecosystem with modern React patterns.
+A full-featured Todo application built with **TanStack Start** (full-stack React framework) and **json-server** as a mock REST API backend.
 
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)](https://typescriptlang.org)
-[![TanStack](https://img.shields.io/badge/TanStack-FF4154?logo=react-query)](https://tanstack.com)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
-[![Live Demo](https://img.shields.io/badge/Demo-Live-green)](https://peanut-example-react.vercel.app/)
+## ✨ Features
 
-## ✨ What's Inside
+- ✅ Full CRUD: Create, Read, Update (toggle), Delete todos
+- 🔍 Filter by All / Active / Completed
+- ✏️ Inline editing (double-click a todo title to edit)
+- 🗑️ Clear all completed at once
+- 🎨 Beautiful UI with Tailwind CSS v4
+- ⚡ SSR with TanStack Start (Vinxi)
+- 🔄 Auto-refresh after mutations via `router.invalidate()`
 
-This project is designed to teach modern React development using the **TanStack** suite of libraries — the same tools used in production by thousands of companies.
+## 🛠️ Tech Stack
 
-| Library | Version | Purpose |
-|---------|---------|---------|
-| **TanStack Router** | v1 | File-based routing, type-safe navigation |
-| **TanStack Query** | v5 | Server state management, caching, sync |
-| **TanStack Form** | v1 | Form state management with validation |
-| **Zustand** | v5 | Client state management |
-| **React** | v19 | UI framework |
-| **TypeScript** | v5 | Type safety |
-| **Tailwind CSS** | v4 | Styling |
-| **Vite** | v6 | Build tool |
-| **Vitest** | v3 | Testing |
-
-## 🎯 Features
-
-- ✅ **CRUD Todo** — Create, Read, Update, Delete tasks
-- 🔍 **Filter & Sort** — by status, date, title
-- ⚡ **Optimistic Updates** — instant UI feedback
-- 🔄 **Auto-sync** — background refetch & stale-while-revalidate
-- 🧪 **Unit Tests** — with Vitest + Testing Library
-- 🎨 **Responsive UI** — Radix UI + Tailwind CSS
-- 🔐 **Auth** — JWT with Zustand persist
-
-## 🚀 Quick Start
-
-```bash
-# Clone
-git clone https://github.com/truongnat/example-react.git
-cd example-react
-
-# Install & run (uses custom script)
-npm run setup
-npm run dev
-```
+| Layer | Technology |
+|-------|------------|
+| Framework | [TanStack Start](https://tanstack.com/start) |
+| Routing | [TanStack Router](https://tanstack.com/router) |
+| Bundler | [Vinxi](https://vinxi.vercel.app/) |
+| API | [json-server](https://github.com/typicode/json-server) |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com/) |
+| Language | TypeScript |
+| Runtime | Node.js |
 
 ## 📁 Project Structure
 
 ```
-client/src/
-├── routes/          # TanStack Router — file-based routes
-│   ├── __root.tsx   # Root layout
-│   ├── index.tsx    # Home page
-│   ├── todo.tsx     # Todo page
-│   └── login.tsx    # Auth pages
-├── hooks/           # TanStack Query hooks
-│   └── useTodos.ts  # useQuery + useMutation for todos
-├── stores/          # Zustand stores
-│   └── authStore.ts # Auth state with persist
-├── services/        # API service layer
-│   └── todo.service.ts
-└── components/      # Reusable UI components
+├── app/
+│   ├── routes/
+│   │   ├── __root.tsx       # Root layout (html/head/body)
+│   │   └── index.tsx        # Main todo page with full CRUD
+│   ├── styles.css           # Tailwind v4 entry
+│   ├── client.tsx           # Client-side hydration entry
+│   ├── router.tsx           # Router configuration
+│   └── ssr.tsx              # SSR handler
+├── db.json                  # json-server database (todos)
+├── db-server.js             # Starts json-server on port 3001
+├── app.config.ts            # TanStack Start / Vinxi config
+├── tsconfig.json            # TypeScript configuration
+└── package.json
 ```
 
-## 🧠 Key Concepts Demonstrated
+## 🚀 Getting Started
 
-### TanStack Query — Server State
-```tsx
-// Fetch with caching & background sync
-const { data, isLoading } = useQuery({
-  queryKey: todoKeys.list(params),
-  queryFn: () => todoService.getTodos(params),
-  staleTime: 30 * 1000,
-})
+### Prerequisites
 
-// Mutate with optimistic updates
-const mutation = useMutation({
-  mutationFn: todoService.createTodo,
-  onSuccess: () => queryClient.invalidateQueries({ queryKey: todoKeys.all }),
-})
-```
+- Node.js 20+
+- npm / pnpm / yarn
 
-### TanStack Router — Type-safe Routing
-```tsx
-// File: routes/todo.tsx
-export const Route = createFileRoute('/todo')({
-  beforeLoad: ({ context }) => {
-    // Guard: redirect if not authenticated
-    if (!useAuthStore.getState().isAuthenticated) {
-      throw redirect({ to: '/login' })
-    }
-  },
-  component: TodoPage,
-})
-```
-
-### Zustand — Client State
-```tsx
-const useAuthStore = create(persist(
-  (set) => ({
-    user: null,
-    isAuthenticated: false,
-    login: (user) => set({ user, isAuthenticated: true }),
-    logout: () => set({ user: null, isAuthenticated: false }),
-  }),
-  { name: 'auth-storage' }
-))
-```
-
-## 🧪 Testing
+### Installation
 
 ```bash
-cd client && npm run test
+npm install
 ```
 
-## 📖 Learn More
+### Development
 
-- [TanStack Router Docs](https://tanstack.com/router)
-- [TanStack Query Docs](https://tanstack.com/query)
-- [Zustand Docs](https://zustand-demo.pmnd.rs)
-- [React 19 Docs](https://react.dev)
+Start both the json-server API and the TanStack Start dev server together:
 
-## 🤝 Contributing
+```bash
+npm run dev
+```
 
-PRs welcome! See open issues for ideas.
+This uses `concurrently` to run:
+- **json-server** on `http://localhost:3001` (REST API)
+- **Vinxi dev server** on `http://localhost:3000` (React app)
 
-## 📄 License
+### Run only the API
 
-MIT © [Truong DQ](https://truongdq.com)
+```bash
+npm run db
+```
+
+### Production Build
+
+```bash
+npm run build
+npm run start
+```
+
+## 📡 API Endpoints
+
+json-server provides a full REST API from `db.json`:
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/todos` | Get all todos |
+| `POST` | `/todos` | Create a new todo |
+| `PATCH` | `/todos/:id` | Update a todo (toggle/edit) |
+| `DELETE` | `/todos/:id` | Delete a todo |
+
+### Todo Shape
+
+```typescript
+interface Todo {
+  id: number
+  title: string
+  completed: boolean
+  createdAt: string  // ISO 8601 date string
+}
+```
+
+### Example API calls
+
+```bash
+# Get all todos
+curl http://localhost:3001/todos
+
+# Create a todo
+curl -X POST http://localhost:3001/todos \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Buy groceries","completed":false,"createdAt":"2026-01-01T00:00:00.000Z"}'
+
+# Toggle a todo
+curl -X PATCH http://localhost:3001/todos/1 \
+  -H "Content-Type: application/json" \
+  -d '{"completed":true}'
+
+# Delete a todo
+curl -X DELETE http://localhost:3001/todos/1
+```
+
+## 🎨 UI Features
+
+- **Add todo**: Type in the input and press Enter or click "Add"
+- **Complete todo**: Click the circle checkbox on the left
+- **Edit todo**: Double-click the title text (only for incomplete todos)
+- **Delete todo**: Hover over a todo and click the trash icon
+- **Filter**: Use All / Active / Completed tabs
+- **Clear completed**: Button appears when there are completed todos
+
+## 📝 Notes
+
+- Data is persisted in `db.json` — changes survive server restarts
+- The TanStack Start loader fetches todos server-side on navigation
+- After mutations, `router.invalidate()` triggers a fresh loader fetch
+- json-server v0.17.x uses CommonJS; `db-server.js` uses ESM via `"type": "module"` with the `json-server` default export
+
+## License
+
+MIT

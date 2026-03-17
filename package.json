@@ -1,35 +1,29 @@
 {
-  "name": "example-react-monorepo",
+  "name": "example-react-tanstack-todo",
   "version": "1.0.0",
-  "author": "truongdq.dev",
-  "description": "MERN Stack monorepo with todo, chat, profile",
-  "keywords": [
-    "react",
-    "express",
-    "mongodb",
-    "nodejs",
-    "mern",
-    "monorepo"
-  ],
-  "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
-    "setup": "node scripts/install.js",
-    "dev": "node scripts/dev.js",
-    "test": "node scripts/test.js",
-    "build": "node scripts/build.js",
-    "start": "node scripts/start.js",
-    "deploy": "node scripts/deploy.js",
-    "clean": "node scripts/clean.js",
-    "pm": "node scripts/package-manager.js",
-    "pm:list": "node scripts/package-manager.js list",
-    "pm:switch": "node scripts/package-manager.js switch",
-    "pm:clean": "node scripts/package-manager.js clean",
-    "seed": "node scripts/seed.js",
-    "seed:force": "node scripts/seed.js --force",
-    "env:cleanup": "node scripts/cleanup-env.js",
-    "env:cleanup:force": "node scripts/cleanup-env.js --force",
-    "env:test": "node scripts/test-env.js"
+    "dev": "concurrently \"node db-server.js\" \"vinxi dev\"",
+    "build": "vinxi build",
+    "start": "vinxi start",
+    "db": "node db-server.js"
   },
-  "type": "module"
+  "dependencies": {
+    "@tanstack/react-router": "^1.114.23",
+    "@tanstack/start": "^1.114.23",
+    "concurrently": "^9.1.2",
+    "json-server": "^0.17.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vinxi": "^0.5.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.3",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
 }
