@@ -2,7 +2,7 @@
 
 A beginner-friendly dashboard showcasing all major TanStack libraries working together in a real app.
 
-🔗 **Live Demo:** https://example-react-6mhff4sbg-truongdqdev-9126s-projects.vercel.app
+🔗 **Live Demo:** https://example-react-brown.vercel.app
 
 ## TanStack Libraries Used
 
