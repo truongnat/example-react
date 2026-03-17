@@ -1,313 +1,92 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
-import * as React from 'react'
-import { PlusIcon, Trash2Icon, ListTodoIcon, SunIcon, LoaderIcon } from 'lucide-react'
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Card, CardContent, CardHeader, CardFooter } from '~/components/ui/card'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { CheckSquareIcon, FileTextIcon, UsersIcon, ZapIcon, DatabaseIcon, LayersIcon, FormInputIcon, BoxIcon } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
-import { Separator } from '~/components/ui/separator'
-import { Checkbox } from '~/components/ui/checkbox'
-import { cn } from '~/lib/utils'
+import { setTab, type TabType } from '~/store'
 
-const API = 'https://jsonplaceholder.typicode.com'
+export const Route = createFileRoute('/')({ component: HomePage })
 
-export interface Todo {
-  id: number
-  userId: number
-  title: string
-  completed: boolean
-}
-
-export const Route = createFileRoute('/')({
-  loader: async () => {
-    const res = await fetch(`${API}/todos?_limit=20`)
-    if (!res.ok) throw new Error('Failed to fetch todos')
-    return res.json() as Promise<Todo[]>
+const features = [
+  {
+    icon: CheckSquareIcon, title: 'Todos', href: '/todos', tab: 'todos' as TabType, color: 'text-violet-500', bg: 'bg-violet-50',
+    libs: ['@tanstack/react-query', '@tanstack/react-form', '@tanstack/store'],
+    desc: 'useQuery, useMutation with optimistic updates. useForm with validation. Global search state.',
   },
-  component: TodoPage,
-})
+  {
+    icon: FileTextIcon, title: 'Posts', href: '/posts', tab: 'posts' as TabType, color: 'text-blue-500', bg: 'bg-blue-50',
+    libs: ['@tanstack/react-query', '@tanstack/react-table', '@tanstack/react-virtual'],
+    desc: 'Table with sort/filter/pagination. Virtual list rendering 100 rows efficiently.',
+  },
+  {
+    icon: UsersIcon, title: 'Users', href: '/users', tab: 'users' as TabType, color: 'text-green-500', bg: 'bg-green-50',
+    libs: ['@tanstack/react-query', '@tanstack/react-table', '@tanstack/react-form'],
+    desc: 'Sortable table. Edit dialog with TanStack Form validation and mutation.',
+  },
+]
 
-type FilterType = 'all' | 'active' | 'completed'
+const allLibs = [
+  { name: '@tanstack/react-query', icon: ZapIcon, desc: 'Data fetching, caching, mutations' },
+  { name: '@tanstack/react-table', icon: LayersIcon, desc: 'Headless table with sort/filter/pagination' },
+  { name: '@tanstack/react-virtual', icon: DatabaseIcon, desc: 'Virtual list for large datasets' },
+  { name: '@tanstack/react-form', icon: FormInputIcon, desc: 'Form state & validation' },
+  { name: '@tanstack/store', icon: BoxIcon, desc: 'Global UI state management' },
+  { name: '@tanstack/react-router', icon: ZapIcon, desc: 'Type-safe file-based routing' },
+]
 
-function TodoPage() {
-  const initialTodos = Route.useLoaderData()
-  const router = useRouter()
-
-  const [todos, setTodos] = React.useState<Todo[]>(initialTodos)
-  const [newTitle, setNewTitle] = React.useState('')
-  const [isAdding, setIsAdding] = React.useState(false)
-  const [filter, setFilter] = React.useState<FilterType>('all')
-  const inputRef = React.useRef<HTMLInputElement>(null)
-
-  React.useEffect(() => { setTodos(initialTodos) }, [initialTodos])
-
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === 'active') return !todo.completed
-    if (filter === 'completed') return todo.completed
-    return true
-  })
-
-  const completedCount = todos.filter((t) => t.completed).length
-  const activeCount = todos.filter((t) => !t.completed).length
-
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault()
-    const title = newTitle.trim()
-    if (!title) return
-    setIsAdding(true)
-    try {
-      const res = await fetch(`${API}/todos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, completed: false, userId: 1 }),
-      })
-      const created: Todo = await res.json()
-      setTodos(prev => [{ ...created, id: Date.now() }, ...prev])
-      setNewTitle('')
-      inputRef.current?.focus()
-    } finally {
-      setIsAdding(false)
-    }
-  }
-
-  async function handleToggle(todo: Todo) {
-    setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: !t.completed } : t))
-    await fetch(`${API}/todos/${todo.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ completed: !todo.completed }),
-    }).catch(() => {
-      setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: todo.completed } : t))
-    })
-  }
-
-  async function handleDelete(id: number) {
-    setTodos(prev => prev.filter(t => t.id !== id))
-    await fetch(`${API}/todos/${id}`, { method: 'DELETE' }).catch(() => router.invalidate())
-  }
-
-  async function handleClearCompleted() {
-    const completed = todos.filter(t => t.completed)
-    setTodos(prev => prev.filter(t => !t.completed))
-    await Promise.all(completed.map(t => fetch(`${API}/todos/${t.id}`, { method: 'DELETE' }))).catch(() => router.invalidate())
-  }
-
-  const filters: { value: FilterType; label: string }[] = [
-    { value: 'all', label: 'All' },
-    { value: 'active', label: 'Active' },
-    { value: 'completed', label: 'Done' },
-  ]
-
+function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/50 flex items-start justify-center py-16 px-4">
-      <div className="w-full max-w-xl space-y-4">
-
-        {/* Header */}
-        <div className="text-center space-y-1 pb-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 mb-3">
-            <ListTodoIcon className="w-6 h-6 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">My Todos</h1>
-          <p className="text-sm text-muted-foreground">
-            {activeCount === 0 ? '🎉 All done!' : `${activeCount} task${activeCount !== 1 ? 's' : ''} remaining`}
-          </p>
-        </div>
-
-        {/* Add Todo Card */}
-        <Card>
-          <CardContent className="pt-6">
-            <form onSubmit={handleAdd} className="flex gap-2">
-              <Input
-                ref={inputRef}
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="Add a new task..."
-                disabled={isAdding}
-                className="flex-1 h-10"
-              />
-              <Button type="submit" disabled={isAdding || !newTitle.trim()} size="default" className="h-10 px-4 shrink-0">
-                {isAdding ? (
-                  <LoaderIcon className="w-4 h-4 animate-spin" />
-                ) : (
-                  <PlusIcon className="w-4 h-4" />
-                )}
-                <span className="hidden sm:inline">{isAdding ? 'Adding...' : 'Add'}</span>
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Todos Card */}
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex gap-1">
-                {filters.map(f => (
-                  <Button
-                    key={f.value}
-                    variant={filter === f.value ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setFilter(f.value)}
-                    className="h-7 px-3 text-xs"
-                  >
-                    {f.label}
-                    {f.value === 'all' && (
-                      <Badge variant={filter === 'all' ? 'secondary' : 'outline'} className="ml-1 h-4 px-1 text-[10px]">
-                        {todos.length}
-                      </Badge>
-                    )}
-                  </Button>
-                ))}
-              </div>
-              {completedCount > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClearCompleted}
-                  className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2Icon className="w-3 h-3 mr-1" />
-                  Clear done
-                </Button>
-              )}
-            </div>
-          </CardHeader>
-
-          <Separator />
-
-          <CardContent className="p-0">
-            {filteredTodos.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-                <SunIcon className="w-10 h-10 mb-3 opacity-30" />
-                <p className="text-sm font-medium">
-                  {filter === 'completed' ? 'No completed tasks yet' : filter === 'active' ? 'No active tasks — all done!' : 'No tasks yet. Add one above!'}
-                </p>
-              </div>
-            ) : (
-              <ul className="divide-y divide-border">
-                {filteredTodos.map((todo, index) => (
-                  <TodoItem
-                    key={todo.id}
-                    todo={todo}
-                    index={index}
-                    onToggle={handleToggle}
-                    onDelete={handleDelete}
-                    onUpdate={(id, title) => setTodos(prev => prev.map(t => t.id === id ? { ...t, title } : t))}
-                  />
-                ))}
-              </ul>
-            )}
-          </CardContent>
-
-          {todos.length > 0 && (
-            <>
-              <Separator />
-              <CardFooter className="py-3 px-4">
-                <p className="text-xs text-muted-foreground">
-                  {completedCount} of {todos.length} completed
-                </p>
-                <div className="ml-auto h-1.5 w-24 rounded-full bg-muted overflow-hidden">
-                  <div
-                    className="h-full bg-primary rounded-full transition-all duration-500"
-                    style={{ width: `${todos.length ? (completedCount / todos.length) * 100 : 0}%` }}
-                  />
-                </div>
-              </CardFooter>
-            </>
-          )}
-        </Card>
-
-        <p className="text-center text-xs text-muted-foreground/60">
-          Data from{' '}
-          <a href="https://jsonplaceholder.typicode.com" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
-            JSONPlaceholder
-          </a>
+    <div className="space-y-10">
+      {/* Hero */}
+      <div className="text-center py-8">
+        <Badge variant="secondary" className="mb-4">Beginner-friendly demo</Badge>
+        <h1 className="text-4xl font-bold mb-3 tracking-tight">TanStack Full Demo</h1>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          One app showcasing all major TanStack libraries — data fetching, tables, virtual lists, forms, and global state.
         </p>
+      </div>
+
+      {/* Pages */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {features.map(f => (
+          <Link key={f.href} to={f.href} onClick={() => setTab(f.tab)}
+            className="group block hover:-translate-y-0.5 transition-transform">
+            <Card className="h-full group-hover:border-primary/30 group-hover:shadow-md transition-all">
+              <CardHeader>
+                <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center mb-2', f.bg)}>
+                  <f.icon className={cn('w-5 h-5', f.color)} />
+                </div>
+                <CardTitle className="text-lg">{f.title}</CardTitle>
+                <CardDescription className="text-xs leading-relaxed">{f.desc}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-1">
+                  {f.libs.map(lib => (
+                    <Badge key={lib} variant="outline" className="font-mono text-[10px]">{lib.replace('@tanstack/', '')}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      {/* All libs */}
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Libraries Used</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {allLibs.map(lib => (
+            <div key={lib.name} className="flex items-start gap-3 p-3 rounded-lg border bg-white">
+              <lib.icon className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+              <div>
+                <p className="font-mono text-xs font-medium">{lib.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{lib.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
 }
 
-interface TodoItemProps {
-  todo: Todo
-  index: number
-  onToggle: (todo: Todo) => void
-  onDelete: (id: number) => void
-  onUpdate: (id: number, title: string) => void
-}
-
-function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) {
-  const [isEditing, setIsEditing] = React.useState(false)
-  const [editValue, setEditValue] = React.useState(todo.title)
-  const [isSaving, setIsSaving] = React.useState(false)
-
-  async function handleEditSave() {
-    const title = editValue.trim()
-    if (!title || title === todo.title) { setIsEditing(false); setEditValue(todo.title); return }
-    setIsSaving(true)
-    try {
-      await fetch(`${API}/todos/${todo.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title }),
-      })
-      onUpdate(todo.id, title)
-      setIsEditing(false)
-    } catch {
-      setEditValue(todo.title)
-      setIsEditing(false)
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
-  return (
-    <li className={cn(
-      'group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/30',
-      todo.completed && 'opacity-60'
-    )}>
-      <Checkbox
-        checked={todo.completed}
-        onCheckedChange={() => onToggle(todo)}
-        className="shrink-0"
-      />
-
-      <div className="flex-1 min-w-0">
-        {isEditing ? (
-          <input
-            autoFocus
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            onBlur={handleEditSave}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleEditSave()
-              if (e.key === 'Escape') { setEditValue(todo.title); setIsEditing(false) }
-            }}
-            disabled={isSaving}
-            className="w-full text-sm bg-transparent border-b border-primary outline-none pb-px"
-          />
-        ) : (
-          <span
-            className={cn(
-              'text-sm truncate block cursor-text select-none',
-              todo.completed && 'line-through text-muted-foreground'
-            )}
-            onDoubleClick={() => !todo.completed && setIsEditing(true)}
-            title={todo.completed ? undefined : 'Double-click to edit'}
-          >
-            {todo.title}
-          </span>
-        )}
-      </div>
-
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => onDelete(todo.id)}
-        className="shrink-0 h-7 w-7 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-      >
-        <Trash2Icon className="w-3.5 h-3.5" />
-      </Button>
-    </li>
-  )
-}
+import { cn } from '~/lib/utils'
