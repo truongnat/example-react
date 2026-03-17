@@ -1,18 +1,19 @@
-import React from 'react'
 import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { queryClient } from '@/lib/query-client'
 import { Toaster } from '@/components/ui/sonner'
-import { TokenMonitor } from '@/components/TokenMonitor'
 
 export const Route = createRootRoute({
-  component: () => {
-    return (
-      <React.Fragment>
-        <Outlet />
-        <Toaster />
-        <TokenMonitor />
-        <TanStackRouterDevtools />
-      </React.Fragment>
-    )
-  },
+  component: RootLayout,
 })
+
+function RootLayout() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+      <Toaster />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  )
+}
