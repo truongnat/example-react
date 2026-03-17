@@ -1,0 +1,26 @@
+{
+  "date": "2026-03-17T08:59:19.264Z",
+  "preset": "vercel",
+  "framework": {
+    "name": "nitro",
+    "version": "3.0.260311-beta"
+  },
+  "versions": {
+    "nitro": "3.0.260311-beta"
+  },
+  "serverEntry": "functions/__server.func/index.mjs",
+  "publicDir": "static",
+  "commands": {
+    "preview": "npx srvx --static ../../static ./functions/__server.func/index.mjs",
+    "deploy": "npx vercel deploy --prebuilt"
+  },
+  "config": {
+    "vercel": {
+      "skewProtection": false,
+      "cronHandlerRoute": "/_vercel/cron",
+      "functions": {
+        "runtime": "nodejs22.x"
+      }
+    }
+  }
+}

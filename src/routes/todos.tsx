@@ -38,7 +38,7 @@ function TodosPage() {
   const queryClient = useQueryClient()
   const [filter, setFilter] = React.useState<FilterType>('all')
   // ── TanStack Store: global search ────────────────────────────────────────
-  const { searchQuery } = useStore(appStore)
+  const searchQuery = useStore(appStore, (s) => s.searchQuery)
 
   // ── TanStack Query: useQuery ─────────────────────────────────────────────
   const { data: todos = [], isLoading, isError } = useQuery(todosQuery)

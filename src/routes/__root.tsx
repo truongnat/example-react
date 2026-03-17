@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { HeadContent, Scripts, createRootRoute, Link } from '@tanstack/react-router'
+import { HeadContent, Scripts, createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useStore } from '@tanstack/react-store'
@@ -14,14 +14,9 @@ function makeQueryClient() {
     defaultOptions: { queries: { staleTime: 1000 * 60 * 5, retry: 1 } },
   })
 }
-
 let browserQueryClient: QueryClient | undefined
-
 function getQueryClient() {
-  if (typeof window === 'undefined') {
-    // Server: always create a new QueryClient
-    return makeQueryClient()
-  }
+  if (typeof window === 'undefined') return makeQueryClient()
   if (!browserQueryClient) browserQueryClient = makeQueryClient()
   return browserQueryClient
 }
@@ -35,7 +30,8 @@ export const Route = createRootRoute({
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
-  shellComponent: RootDocument,
+  // Use component instead of shellComponent to avoid SSR issues with hooks
+  component: RootComponent,
 })
 
 const tabs = [
@@ -45,7 +41,8 @@ const tabs = [
 ]
 
 function Header() {
-  const state = useStore(appStore)
+  // useStore with explicit identity selector to fix SSR crash
+  const activeTab = useStore(appStore, (s) => s.activeTab)
   return (
     <header className="border-b bg-white/80 backdrop-blur sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center gap-3">
@@ -61,7 +58,7 @@ function Header() {
             <Link key={tab.id} to={tab.href} onClick={() => setTab(tab.id)}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-                state.activeTab === tab.id
+                activeTab === tab.id
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               )}>
@@ -75,7 +72,7 @@ function Header() {
   )
 }
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootComponent() {
   const queryClient = getQueryClient()
   return (
     <html lang="en">
@@ -84,7 +81,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <QueryClientProvider client={queryClient}>
           <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/20 to-indigo-50/30">
             <Header />
-            <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
+            <main className="max-w-6xl mx-auto px-4 py-8">
+              <Outlet />
+            </main>
           </div>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

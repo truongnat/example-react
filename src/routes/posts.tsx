@@ -19,7 +19,7 @@ interface Post { id: number; userId: number; title: string; body: string }
 export const Route = createFileRoute('/posts')({ component: PostsPage })
 
 function PostsPage() {
-  const { viewMode } = useStore(appStore)
+  const viewMode = useStore(appStore, (s) => s.viewMode)
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = React.useState('')
 
