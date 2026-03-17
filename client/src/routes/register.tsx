@@ -1,164 +1,102 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft } from "lucide-react";
-import { useRegister } from "@/hooks/useAuth";
+import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { useAuthStore } from '@/stores/authStore'
+import { authService } from '@/services/auth.service'
+import { CheckCircle, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
-export const Route = createFileRoute("/register")({
+export const Route = createFileRoute('/register')({
+  beforeLoad: () => {
+    if (useAuthStore.getState().isAuthenticated) {
+      throw redirect({ to: '/todo' })
+    }
+  },
   component: RegisterPage,
-});
+})
 
 function RegisterPage() {
-  const navigate = useNavigate();
-  const registerMutation = useRegister();
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const { setUser, setAuthenticated, setTokens } = useAuthStore()
+  const navigate = useNavigate()
 
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+      const response = await authService.register({ name, email, password })
+      setTokens(response.tokens)
+      setUser(response.user)
+      setAuthenticated(true)
+      toast.success('Account created! Welcome 🎉')
+      navigate({ to: '/todo' })
+    } catch (error: any) {
+      toast.error(error.message || 'Registration failed')
+    } finally {
+      setIsLoading(false)
     }
+  }
 
-    registerMutation.mutate(
-      {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      },
-      {
-        onSuccess: () => {
-          navigate({ to: "/" });
-        },
-        onError: (error: any) => {
-          setError(error.message || "Registration failed. Please try again.");
-        },
-      }
-    );
-  };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative">
-      {/* Back to Home Button */}
-      <Link to="/" className="absolute top-4 left-4">
-        <Button variant="ghost" size="sm">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
-        </Button>
-      </Link>
-
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Sign Up</CardTitle>
-          <CardDescription>Create a new account to get started</CardDescription>
+          <div className="flex justify-center mb-2">
+            <CheckCircle className="w-10 h-10 text-indigo-600" />
+          </div>
+          <CardTitle className="text-2xl">Create account</CardTitle>
+          <CardDescription>Start managing your todos with TanStack</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {(error || registerMutation.error) && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
-                {error ||
-                  registerMutation.error?.message ||
-                  "Registration failed. Please try again."}
-              </div>
-            )}
-
+          <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <label className="text-sm font-medium text-gray-700">Name</label>
               <Input
-                id="username"
-                type="text"
-                placeholder="Enter your username"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
-                }
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <label className="text-sm font-medium text-gray-700">Email</label>
               <Input
-                id="email"
                 type="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <label className="text-sm font-medium text-gray-700">Password</label>
               <Input
-                id="password"
                 type="password"
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
+                placeholder="Min. 6 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
               />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, confirmPassword: e.target.value })
-                }
-                required
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={registerMutation.isPending}
-            >
-              {registerMutation.isPending ? "Creating Account..." : "Sign Up"}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+              Create Account
             </Button>
           </form>
-          <div className="text-center">
-            <div className="text-sm text-gray-600">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="text-blue-600 hover:underline"
-                search={{
-                  redirect: "/",
-                }}
-              >
-                Sign in
-              </Link>
-            </div>
-          </div>
         </CardContent>
+        <CardFooter className="text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link to="/login" className="text-indigo-600 hover:underline ml-1">
+            Sign in
+          </Link>
+        </CardFooter>
       </Card>
     </div>
-  );
+  )
 }
