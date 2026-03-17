@@ -1,27 +1,38 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import * as React from 'react'
-import { store } from '~/lib/store'
-import type { Todo } from '~/lib/store'
+
+const API = 'https://jsonplaceholder.typicode.com'
+
+export interface Todo {
+  id: number
+  userId: number
+  title: string
+  completed: boolean
+}
 
 export const Route = createFileRoute('/')({
-  loader: () => {
-    // Access store directly on server — no HTTP round-trip needed
-    return [...store.todos].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
+  loader: async () => {
+    const res = await fetch(`${API}/todos?_limit=20`)
+    if (!res.ok) throw new Error('Failed to fetch todos')
+    return res.json() as Promise<Todo[]>
   },
   component: TodoPage,
 })
 
 function TodoPage() {
-  const todos = Route.useLoaderData()
+  const initialTodos = Route.useLoaderData()
   const router = useRouter()
 
+  // Local state on top of server data for optimistic UI
+  const [todos, setTodos] = React.useState<Todo[]>(initialTodos)
   const [newTitle, setNewTitle] = React.useState('')
   const [isAdding, setIsAdding] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [filter, setFilter] = React.useState<'all' | 'active' | 'completed'>('all')
   const inputRef = React.useRef<HTMLInputElement>(null)
+
+  // Sync when loader data refreshes
+  React.useEffect(() => { setTodos(initialTodos) }, [initialTodos])
 
   const filteredTodos = todos.filter((todo) => {
     if (filter === 'active') return !todo.completed
@@ -39,13 +50,15 @@ function TodoPage() {
     setIsAdding(true)
     setError(null)
     try {
-      await fetch('/api/todos', {
+      const res = await fetch(`${API}/todos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ title, completed: false, userId: 1 }),
       })
+      const created: Todo = await res.json()
+      // Optimistic: prepend with a local id since JSONPlaceholder always returns id=201
+      setTodos(prev => [{ ...created, id: Date.now() }, ...prev])
       setNewTitle('')
-      await router.invalidate()
       inputRef.current?.focus()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add todo')
@@ -55,34 +68,37 @@ function TodoPage() {
   }
 
   async function handleToggle(todo: Todo) {
+    // Optimistic update
+    setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: !t.completed } : t))
     try {
-      await fetch(`/api/todos/${todo.id}`, {
+      await fetch(`${API}/todos/${todo.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed: !todo.completed }),
       })
-      await router.invalidate()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update todo')
+    } catch {
+      // Revert on error
+      setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: todo.completed } : t))
     }
   }
 
   async function handleDelete(id: number) {
+    setTodos(prev => prev.filter(t => t.id !== id))
     try {
-      await fetch(`/api/todos/${id}`, { method: 'DELETE' })
+      await fetch(`${API}/todos/${id}`, { method: 'DELETE' })
+    } catch {
+      // Revert
       await router.invalidate()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete todo')
     }
   }
 
   async function handleClearCompleted() {
+    const completed = todos.filter((t) => t.completed)
+    setTodos(prev => prev.filter(t => !t.completed))
     try {
-      const completed = todos.filter((t) => t.completed)
-      await Promise.all(completed.map((t) => fetch(`/api/todos/${t.id}`, { method: 'DELETE' })))
+      await Promise.all(completed.map(t => fetch(`${API}/todos/${t.id}`, { method: 'DELETE' })))
+    } catch {
       await router.invalidate()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to clear completed')
     }
   }
 
@@ -93,7 +109,7 @@ function TodoPage() {
           <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600 mb-2">
             ✅ Todo App
           </h1>
-          <p className="text-gray-500 text-sm">Powered by TanStack Start + Vercel</p>
+          <p className="text-gray-500 text-sm">Powered by TanStack Start + JSONPlaceholder</p>
         </div>
 
         {error && (
@@ -159,14 +175,14 @@ function TodoPage() {
             </div>
           ) : (
             filteredTodos.map((todo) => (
-              <TodoItem key={todo.id} todo={todo} onToggle={handleToggle} onDelete={handleDelete} />
+              <TodoItem key={todo.id} todo={todo} onToggle={handleToggle} onDelete={handleDelete} onUpdate={(id, title) => setTodos(prev => prev.map(t => t.id === id ? { ...t, title } : t))} />
             ))
           )}
         </div>
 
         <div className="mt-10 text-center text-xs text-gray-400">
           <p>{todos.length} total • {completedCount} completed</p>
-          <p className="mt-1">Built with TanStack Start + Vercel</p>
+          <p className="mt-1">Data from <a href="https://jsonplaceholder.typicode.com" target="_blank" rel="noreferrer" className="text-violet-400 hover:underline">JSONPlaceholder</a></p>
         </div>
       </div>
     </div>
@@ -177,26 +193,26 @@ interface TodoItemProps {
   todo: Todo
   onToggle: (todo: Todo) => void
   onDelete: (id: number) => void
+  onUpdate: (id: number, title: string) => void
 }
 
-function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
+function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) {
   const [isEditing, setIsEditing] = React.useState(false)
   const [editValue, setEditValue] = React.useState(todo.title)
   const [isSaving, setIsSaving] = React.useState(false)
-  const router = useRouter()
 
   async function handleEditSave() {
     const title = editValue.trim()
     if (!title || title === todo.title) { setIsEditing(false); setEditValue(todo.title); return }
     setIsSaving(true)
     try {
-      await fetch(`/api/todos/${todo.id}`, {
+      await fetch(`${API}/todos/${todo.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title }),
       })
+      onUpdate(todo.id, title)
       setIsEditing(false)
-      await router.invalidate()
     } catch {
       setEditValue(todo.title)
       setIsEditing(false)
@@ -238,7 +254,6 @@ function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
             {todo.title}
           </span>
         )}
-        <span className="text-xs text-gray-400">{new Date(todo.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
       </div>
 
       <button
