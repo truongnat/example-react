@@ -28,7 +28,9 @@ const todosQuery = {
 }
 
 export const Route = createFileRoute('/todos')({
-  loader: () => todosQuery,   // prefetch hint
+  loader: async () => { // no-op loader, query handled by useQuery on client
+    return null
+  },
   component: TodosPage,
 })
 
