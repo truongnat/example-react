@@ -91,9 +91,9 @@ function UsersPage() {
       cell: info => <span className="font-medium text-sm">{info.getValue<string>()}</span> },
     { accessorKey: 'email', header: 'Email',
       cell: info => <span className="text-sm text-muted-foreground">{info.getValue<string>()}</span> },
-    { accessorKey: 'address', header: 'City', enableSorting: false,
+    { accessorKey: 'address', header: 'City', enableSorting: false, meta: { className: 'hidden md:table-cell' },
       cell: info => <Badge variant="secondary" className="text-xs">{info.getValue<User['address']>().city}</Badge> },
-    { accessorKey: 'company', header: 'Company', enableSorting: false,
+    { accessorKey: 'company', header: 'Company', enableSorting: false, meta: { className: 'hidden md:table-cell' },
       cell: info => <span className="text-xs text-muted-foreground">{info.getValue<User['company']>().name}</span> },
     {
       id: 'actions', header: '', size: 60,
@@ -148,7 +148,7 @@ function UsersPage() {
                 {table.getHeaderGroups().map(hg => (
                   <tr key={hg.id}>
                     {hg.headers.map(header => (
-                      <th key={header.id} className="text-left px-4 py-2.5 font-medium text-muted-foreground text-xs uppercase tracking-wider" style={{ width: header.getSize() }}>
+                      <th key={header.id} className={cn("text-left px-4 py-2.5 font-medium text-muted-foreground text-xs uppercase tracking-wider", (header.column.columnDef.meta as any)?.className)} style={{ width: header.getSize() }}>
                         {header.isPlaceholder ? null : (
                           <div className={cn('flex items-center gap-1', header.column.getCanSort() && 'cursor-pointer select-none hover:text-foreground')}
                             onClick={header.column.getToggleSortingHandler()}>
@@ -169,7 +169,7 @@ function UsersPage() {
                 {table.getRowModel().rows.map(row => (
                   <tr key={row.id} className="hover:bg-muted/30 transition-colors">
                     {row.getVisibleCells().map(cell => (
-                      <td key={cell.id} className="px-4 py-3">
+                      <td key={cell.id} className={cn("px-4 py-3", (cell.column.columnDef.meta as any)?.className)}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}

@@ -39,8 +39,8 @@ function HomePage() {
       {/* Hero */}
       <div className="text-center py-8">
         <Badge variant="secondary" className="mb-4">Beginner-friendly demo</Badge>
-        <h1 className="text-4xl font-bold mb-3 tracking-tight">TanStack Full Demo</h1>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+        <h1 className="text-2xl sm:text-4xl font-bold mb-3 tracking-tight">TanStack Full Demo</h1>
+        <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
           One app showcasing all major TanStack libraries — data fetching, tables, virtual lists, forms, and global state.
         </p>
       </div>

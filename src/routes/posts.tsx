@@ -42,7 +42,7 @@ function PostsPage() {
     { accessorKey: 'title', header: 'Title', cell: info => (
       <span className="font-medium text-sm line-clamp-1">{info.getValue<string>()}</span>
     )},
-    { accessorKey: 'body', header: 'Body', enableSorting: false, cell: info => (
+    { accessorKey: 'body', header: 'Body', enableSorting: false, meta: { className: 'hidden md:table-cell' }, cell: info => (
       <span className="text-xs text-muted-foreground line-clamp-2">{info.getValue<string>()}</span>
     )},
   ]
@@ -72,7 +72,7 @@ function PostsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <FileTextIcon className="w-6 h-6 text-blue-500" /> Posts
@@ -115,7 +115,7 @@ function PostsPage() {
                 {table.getHeaderGroups().map(hg => (
                   <tr key={hg.id}>
                     {hg.headers.map(header => (
-                      <th key={header.id} className="text-left px-4 py-2.5 font-medium text-muted-foreground text-xs uppercase tracking-wider"
+                      <th key={header.id} className={cn("text-left px-4 py-2.5 font-medium text-muted-foreground text-xs uppercase tracking-wider", (header.column.columnDef.meta as any)?.className)}
                         style={{ width: header.getSize() }}>
                         {header.isPlaceholder ? null : (
                           <div className={cn('flex items-center gap-1', header.column.getCanSort() && 'cursor-pointer select-none hover:text-foreground')}
@@ -137,7 +137,7 @@ function PostsPage() {
                 {table.getRowModel().rows.map(row => (
                   <tr key={row.id} className="hover:bg-muted/30 transition-colors">
                     {row.getVisibleCells().map(cell => (
-                      <td key={cell.id} className="px-4 py-3">
+                      <td key={cell.id} className={cn("px-4 py-3", (cell.column.columnDef.meta as any)?.className)}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
@@ -179,7 +179,7 @@ function PostsPage() {
                       <p className="text-sm font-medium line-clamp-1">{post.title}</p>
                       <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{post.body}</p>
                     </div>
-                    <Badge variant="secondary" className="shrink-0 text-xs">User {post.userId}</Badge>
+                    <Badge variant="secondary" className="hidden sm:flex shrink-0 text-xs">User {post.userId}</Badge>
                   </div>
                 )
               })}

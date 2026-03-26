@@ -46,14 +46,14 @@ function Header() {
   return (
     <header className="border-b bg-white/80 backdrop-blur sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center gap-3">
-        <Link to="/" className="flex items-center gap-2 font-bold text-foreground hover:text-primary transition-colors">
+        <Link to="/" className="flex items-center gap-2 font-bold text-foreground hover:text-primary transition-colors min-w-0 shrink">
           <LayoutDashboardIcon className="w-5 h-5 text-primary" />
           TanStack Demo
         </Link>
         <span className="hidden sm:block text-xs text-muted-foreground border-l pl-3 ml-1">
           Query · Table · Virtual · Form · Store
         </span>
-        <nav className="ml-auto flex gap-1">
+        <nav className="ml-auto flex gap-1 shrink-0">
           {tabs.map(tab => (
             <Link key={tab.id} to={tab.href} onClick={() => setTab(tab.id)}
               className={cn(
